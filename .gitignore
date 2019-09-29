@@ -1,2 +1,9 @@
+/.idea
 /target
 **/*.rs.bk
+
+# vim
+.swp
+*~
+*.swp
+*.swo
