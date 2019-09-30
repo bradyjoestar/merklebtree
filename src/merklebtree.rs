@@ -2,13 +2,19 @@ use crate::node::Node;
 use core::borrow::BorrowMut;
 
 #[derive(Clone, Debug)]
-pub struct MerkleBTree<T> {
+pub struct MerkleBTree<T>
+where
+    T: PartialEq + PartialOrd + Ord,
+{
     pub root: Box<Node<T>>,
     size: u32, // Total number of keys in the tree
     m: u32,    // order (maximum number of children)
 }
 
-impl<T> MerkleBTree<T> {
+impl<T> MerkleBTree<T>
+where
+    T: PartialEq + PartialOrd + Ord,
+{
     pub fn new_with(order: u32, value: T) -> Self {
         return MerkleBTree {
             root: Box::new(Node::empty()),

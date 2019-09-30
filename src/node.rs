@@ -1,5 +1,8 @@
 #[derive(Clone, Debug)]
-pub enum Node<T> {
+pub enum Node<T>
+where
+    T: PartialEq + PartialOrd + Ord,
+{
     Empty {},
 
     Normal {
@@ -9,7 +12,10 @@ pub enum Node<T> {
     },
 }
 
-impl<T> Node<T> {
+impl<T> Node<T>
+where
+    T: PartialEq + PartialOrd + Ord,
+{
     /// Create an empty tree
     pub fn empty() -> Self {
         Node::Empty {}
