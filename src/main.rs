@@ -14,12 +14,12 @@ fn main() {
     tree.put(5);
     tree.put(4);
 
-    match tree.get_content(){
+    match tree.get_content() {
         None => println!("no data in the root"),
-        Some(T)=> {
+        Some(T) => {
             println!("have data in the root");
-            for i in T.iter(){
-                println!("data is {}",i);
+            for i in T.iter() {
+                println!("data is {}", i);
             }
         }
     }

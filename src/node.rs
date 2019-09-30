@@ -29,19 +29,23 @@ impl<T> Node<T> {
             Node::Normal {
                 ref mut content, ..
             } => {
-                println!("-------insert data in content-------");
-                content.push(value);
+                let content_slice = content.as_slice();
+                match content_slice.binary_search(&value) {
+                    Ok(t) => println!("found,not insert"),
+                    Err(e) => {
+                        println!("not found,insert");
+                        content.insert(e, value);
+                    }
+                }
                 true
             }
         }
     }
 
-    pub fn get_content(&self) -> Option<&Vec<T>>{
-        match *self{
+    pub fn get_content(&self) -> Option<&Vec<T>> {
+        match *self {
             Node::Empty {} => None,
-            Node::Normal {ref content,..} =>{
-                Some(content)
-            }
+            Node::Normal { ref content, .. } => Some(content),
         }
     }
 }

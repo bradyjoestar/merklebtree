@@ -30,7 +30,7 @@ impl<T> MerkleBTree<T> {
         }
     }
 
-    pub fn get_content(&self) -> Option<&Vec<T>>{
+    pub fn get_content(&self) -> Option<&Vec<T>> {
         self.root.get_content()
     }
 }
