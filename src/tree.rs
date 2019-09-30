@@ -1,9 +1,26 @@
 #[derive(Clone, Debug)]
-pub struct Node<T> {
-    hash: Vec<u8>,
-    parent: Box<Tree<T>>,
-    children: Vec<Box<Tree<T>>>,
-    content: Vec<T>,
+
+pub enum Node<T> {
+    Empty {},
+
+    Root {
+        hash: Vec<u8>,
+        children: Vec<Box<Node<T>>>,
+        content: Vec<T>,
+    },
+    Normal {
+        hash: Vec<u8>,
+        parent: Box<Node<T>>,
+        children: Vec<Box<Node<T>>>,
+        content: Vec<T>,
+    },
+}
+
+impl<T> Node<T> {
+    /// Create an empty tree
+    pub fn empty() -> Self {
+        Node::Empty {}
+    }
 }
 
 pub fn test() {

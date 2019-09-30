@@ -7,6 +7,16 @@ pub struct MerkleBTree<T> {
     m: u32,    // order (maximum number of children)
 }
 
+impl<T> MerkleBTree<T> {
+    pub fn new_with(order: u32, value: T) -> Self {
+        return MerkleBTree {
+            root: Box::new(Node::empty()),
+            size: 0,
+            m: order,
+        };
+    }
+}
+
 pub fn test() {
     println!("this is merklebtree");
 }
