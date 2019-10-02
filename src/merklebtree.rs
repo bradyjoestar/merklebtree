@@ -1,12 +1,12 @@
 use crate::node::Node;
-use core::borrow::BorrowMut;
+use core::borrow::{Borrow, BorrowMut};
 
 #[derive(Clone, Debug)]
 pub struct MerkleBTree<T>
 where
     T: PartialEq + PartialOrd + Ord,
 {
-    pub root: Box<Node<T>>,
+    pub root: Option<Box<Node<T>>>,
     size: u32, // Total number of keys in the tree
     m: u32,    // order (maximum number of children)
 }
@@ -17,7 +17,7 @@ where
 {
     pub fn new_with(order: u32, value: T) -> Self {
         return MerkleBTree {
-            root: Box::new(Node::empty()),
+            root: None,
             size: 0,
             m: order,
         };
@@ -25,19 +25,23 @@ where
 
     pub fn put(&mut self, value: T) -> () {
         match self.root.borrow_mut() {
-            Node::Empty {} => {
-                println!("this is a empty node");
-                self.root = Box::new(Node::new_node());
-                self.root.put(value);
+            None => {
+                self.root = Some(Box::new(Node::new_node(value)));
+                println!("this is nil tree")
             }
-            _ => {
-                self.root.put(value);
+            Some(t) => {
+                t.put(value);
+                //                t.borrow_mut().put(value);
+                println!("this isn't nil tree");
             }
         }
     }
 
     pub fn get_content(&self) -> Option<&Vec<T>> {
-        self.root.get_content()
+        match &self.root {
+            None => None,
+            Some(t) => t.get_content(),
+        }
     }
 }
 
