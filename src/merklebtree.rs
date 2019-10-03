@@ -19,31 +19,34 @@ where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     pub fn new_empty(order: u32) -> Self {
-        return MerkleBTree {
+        let mut tree = MerkleBTree {
             empty: true,
             root: Box::new(Node::new_empty()),
             m: order,
         };
+        tree.root.root_flag = true;
+        tree
     }
 
     pub fn new_with(order: u32, value: T) -> Self {
         println!("{:?}", value);
-        return MerkleBTree {
+        let mut tree = MerkleBTree {
             empty: false,
             root: Box::new(Node::new_node(value)),
             m: order,
         };
+        tree.root.root_flag = true;
+        tree
     }
 
     pub fn put(&mut self, value: T) -> () {
         if self.empty {
             self.root = Box::new(Node::new_node(value));
             self.empty = false;
-            println!("insert into root");
+            self.root.root_flag = true;
         } else {
             let a = &mut self.root;
-            node::insert(a, value);
-            println!("this isn't nil tree");
+            node::insert(a, value, self.m);
         }
     }
 

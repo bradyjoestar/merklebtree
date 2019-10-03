@@ -1,10 +1,12 @@
 use std::fmt::Debug;
+use std::io::BufRead;
 
 #[derive(Clone, Debug)]
 pub struct Node<T>
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
+    pub root_flag: bool, //whether is root node
     pub parent: Option<Box<Node<T>>>,
     pub children: Vec<Box<Node<T>>>,
     pub content: Vec<T>,
@@ -16,6 +18,7 @@ where
 {
     pub fn new_empty() -> Self {
         Node {
+            root_flag: false,
             parent: None,
             children: vec![],
             content: vec![],
@@ -24,6 +27,7 @@ where
 
     pub fn new_node(value: T) -> Self {
         Node {
+            root_flag: false,
             parent: None,
             children: vec![],
             content: vec![value],
@@ -46,51 +50,75 @@ where
     }
 }
 
-pub fn insert<T>(node: &mut Box<Node<T>>, value: T) -> bool
+pub fn insert<T>(node: &mut Box<Node<T>>, value: T, order: u32) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     if is_leaf(node) {
-        insert_into_leaf(node, value)
+        insert_into_leaf(node, value, order)
     } else {
-        insert_into_internal(node, value)
+        insert_into_internal(node, value, order)
     }
 }
 
-pub fn insert_into_leaf<T>(node: &mut Box<Node<T>>, value: T) -> bool
+pub fn insert_into_leaf<T>(node: &mut Box<Node<T>>, value: T, order: u32) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    println!("insert to leaf");
     let content_slice = node.content.as_slice();
     match content_slice.binary_search(&value) {
         Ok(t) => {
             node.content.remove(t);
-            node.content.insert(t,value);
-            println!("found,not insert");
+            node.content.insert(t, value);
         }
         Err(e) => {
-            println!("not found,insert");
+            node.content.insert(e, value);
+            split_node(node, order);
+        }
+    }
+    true
+}
+
+pub fn insert_into_internal<T>(node: &mut Box<Node<T>>, value: T, order: u32) -> bool
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    let content_slice = node.content.as_slice();
+    match content_slice.binary_search(&value) {
+        Ok(t) => {}
+        Err(e) => {
             node.content.insert(e, value);
         }
     }
     true
 }
 
-pub fn insert_into_internal<T>(node: &mut Box<Node<T>>, value: T) -> bool
+pub fn split_node<T>(node: &mut Box<Node<T>>, order: u32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    println!("insert to internal");
-    let content_slice = node.content.as_slice();
-    match content_slice.binary_search(&value) {
-        Ok(t) => {
-            println!("found,not insert");
+    if !(node.content.len() > (order - 1) as usize) {
+        return;
+    } else {
+        if node.root_flag {
+            split_root(node, order)
+        } else {
+            split_not_root(node, order)
         }
-        Err(e) => {
-            println!("not found,insert");
-            node.content.insert(e, value);
-        }
+        println!("should split node");
     }
-    true
+}
+
+pub fn split_root<T>(node: &mut Box<Node<T>>, order: u32)
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+
+}
+
+pub fn split_not_root<T>(node: &mut Box<Node<T>>, order: u32)
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+
 }

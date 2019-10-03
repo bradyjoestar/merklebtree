@@ -7,7 +7,7 @@ use bean::Item;
 fn main() {
     println!("Hello, world!");
 
-    let mut tree = MerkleBTree::new_with(3, Item { key: 1, value: 3 });
+    let mut tree = MerkleBTree::new_with(3, Item { key: 1, value: 4 });
 
     for i in 0..5 {
         let item = Item { key: i, value: i };
