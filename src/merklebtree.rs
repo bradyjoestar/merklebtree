@@ -1,3 +1,5 @@
+use crate::node;
+use crate::node::is_leaf;
 use crate::node::Node;
 use core::borrow::{Borrow, BorrowMut};
 
@@ -8,8 +10,7 @@ where
 {
     empty: bool,
     root: Box<Node<T>>,
-    size: u32, // Total number of keys in the tree
-    m: u32,    // order (maximum number of children)
+    m: u32, // order (maximum number of children)
 }
 
 impl<T> MerkleBTree<T>
@@ -20,7 +21,6 @@ where
         return MerkleBTree {
             empty: true,
             root: Box::new(Node::new_empty()),
-            size: 0,
             m: order,
         };
     }
@@ -31,24 +31,18 @@ where
             self.empty = false;
             println!("this is nil tree")
         } else {
-            if self.is_leaf() {
-                println!("is node");
-            }
-            self.root.put(value);
+            let a = &mut self.root;
+            node::insert(a, value);
             println!("this isn't nil tree");
         }
     }
 
     pub fn get_content(&self) -> Option<&Vec<T>> {
-        if self.empty{
+        if self.empty {
             None
-        }else{
+        } else {
             self.root.get_content()
         }
-    }
-
-    fn is_leaf(&self) -> bool {
-        true
     }
 }
 
