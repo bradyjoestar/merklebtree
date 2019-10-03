@@ -2,11 +2,12 @@ use crate::node;
 use crate::node::is_leaf;
 use crate::node::Node;
 use core::borrow::{Borrow, BorrowMut};
+use std::fmt::Debug;
 
 #[derive(Clone, Debug)]
 pub struct MerkleBTree<T>
 where
-    T: PartialEq + PartialOrd + Ord + Clone,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     empty: bool,
     root: Box<Node<T>>,
@@ -15,12 +16,21 @@ where
 
 impl<T> MerkleBTree<T>
 where
-    T: PartialEq + PartialOrd + Ord + Clone,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    pub fn new_with(order: u32, value: T) -> Self {
+    pub fn new_empty(order: u32) -> Self {
         return MerkleBTree {
             empty: true,
             root: Box::new(Node::new_empty()),
+            m: order,
+        };
+    }
+
+    pub fn new_with(order: u32, value: T) -> Self {
+        println!("{:?}", value);
+        return MerkleBTree {
+            empty: false,
+            root: Box::new(Node::new_node(value)),
             m: order,
         };
     }
@@ -29,7 +39,7 @@ where
         if self.empty {
             self.root = Box::new(Node::new_node(value));
             self.empty = false;
-            println!("this is nil tree")
+            println!("insert into root");
         } else {
             let a = &mut self.root;
             node::insert(a, value);
@@ -44,8 +54,4 @@ where
             self.root.get_content()
         }
     }
-}
-
-pub fn test() {
-    println!("this is merklebtree");
 }
