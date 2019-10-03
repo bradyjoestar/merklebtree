@@ -1,7 +1,7 @@
 #[derive(Clone, Debug)]
 pub struct Node<T>
 where
-    T: PartialEq + PartialOrd + Ord,
+    T: PartialEq + PartialOrd + Ord + Clone,
 {
     parent: Option<Box<Node<T>>>,
     children: Vec<Box<Node<T>>>,
@@ -10,8 +10,16 @@ where
 
 impl<T> Node<T>
 where
-    T: PartialEq + PartialOrd + Ord,
+    T: PartialEq + PartialOrd + Ord + Clone,
 {
+    pub fn new_empty() -> Self{
+        Node {
+            parent: None,
+            children: vec![],
+            content: vec![],
+        }
+    }
+
     pub fn new_node(value: T) -> Self {
         Node {
             parent: None,
@@ -19,7 +27,7 @@ where
             content: vec![value],
         }
     }
-    //
+
     pub fn put(&mut self, value: T) -> bool {
         let content_slice = self.content.as_slice();
         match content_slice.binary_search(&value) {
