@@ -1,5 +1,5 @@
 extern crate merklebtree;
-use merklebtree::merklebtree::MerkleBTree;
+use merklebtree::merklebtree::{MerkleBTree, Nodes};
 
 mod bean;
 use bean::Item;
@@ -7,11 +7,15 @@ use bean::Item;
 fn main() {
     println!("Hello, world!");
 
-    let mut tree = MerkleBTree::new_with(3, Item { key: 1, value: 4 });
+    let mut nodes = Nodes {
+        nodes: Default::default(),
+        number: 0,
+    };
+    let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 });
 
-    for i in 0..5 {
+    for i in 0..4 {
         let item = Item { key: i, value: i };
-        tree.put(item);
+        tree.put(item, &mut nodes);
     }
 
     match tree.get_content() {
