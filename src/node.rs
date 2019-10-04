@@ -131,13 +131,10 @@ where
 
     println!("should split");
     let mut left_node = Node::new_empty(id);
-
     let mut right_node = Node::new_empty(id + 1);
-
     let mut root_node = Node::new_empty(id + 2);
 
     root_node.root_flag = true;
-
     let node = nodes.nodes_map.get_mut(&rootid).unwrap();
 
     root_node.content = node.content.split_off(middle as usize);
