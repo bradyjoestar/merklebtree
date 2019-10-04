@@ -12,6 +12,7 @@ where
     pub nodes_map: HashMap<i32, Node<T>>,
     pub size: u32, //the number of nodes
     pub root_id: i32,
+    pub index_id: i32, //generate the index of new node
 }
 
 #[derive(Clone, Debug)]
@@ -19,7 +20,6 @@ pub struct MerkleBTree {
     pub empty: bool,
     pub rootid: i32,
     pub m: u32,        // order (maximum number of children)
-    pub index_id: i32, //generate the index of new node
 }
 
 impl MerkleBTree {
@@ -31,13 +31,12 @@ impl MerkleBTree {
             empty: true,
             rootid: 0,
             m: order,
-            index_id: 0,
         };
 
         nodes.nodes_map.insert(0, Node::new_empty(0));
         nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
 
-        tree.index_id = tree.index_id + 1;
+        nodes.index_id = nodes.index_id + 1;
         tree
     }
 
@@ -50,11 +49,10 @@ impl MerkleBTree {
             empty: false,
             rootid: 0,
             m: order,
-            index_id: 0,
         };
         nodes.nodes_map.insert(0, Node::new_node(value, 0));
         nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
-        tree.index_id = tree.index_id + 1;
+        nodes.index_id = nodes.index_id + 1;
         tree
     }
 
@@ -69,11 +67,11 @@ impl MerkleBTree {
                 .nodes_map
                 .insert(0, Node::new_node(value, self.rootid));
             nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
-            self.index_id = self.index_id + 1;
+            nodes.index_id = nodes.index_id + 1;
         } else {
             let a = self.rootid;
-            node::insert(a, value, self.m, self.index_id, nodes);
-            self.index_id = self.index_id + 1;
+            node::insert(a, value, self.m, nodes.root_id, nodes);
+            nodes.index_id = nodes.index_id + 1;
         }
     }
 }
