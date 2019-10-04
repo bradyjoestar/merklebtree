@@ -9,7 +9,7 @@ fn main() {
 
     let mut nodes = Nodes {
         nodes_map: Default::default(),
-        number: 0,
+        size: 0,
         root_id: 0,
     };
     let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 }, &mut nodes);

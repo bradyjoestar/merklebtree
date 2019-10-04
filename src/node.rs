@@ -9,33 +9,33 @@ where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     pub root_flag: bool, //whether is root node
-    pub parent: Option<Box<Node<T>>>,
-    pub children: Vec<Box<Node<T>>>,
+    pub parent_id: i32,
+    pub children_id: Vec<i32>,
     pub content: Vec<T>,
-    pub id: u32,
+    pub node_id: i32,
 }
 
 impl<T> Node<T>
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    pub fn new_empty(id: u32) -> Self {
+    pub fn new_empty(id: i32) -> Self {
         Node {
             root_flag: false,
-            parent: None,
-            children: vec![],
+            parent_id: -1,
+            children_id: vec![],
             content: vec![],
-            id: id,
+            node_id: id,
         }
     }
 
-    pub fn new_node(value: T, id: u32) -> Self {
+    pub fn new_node(value: T, id: i32) -> Self {
         Node {
             root_flag: false,
-            parent: None,
-            children: vec![],
+            parent_id: -1,
+            children_id: vec![],
             content: vec![value],
-            id: id,
+            node_id: id,
         }
     }
 
@@ -44,19 +44,19 @@ where
     }
 }
 
-pub fn is_leaf<T>(nodeid: u32, nodes: &mut Nodes<T>) -> bool
+pub fn is_leaf<T>(nodeid: i32, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     let node = nodes.nodes_map.get_mut(&nodeid).unwrap();
-    if node.children.len() == 0 {
+    if node.children_id.len() == 0 {
         true
     } else {
         false
     }
 }
 
-pub fn insert<T>(nodeid: u32, value: T, order: u32, id: u32, nodes: &mut Nodes<T>) -> bool
+pub fn insert<T>(nodeid: i32, value: T, order: u32, id: i32, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -67,7 +67,7 @@ where
     }
 }
 
-pub fn insert_into_leaf<T>(nodeid: u32, value: T, order: u32, id: u32, nodes: &mut Nodes<T>) -> bool
+pub fn insert_into_leaf<T>(nodeid: i32, value: T, order: u32, id: i32, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -87,10 +87,10 @@ where
 }
 
 pub fn insert_into_internal<T>(
-    nodeid: u32,
+    nodeid: i32,
     value: T,
     order: u32,
-    id: u32,
+    id: i32,
     nodes: &mut Nodes<T>,
 ) -> bool
 where
@@ -107,7 +107,7 @@ where
     true
 }
 
-pub fn split_node<T>(nodeid: u32, order: u32, id: u32, nodes: &mut Nodes<T>)
+pub fn split_node<T>(nodeid: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -123,7 +123,7 @@ where
     }
 }
 
-pub fn split_root<T>(rootid: u32, order: u32, id: u32, nodes: &mut Nodes<T>)
+pub fn split_root<T>(rootid: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -158,7 +158,7 @@ where
     );
 }
 
-pub fn split_not_root<T>(nodeid: u32, order: u32, id: u32, nodes: &mut Nodes<T>)
+pub fn split_not_root<T>(nodeid: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
