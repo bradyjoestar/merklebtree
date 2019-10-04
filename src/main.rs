@@ -8,17 +8,20 @@ fn main() {
     println!("Hello, world!");
 
     let mut nodes = Nodes {
-        nodes: Default::default(),
+        nodes_map: Default::default(),
         number: 0,
+        root_id: 0,
     };
-    let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 });
+    let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 }, &mut nodes);
 
     for i in 0..4 {
         let item = Item { key: i, value: i };
         tree.put(item, &mut nodes);
     }
 
-    match tree.get_content() {
+    let node = nodes.nodes_map.get_mut(&nodes.root_id).unwrap();
+
+    match node.get_content() {
         None => println!("no data in the root"),
         Some(T) => {
             println!("have data in the root");
