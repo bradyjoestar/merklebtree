@@ -56,22 +56,22 @@ where
     }
 }
 
-pub fn insert<T>(nodeid: i32, value: T, order: u32, id: i32, nodes: &mut Nodes<T>) -> bool
+pub fn insert<T>(insert_id: i32, value: T, order: u32, id: i32, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    if is_leaf(nodeid, nodes) {
-        insert_into_leaf(nodeid, value, order, id, nodes)
+    if is_leaf(insert_id, nodes) {
+        insert_into_leaf(insert_id, value, order, id, nodes)
     } else {
-        insert_into_internal(nodeid, value, order, id, nodes)
+        insert_into_internal(insert_id, value, order, id, nodes)
     }
 }
 
-pub fn insert_into_leaf<T>(nodeid: i32, value: T, order: u32, id: i32, nodes: &mut Nodes<T>) -> bool
+pub fn insert_into_leaf<T>(insert_id: i32, value: T, order: u32, id: i32, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    let node = nodes.nodes_map.get_mut(&nodeid).unwrap();
+    let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
     let content_slice = node.content.as_slice();
     match content_slice.binary_search(&value) {
         Ok(t) => {
@@ -80,14 +80,14 @@ where
         }
         Err(e) => {
             node.content.insert(e, value);
-            split_node(nodeid, order, id, nodes);
+            split_node(insert_id, order, id, nodes);
         }
     }
     true
 }
 
 pub fn insert_into_internal<T>(
-    nodeid: i32,
+    insert_id: i32,
     value: T,
     order: u32,
     id: i32,
@@ -96,7 +96,7 @@ pub fn insert_into_internal<T>(
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    let node = nodes.nodes_map.get_mut(&nodeid).unwrap();
+    let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
     let content_slice = node.content.as_slice();
     match content_slice.binary_search(&value) {
         Ok(t) => {}
@@ -107,23 +107,23 @@ where
     true
 }
 
-pub fn split_node<T>(nodeid: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
+pub fn split_node<T>(split_id: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    let node = nodes.nodes_map.get_mut(&nodeid).unwrap();
+    let node = nodes.nodes_map.get_mut(&split_id).unwrap();
     if !(node.content.len() > (order - 1) as usize) {
         return;
     } else {
         if node.root_flag {
-            split_root(nodeid, order, id, nodes)
+            split_root(split_id, order, id, nodes)
         } else {
-            split_not_root(nodeid, order, id, nodes)
+            split_not_root(split_id, order, id, nodes)
         }
     }
 }
 
-pub fn split_root<T>(rootid: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
+pub fn split_root<T>(split_id: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -135,7 +135,7 @@ where
     let mut root_node = Node::new_empty(id + 2);
 
     root_node.root_flag = true;
-    let node = nodes.nodes_map.get_mut(&rootid).unwrap();
+    let node = nodes.nodes_map.get_mut(&split_id).unwrap();
 
     root_node.content = node.content.split_off(middle as usize);
     right_node.content = root_node.content.split_off(1);
@@ -158,7 +158,7 @@ where
     );
 }
 
-pub fn split_not_root<T>(nodeid: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
+pub fn split_not_root<T>(split_id: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {

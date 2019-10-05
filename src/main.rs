@@ -11,7 +11,7 @@ fn main() {
         nodes_map: Default::default(),
         size: 0,
         root_id: 0,
-        index_id: 0
+        next_id: 0
     };
     let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 }, &mut nodes);
 

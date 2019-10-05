@@ -12,7 +12,7 @@ where
     pub nodes_map: HashMap<i32, Node<T>>,
     pub size: u32, //the number of nodes
     pub root_id: i32,
-    pub index_id: i32, //generate the index of new node
+    pub next_id: i32, //generate the index of new node
 }
 
 #[derive(Clone, Debug)]
@@ -36,7 +36,7 @@ impl MerkleBTree {
         nodes.nodes_map.insert(0, Node::new_empty(0));
         nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
 
-        nodes.index_id = nodes.index_id + 1;
+        nodes.next_id = nodes.next_id + 1;
         tree
     }
 
@@ -52,7 +52,7 @@ impl MerkleBTree {
         };
         nodes.nodes_map.insert(0, Node::new_node(value, 0));
         nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
-        nodes.index_id = nodes.index_id + 1;
+        nodes.next_id = nodes.next_id + 1;
         tree
     }
 
@@ -67,11 +67,9 @@ impl MerkleBTree {
                 .nodes_map
                 .insert(0, Node::new_node(value, self.rootid));
             nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
-            nodes.index_id = nodes.index_id + 1;
         } else {
             let a = self.rootid;
             node::insert(a, value, self.m, nodes.root_id, nodes);
-            nodes.index_id = nodes.index_id + 1;
         }
     }
 }
