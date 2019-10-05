@@ -98,7 +98,8 @@ where
             node.content.insert(t, value);
         }
         Err(e) => {
-            node.content.insert(e, value);
+            println!("try to find leaf: {}",*node.children_id.get(e).unwrap());
+            insert_into_leaf(*node.children_id.get(e).unwrap(), value, order, nodes);
         }
     }
     true
@@ -126,7 +127,7 @@ where
 {
     let middle = middle(order);
 
-    println!("should split");
+    println!("split root node");
     let mut left_node = Node::new_empty(nodes.next_id);
     let mut right_node = Node::new_empty(nodes.next_id + 1);
     let mut root_node = Node::new_empty(nodes.root_id);
@@ -148,6 +149,8 @@ where
 
     right_node.parent_id = root_node.node_id;
     left_node.parent_id = root_node.node_id;
+    root_node.children_id.push(left_node.node_id);
+    root_node.children_id.push(right_node.node_id);
 
     nodes.nodes_map.insert(nodes.next_id, left_node);
     nodes.nodes_map.insert(nodes.next_id + 1, right_node);
@@ -173,6 +176,9 @@ pub fn split_not_root<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
+    let middle = middle(order);
+    println!("split not root node");
+    let node = nodes.nodes_map.get_mut(&split_id).unwrap();
 
 }
 
