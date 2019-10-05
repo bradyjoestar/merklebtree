@@ -19,7 +19,7 @@ where
 pub struct MerkleBTree {
     pub empty: bool,
     pub rootid: i32,
-    pub m: u32,        // order (maximum number of children)
+    pub m: u32, // order (maximum number of children)
 }
 
 impl MerkleBTree {
@@ -29,12 +29,14 @@ impl MerkleBTree {
     {
         let mut tree = MerkleBTree {
             empty: true,
-            rootid: 0,
+            rootid: nodes.root_id,
             m: order,
         };
 
-        nodes.nodes_map.insert(0, Node::new_empty(0));
-        nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
+        nodes
+            .nodes_map
+            .insert(nodes.root_id, Node::new_empty(nodes.root_id));
+        nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
 
         nodes.next_id = nodes.next_id + 1;
         tree
@@ -47,11 +49,13 @@ impl MerkleBTree {
         println!("{:?}", value);
         let mut tree = MerkleBTree {
             empty: false,
-            rootid: 0,
+            rootid: nodes.root_id,
             m: order,
         };
-        nodes.nodes_map.insert(0, Node::new_node(value, 0));
-        nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
+        nodes
+            .nodes_map
+            .insert(nodes.root_id, Node::new_node(value, nodes.root_id));
+        nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
         nodes.next_id = nodes.next_id + 1;
         tree
     }
@@ -61,15 +65,17 @@ impl MerkleBTree {
         T: PartialEq + PartialOrd + Ord + Clone + Debug,
     {
         if self.empty {
-            self.rootid = 0;
+            //insert root node
+            self.rootid = nodes.root_id;
             self.empty = false;
             nodes
                 .nodes_map
-                .insert(0, Node::new_node(value, self.rootid));
-            nodes.nodes_map.get_mut(&0).unwrap().root_flag = true;
+                .insert(nodes.root_id, Node::new_node(value, self.rootid));
+            nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
+            nodes.next_id = nodes.next_id + 1;
         } else {
             let a = self.rootid;
-            node::insert(a, value, self.m, nodes.root_id, nodes);
+            node::insert(a, value, self.m, nodes);
         }
     }
 }

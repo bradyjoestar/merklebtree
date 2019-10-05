@@ -44,11 +44,11 @@ where
     }
 }
 
-pub fn is_leaf<T>(nodeid: i32, nodes: &mut Nodes<T>) -> bool
+pub fn is_leaf<T>(nodeid: i32, nodes: &Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    let node = nodes.nodes_map.get_mut(&nodeid).unwrap();
+    let node = nodes.nodes_map.get(&nodeid).unwrap();
     if node.children_id.len() == 0 {
         true
     } else {
@@ -56,18 +56,18 @@ where
     }
 }
 
-pub fn insert<T>(insert_id: i32, value: T, order: u32, id: i32, nodes: &mut Nodes<T>) -> bool
+pub fn insert<T>(insert_id: i32, value: T, order: u32, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     if is_leaf(insert_id, nodes) {
-        insert_into_leaf(insert_id, value, order, id, nodes)
+        insert_into_leaf(insert_id, value, order, nodes)
     } else {
-        insert_into_internal(insert_id, value, order, id, nodes)
+        insert_into_internal(insert_id, value, order, nodes)
     }
 }
 
-pub fn insert_into_leaf<T>(insert_id: i32, value: T, order: u32, id: i32, nodes: &mut Nodes<T>) -> bool
+pub fn insert_into_leaf<T>(insert_id: i32, value: T, order: u32, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -80,26 +80,23 @@ where
         }
         Err(e) => {
             node.content.insert(e, value);
-            split_node(insert_id, order, id, nodes);
+            split_node(insert_id, order, nodes);
         }
     }
     true
 }
 
-pub fn insert_into_internal<T>(
-    insert_id: i32,
-    value: T,
-    order: u32,
-    id: i32,
-    nodes: &mut Nodes<T>,
-) -> bool
+pub fn insert_into_internal<T>(insert_id: i32, value: T, order: u32, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
     let content_slice = node.content.as_slice();
     match content_slice.binary_search(&value) {
-        Ok(t) => {}
+        Ok(t) => {
+            node.content.remove(t);
+            node.content.insert(t, value);
+        }
         Err(e) => {
             node.content.insert(e, value);
         }
@@ -107,7 +104,7 @@ where
     true
 }
 
-pub fn split_node<T>(split_id: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
+pub fn split_node<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -116,23 +113,23 @@ where
         return;
     } else {
         if node.root_flag {
-            split_root(split_id, order, id, nodes)
+            split_root(split_id, order, nodes)
         } else {
-            split_not_root(split_id, order, id, nodes)
+            split_not_root(split_id, order, nodes)
         }
     }
 }
 
-pub fn split_root<T>(split_id: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
+pub fn split_root<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     let middle = middle(order);
 
     println!("should split");
-    let mut left_node = Node::new_empty(id);
-    let mut right_node = Node::new_empty(id + 1);
-    let mut root_node = Node::new_empty(id + 2);
+    let mut left_node = Node::new_empty(nodes.next_id);
+    let mut right_node = Node::new_empty(nodes.next_id + 1);
+    let mut root_node = Node::new_empty(nodes.root_id);
 
     root_node.root_flag = true;
     let node = nodes.nodes_map.get_mut(&split_id).unwrap();
@@ -141,24 +138,38 @@ where
     right_node.content = root_node.content.split_off(1);
     left_node.content = node.content.clone();
 
-    nodes.nodes_map.insert(id, left_node);
-    nodes.nodes_map.insert(id + 1, right_node);
-    nodes.nodes_map.insert(id + 2, root_node);
+    // Move children from the node to be split into left and right nodes
+    if !(node.children_id.len() == 0) {
+        right_node.children_id = node.children_id.split_off((middle + 1) as usize);
+        left_node.children_id = node.children_id.clone();
+        set_parent(&mut (left_node.children_id), left_node.node_id, nodes);
+        set_parent(&mut (right_node.children_id), right_node.node_id, nodes);
+    }
 
-    nodes.root_id = id + 2;
+    right_node.parent_id = root_node.node_id;
+    left_node.parent_id = root_node.node_id;
 
-    println!("left node:{:?}", nodes.nodes_map.get(&id).unwrap().content);
+    nodes.nodes_map.insert(nodes.next_id, left_node);
+    nodes.nodes_map.insert(nodes.next_id + 1, right_node);
+    nodes.nodes_map.insert(nodes.root_id, root_node);
+
+    nodes.next_id = nodes.next_id + 2;
+
+    println!(
+        "left node:{:?}",
+        nodes.nodes_map.get(&(nodes.next_id - 2)).unwrap().content
+    );
     println!(
         "right node: {:?}",
-        nodes.nodes_map.get(&(id + 1)).unwrap().content
+        nodes.nodes_map.get(&(nodes.next_id - 1)).unwrap().content
     );
     println!(
         "root node:{:?}",
-        nodes.nodes_map.get(&(id + 2)).unwrap().content
+        nodes.nodes_map.get(&(nodes.root_id)).unwrap().content
     );
 }
 
-pub fn split_not_root<T>(split_id: i32, order: u32, id: i32, nodes: &mut Nodes<T>)
+pub fn split_not_root<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -169,6 +180,13 @@ pub fn middle(order: u32) -> u32 {
     return (order - 1) / 2;
 }
 
-pub fn set_parent() -> bool {
+pub fn set_parent<T>(childrens: &mut Vec<i32>, parent_id: i32, nodes: &mut Nodes<T>) -> bool
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    for i in childrens {
+        let node = nodes.nodes_map.get_mut(&i).unwrap();
+        node.parent_id = parent_id;
+    }
     true
 }
