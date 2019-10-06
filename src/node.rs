@@ -240,7 +240,20 @@ where
     true
 }
 
-pub fn delete<T>(node_id: i32, index: i32, nodes: &mut Nodes<T>) -> bool
+pub fn delete<T>(node_id: i32, index: i32, nodes: &mut Nodes<T>) -> ()
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    let node = nodes.nodes_map.get_mut(&node_id).unwrap();
+
+    if node.children_id.len() == 0 {
+        let deleteItem  = node.content.remove(index as usize);
+        rebalance(node_id,deleteItem,nodes);
+        return ;
+    }
+}
+
+pub fn rebalance<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
