@@ -111,6 +111,7 @@ where
 {
     let node = nodes.nodes_map.get_mut(&split_id).unwrap();
     if !(node.content.len() > (order - 1) as usize) {
+        println!("needn't split");
         return;
     } else {
         if node.root_flag {
@@ -179,8 +180,10 @@ where
     let middle = middle(order);
     println!("split not root node");
     let mut node = nodes.nodes_map.remove(&split_id).unwrap();
+    println!("try to find error");
     let parent_id = node.parent_id;
     let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+    println!("try to find next error");
 
     let mut left_node = Node::new_empty(nodes.next_id);
     let mut right_node = Node::new_empty(nodes.next_id + 1);
@@ -196,6 +199,7 @@ where
         set_parent(&mut (left_node.children_id), left_node.node_id, nodes);
         set_parent(&mut (right_node.children_id), right_node.node_id, nodes);
     }
+    println!("try to find the third error");
 
     // Insert middle key into parent
     let content_slice = parent_node.content.as_slice();
@@ -205,7 +209,15 @@ where
             parent_node.content.insert(e, value);
             parent_node.children_id.insert(e,left_node.node_id);
             parent_node.children_id.insert(e+1,right_node.node_id);
-            nodes.nodes_map.insert(parent_node.parent_id, parent_node);
+
+
+            println!("parent_node: node id,{}",parent_node.node_id);
+            nodes.nodes_map.insert(parent_node.node_id, parent_node);
+            nodes.nodes_map.insert(nodes.next_id, left_node);
+            nodes.nodes_map.insert(nodes.next_id + 1, right_node);
+
+            nodes.next_id = nodes.next_id + 2;
+            println!("try to find the fourth error");
             split_node(parent_id, order, nodes);
         }
         _ => {}

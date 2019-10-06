@@ -15,7 +15,7 @@ fn main() {
     };
     let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 }, &mut nodes);
 
-    for i in 0..5 {
+    for i in 0..7 {
         let item = Item { key: i, value: i };
         tree.put(item, &mut nodes);
     }
@@ -32,7 +32,21 @@ fn main() {
         }
     }
 
-    let node = nodes.nodes_map.get_mut(&2).unwrap();
+    println!("-----------------------------------");
+    let node = nodes.nodes_map.get_mut(&3).unwrap();
+
+    match node.get_content() {
+        None => println!("no data in the node"),
+        Some(T) => {
+            println!("have data in the node");
+            for i in T.iter() {
+                println!("data is {:?}", i);
+            }
+        }
+    }
+
+    println!("-----------------------------------");
+    let node = nodes.nodes_map.get_mut(&4).unwrap();
 
     match node.get_content() {
         None => println!("no data in the node"),
@@ -45,6 +59,7 @@ fn main() {
     }
 
     tree.put(Item { key: 0, value: 1 }, &mut nodes);
+    println!("-----------------------------------");
     let node = nodes.nodes_map.get_mut(&1).unwrap();
 
     match node.get_content() {
