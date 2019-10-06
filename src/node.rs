@@ -158,6 +158,7 @@ where
     nodes.nodes_map.insert(nodes.root_id, root_node);
 
     nodes.next_id = nodes.next_id + 2;
+    nodes.size = nodes.size + 2;
 
     println!(
         "left node:{:?}",
@@ -216,6 +217,7 @@ where
             nodes.nodes_map.insert(nodes.next_id + 1, right_node);
 
             nodes.next_id = nodes.next_id + 2;
+            nodes.size = nodes.size + 1;
             println!("try to find the fourth error");
             split_node(parent_id, order, nodes);
         }
@@ -235,5 +237,12 @@ where
         let node = nodes.nodes_map.get_mut(&i).unwrap();
         node.parent_id = parent_id;
     }
+    true
+}
+
+pub fn delete<T>(node_id: i32, index: i32, nodes: &mut Nodes<T>) -> bool
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
     true
 }

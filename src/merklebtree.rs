@@ -17,7 +17,6 @@ where
 
 #[derive(Clone, Debug)]
 pub struct MerkleBTree {
-    pub empty: bool,
     pub rootid: i32,
     pub m: u32, // order (maximum number of children)
 }
@@ -28,7 +27,6 @@ impl MerkleBTree {
         T: PartialEq + PartialOrd + Ord + Clone + Debug,
     {
         let mut tree = MerkleBTree {
-            empty: true,
             rootid: nodes.root_id,
             m: order,
         };
@@ -39,6 +37,7 @@ impl MerkleBTree {
         nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
 
         nodes.next_id = nodes.next_id + 1;
+        nodes.size = nodes.size + 1;
         tree
     }
 
@@ -48,7 +47,6 @@ impl MerkleBTree {
     {
         println!("{:?}", value);
         let mut tree = MerkleBTree {
-            empty: false,
             rootid: nodes.root_id,
             m: order,
         };
@@ -57,6 +55,7 @@ impl MerkleBTree {
             .insert(nodes.root_id, Node::new_node(value, nodes.root_id));
         nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
         nodes.next_id = nodes.next_id + 1;
+        nodes.size = nodes.size + 1;
         tree
     }
 
@@ -64,15 +63,15 @@ impl MerkleBTree {
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug,
     {
-        if self.empty {
+        if nodes.size == 0 {
             //insert root node
             self.rootid = nodes.root_id;
-            self.empty = false;
             nodes
                 .nodes_map
                 .insert(nodes.root_id, Node::new_node(value, self.rootid));
             nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
             nodes.next_id = nodes.next_id + 1;
+            nodes.size = nodes.size + 1;
         } else {
             let a = self.rootid;
             node::insert(a, value, self.m, nodes);
@@ -88,6 +87,10 @@ impl MerkleBTree {
             "search_node_id:{},index:{},found:{}",
             search_node_id, index, found
         );
+        if found {
+            println!("try to remove node");
+            node::delete(search_node_id, index, nodes);
+        }
     }
 
     pub fn searchRecursively<T>(
@@ -99,7 +102,7 @@ impl MerkleBTree {
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug,
     {
-        if self.empty {
+        if nodes.size == 0 {
             return (-1, -1, false);
         }
         loop {

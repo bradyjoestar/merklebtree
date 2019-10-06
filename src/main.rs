@@ -18,6 +18,7 @@ fn main() {
     for i in 0..7 {
         let item = Item { key: i, value: i };
         tree.put(item, &mut nodes);
+        println!("total node:{}", nodes.size);
     }
 
     println!("-----------------------------------");
