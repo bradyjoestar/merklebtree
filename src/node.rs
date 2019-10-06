@@ -207,11 +207,10 @@ where
     match content_slice.binary_search(&value) {
         Err(e) => {
             parent_node.content.insert(e, value);
-            parent_node.children_id.insert(e,left_node.node_id);
-            parent_node.children_id.insert(e+1,right_node.node_id);
+            parent_node.children_id.insert(e, left_node.node_id);
+            parent_node.children_id.insert(e + 1, right_node.node_id);
 
-
-            println!("parent_node: node id,{}",parent_node.node_id);
+            println!("parent_node: node id,{}", parent_node.node_id);
             nodes.nodes_map.insert(parent_node.node_id, parent_node);
             nodes.nodes_map.insert(nodes.next_id, left_node);
             nodes.nodes_map.insert(nodes.next_id + 1, right_node);
@@ -222,7 +221,6 @@ where
         }
         _ => {}
     }
-
 }
 
 pub fn middle(order: u32) -> u32 {

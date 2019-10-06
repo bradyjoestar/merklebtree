@@ -20,11 +20,13 @@ fn main() {
         tree.put(item, &mut nodes);
     }
 
+    println!("-----------------------------------");
     let node = nodes.nodes_map.get_mut(&nodes.root_id).unwrap();
 
     match node.get_content() {
         None => println!("no data in the root"),
         Some(T) => {
+            println!("nodeid:{}", nodes.root_id);
             println!("have data in the root");
             for i in T.iter() {
                 println!("data is {:?}", i);
@@ -38,6 +40,7 @@ fn main() {
     match node.get_content() {
         None => println!("no data in the node"),
         Some(T) => {
+            println!("nodeid:{}", 3);
             println!("have data in the node");
             for i in T.iter() {
                 println!("data is {:?}", i);
@@ -51,6 +54,7 @@ fn main() {
     match node.get_content() {
         None => println!("no data in the node"),
         Some(T) => {
+            println!("nodeid:{}", 4);
             println!("have data in the node");
             for i in T.iter() {
                 println!("data is {:?}", i);
@@ -65,10 +69,14 @@ fn main() {
     match node.get_content() {
         None => println!("no data in the node"),
         Some(T) => {
+            println!("nodeid:{}", 1);
             println!("have data in the node");
             for i in T.iter() {
                 println!("data is {:?}", i);
             }
         }
     }
+
+    println!("--------------remove the node---------------------");
+    tree.remove(nodes.root_id, Item { key: 0, value: 1 }, &mut nodes);
 }

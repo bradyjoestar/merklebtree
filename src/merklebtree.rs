@@ -78,4 +78,46 @@ impl MerkleBTree {
             node::insert(a, value, self.m, nodes);
         }
     }
+
+    pub fn remove<T>(&mut self, start_node_id: i32, value: T, nodes: &mut Nodes<T>) -> ()
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    {
+        let (search_node_id, index, found) = self.searchRecursively(start_node_id, value, nodes);
+        println!(
+            "search_node_id:{},index:{},found:{}",
+            search_node_id, index, found
+        );
+    }
+
+    pub fn searchRecursively<T>(
+        &mut self,
+        mut start_node_id: i32,
+        value: T,
+        nodes: &mut Nodes<T>,
+    ) -> (i32, i32, bool)
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    {
+        if self.empty {
+            return (-1, -1, false);
+        }
+        loop {
+            let node = nodes.nodes_map.get_mut(&start_node_id).unwrap();
+            let content_slice = node.content.as_slice();
+            match content_slice.binary_search(&value) {
+                Ok(t) => {
+                    println!("found");
+                    return (node.node_id, t as i32, true);
+                }
+                Err(e) => {
+                    println!("not found");
+                    if node.children_id.len() == 0 {
+                        return (-1, -1, false);
+                    }
+                    start_node_id = *node.children_id.get(e).unwrap();
+                }
+            }
+        }
+    }
 }
