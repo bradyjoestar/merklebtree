@@ -98,7 +98,7 @@ where
             node.content.insert(t, value);
         }
         Err(e) => {
-            println!("try to find leaf: {}",*node.children_id.get(e).unwrap());
+            println!("try to find leaf: {}", *node.children_id.get(e).unwrap());
             insert_into_leaf(*node.children_id.get(e).unwrap(), value, order, nodes);
         }
     }
@@ -178,7 +178,38 @@ where
 {
     let middle = middle(order);
     println!("split not root node");
-    let node = nodes.nodes_map.get_mut(&split_id).unwrap();
+    let mut node = nodes.nodes_map.remove(&split_id).unwrap();
+    let parent_id = node.parent_id;
+    let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+
+    let mut left_node = Node::new_empty(nodes.next_id);
+    let mut right_node = Node::new_empty(nodes.next_id + 1);
+    let mut medium_node = Node::new_empty(nodes.root_id);
+
+    medium_node.content = node.content.split_off(middle as usize);
+    right_node.content = medium_node.content.split_off(1);
+    left_node.content = node.content.clone();
+
+    if !(node.children_id.len() == 0) {
+        right_node.children_id = node.children_id.split_off((middle + 1) as usize);
+        left_node.children_id = node.children_id.clone();
+        set_parent(&mut (left_node.children_id), left_node.node_id, nodes);
+        set_parent(&mut (right_node.children_id), right_node.node_id, nodes);
+    }
+
+    // Insert middle key into parent
+    let content_slice = parent_node.content.as_slice();
+    let value = medium_node.content.remove(0);
+    match content_slice.binary_search(&value) {
+        Err(e) => {
+            parent_node.content.insert(e, value);
+            parent_node.children_id.insert(e,left_node.node_id);
+            parent_node.children_id.insert(e+1,right_node.node_id);
+            nodes.nodes_map.insert(parent_node.parent_id, parent_node);
+            split_node(parent_id, order, nodes);
+        }
+        _ => {}
+    }
 
 }
 

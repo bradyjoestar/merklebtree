@@ -44,7 +44,7 @@ fn main() {
         }
     }
 
-    tree.put(Item{key:0,value:1},&mut nodes);
+    tree.put(Item { key: 0, value: 1 }, &mut nodes);
     let node = nodes.nodes_map.get_mut(&1).unwrap();
 
     match node.get_content() {
