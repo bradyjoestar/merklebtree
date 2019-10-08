@@ -244,17 +244,30 @@ pub fn delete<T>(node_id: i32, index: i32, nodes: &mut Nodes<T>) -> ()
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    let node = nodes.nodes_map.get_mut(&node_id).unwrap();
+    let mut node = nodes.nodes_map.remove(&node_id).unwrap();
 
     // deleting from a leaf node
     if node.children_id.len() == 0 {
-        let deleteItem  = node.content.remove(index as usize);
-        rebalance(node_id,deleteItem,nodes);
-        return ;
+        let deleteItem = node.content.remove(index as usize);
+        nodes.nodes_map.insert(node_id, node);
+        rebalance(node_id, deleteItem, nodes);
+        return;
     }
     // deleting from an internal node
-    let leftLargestNode = right(*node.children_id.get(index as usize).unwrap(),nodes); // largest node in the left sub-tree (assumed to exist)
-    println!("{}",leftLargestNode);
+    let leftLargestNodeId = right(*node.children_id.get_mut(index as usize).unwrap(), nodes); // largest node in the left sub-tree (assumed to exist)
+    println!("{}", leftLargestNodeId);
+    let mut leftLargestNode = nodes.nodes_map.remove(&leftLargestNodeId).unwrap();
+    let leftLargestContentIndex = leftLargestNode.content.len() - 1;
+
+    node.content.remove(index as usize);
+    let deleteItem = leftLargestNode.content.remove(leftLargestContentIndex);
+    let deleteItemClone = deleteItem.clone();
+    node.content.insert(index as usize, deleteItem);
+
+    nodes.nodes_map.insert(node_id, node);
+    nodes.nodes_map.insert(leftLargestNodeId, leftLargestNode);
+
+    rebalance(leftLargestNodeId, deleteItemClone, nodes);
 }
 
 pub fn rebalance<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> bool
@@ -264,8 +277,26 @@ where
     true
 }
 
-fn right<T>(node_id:i32,nodes:&mut Nodes<T>) -> i32
-    where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,{
-    -1
+fn right<T>(mut node_id: i32, nodes: &mut Nodes<T>) -> i32
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    if nodes.size == 0 {
+        return -1;
+    }
+    if nodes.size == 1 {
+        let root_node = nodes.nodes_map.get_mut(&node_id).unwrap();
+        if root_node.content.len() == 0 {
+            return -1;
+        }
+    }
+
+    loop {
+        let node = nodes.nodes_map.get(&node_id).unwrap();
+        if is_leaf(node_id, nodes) {
+            return node_id;
+        }
+
+        node_id = *node.children_id.last().unwrap();
+    }
 }
