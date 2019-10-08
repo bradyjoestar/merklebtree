@@ -274,21 +274,128 @@ pub fn rebalance<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    let node = nodes.nodes_map.get_mut(&node_id).unwrap();
+    let mut node = nodes.nodes_map.get(&node_id).unwrap();
+    let parent_id = node.parent_id;
     // check if rebalancing is needed
     if node.content.len() >= minContents(nodes) as usize {
         println!("min contents:{}", minContents(nodes));
         println!("needn't to rebalance");
-    } else {
-        println!("need to rebalance, deletedItem  is :{:?}", value);
+        return false;
     }
+
+    println!("need to rebalance, deletedItem  is :{:?}", value);
+
+    let (left_sibling_id, left_sibling_index) = leftSibling(node_id, &value, nodes);
+
+    if left_sibling_id != -1 {
+        let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
+        let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
+        let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+        println!("{},{}", left_sibling_id, left_sibling_index);
+        println!("{}", minContents(nodes));
+        println!("{}", left_sibling_node.content.len());
+        if left_sibling_node.content.len() > minContents(nodes) as usize {
+            let sibling_data = left_sibling_node.content.pop().unwrap();
+            let parent_data = parent_node
+                .content
+                .remove((left_sibling_index - 1) as usize);
+            delete_node.content.insert(0, parent_data);
+            parent_node
+                .content
+                .insert(left_sibling_index as usize, sibling_data);
+
+            nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+
+            if !is_leaf(left_sibling_id, nodes) {
+                let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
+                let left_sibling_left_most_child_id = left_sibling_node.children_id.pop().unwrap();
+                let mut left_sibling_left_most_child_node = nodes
+                    .nodes_map
+                    .remove(&left_sibling_left_most_child_id)
+                    .unwrap();
+                left_sibling_left_most_child_node.parent_id = node_id;
+                delete_node
+                    .children_id
+                    .insert(0, left_sibling_left_most_child_id);
+
+                nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+                nodes.nodes_map.insert(
+                    left_sibling_left_most_child_id,
+                    left_sibling_left_most_child_node,
+                );
+            }
+
+            nodes.nodes_map.insert(parent_id, parent_node);
+            nodes.nodes_map.insert(node_id, delete_node);
+
+            return true;
+        }
+
+        nodes.nodes_map.insert(parent_id, parent_node);
+        nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+        nodes.nodes_map.insert(node_id, delete_node);
+    }
+
+    let (right_sibling_id, right_sibling_index) = rightSibling(node_id, &value, nodes);
+    if right_sibling_id != -1 {
+        let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
+        let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
+        let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+
+        println!("{},{}", right_sibling_id, right_sibling_index);
+        println!("{}", minContents(nodes));
+        println!("{}", right_sibling_node.content.len());
+        if right_sibling_node.content.len() > minContents(nodes) as usize {
+            let sibling_data = right_sibling_node.content.remove(0);
+            let parent_data = parent_node
+                .content
+                .remove((right_sibling_index - 1) as usize);
+            delete_node.content.push(parent_data);
+            parent_node
+                .content
+                .insert((right_sibling_index - 1) as usize, sibling_data);
+
+            nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+
+            if !is_leaf(right_sibling_id, nodes) {
+                let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
+                let right_sibling_left_most_child_id =
+                    right_sibling_node.children_id.remove(0 as usize);
+                let mut right_sibling_left_most_child_node = nodes
+                    .nodes_map
+                    .remove(&right_sibling_left_most_child_id)
+                    .unwrap();
+                right_sibling_left_most_child_node.parent_id = node_id;
+                delete_node
+                    .children_id
+                    .push(right_sibling_left_most_child_id);
+                nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+                nodes.nodes_map.insert(
+                    right_sibling_left_most_child_id,
+                    right_sibling_left_most_child_node,
+                );
+            }
+
+            nodes.nodes_map.insert(parent_id, parent_node);
+            nodes.nodes_map.insert(node_id, delete_node);
+            return true;
+        }
+        nodes.nodes_map.insert(parent_id, parent_node);
+        nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+        nodes.nodes_map.insert(node_id, delete_node);
+    }
+
+    // merge with siblings
+    if right_sibling_id != -1 {}
+
+    if left_sibling_id != -1 {}
 
     true
 }
 
 // leftSibling returns the node's left sibling and child index (in parent) if it exists, otherwise (-1,-1)
 // key is any of keys in node (could even be deleted).
-pub fn leftSibling<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> (i32, i32)
+pub fn leftSibling<T>(node_id: i32, value: &T, nodes: &mut Nodes<T>) -> (i32, i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -297,7 +404,7 @@ where
     if parent_id != -1 {
         let parent_node = nodes.nodes_map.get_mut(&parent_id).unwrap();
         let content_slice = parent_node.content.as_slice();
-        match content_slice.binary_search(&value) {
+        match content_slice.binary_search(value) {
             Ok(t) => {}
             Err(e) => {
                 let index = e as i32 - 1;
@@ -312,18 +419,16 @@ where
 
 // rightSibling returns the node's right sibling and child index (in parent) if it exists, otherwise (-1,-1)
 // key is any of keys in node (could even be deleted).
-pub fn rightSibling<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> (i32, i32)
+pub fn rightSibling<T>(node_id: i32, value: &T, nodes: &mut Nodes<T>) -> (i32, i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-
     let node = nodes.nodes_map.get_mut(&node_id).unwrap();
     let parent_id = node.parent_id;
-
     if parent_id != -1 {
         let parent_node = nodes.nodes_map.get_mut(&parent_id).unwrap();
         let content_slice = parent_node.content.as_slice();
-        match content_slice.binary_search(&value) {
+        match content_slice.binary_search(value) {
             Ok(t) => {}
             Err(e) => {
                 let index = e as i32 + 1;
@@ -333,7 +438,6 @@ where
             }
         }
     }
-
     (-1, -1)
 }
 
@@ -361,28 +465,28 @@ where
     }
 }
 
-fn minChildren<T>(nodes: &mut Nodes<T>) -> i32
+fn minChildren<T>(nodes: &Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     return ((nodes.m + 1) / 2) as i32; // ceil(m/2)
 }
 
-fn minContents<T>(nodes: &mut Nodes<T>) -> i32
+fn minContents<T>(nodes: &Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     return minChildren(nodes) - 1;
 }
 
-fn maxChildren<T>(nodes: &mut Nodes<T>) -> i32
+fn maxChildren<T>(nodes: &Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     return nodes.m as i32;
 }
 
-fn maxContents<T>(nodes: &mut Nodes<T>) -> i32
+fn maxContents<T>(nodes: &Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
