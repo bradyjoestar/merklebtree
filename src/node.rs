@@ -270,7 +270,7 @@ where
     rebalance(leftLargestNodeId, deleteItemClone, nodes);
 }
 
-pub fn rebalance<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> bool
+pub fn rebalance<T>(node_id: i32, mut value: T, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -386,11 +386,67 @@ where
     }
 
     // merge with siblings
-    if right_sibling_id != -1 {}
+    if right_sibling_id != -1 {
+        // merge with right sibling
+        let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
+        let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+        let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
 
-    if left_sibling_id != -1 {}
+        let parent_data = parent_node
+            .content
+            .remove((right_sibling_index - 1) as usize);
+        value = parent_data.clone();
+        delete_node.content.push(parent_data);
+        for i in 0..right_sibling_node.content.len() {
+            let right_sibling_node_data = right_sibling_node.content.remove(i);
+            delete_node.content.push(right_sibling_node_data);
+        }
 
-    true
+        for i in 0..right_sibling_node.children_id.len() {
+            delete_node.children_id.push(i as i32)
+        }
+        set_parent(&mut (right_sibling_node.children_id), node_id, nodes);
+        parent_node.children_id.remove(right_sibling_index as usize);
+
+        nodes.nodes_map.insert(parent_id, parent_node);
+        nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+        nodes.nodes_map.insert(node_id, delete_node);
+        nodes.size = nodes.size - 1;
+    } else if left_sibling_id != -1 {
+        // merge with left sibling
+        let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
+        let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+        let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
+
+        let parent_data = parent_node.content.remove((left_sibling_index) as usize);
+        value = parent_data.clone();
+        delete_node.content.insert(0, parent_data);
+
+        for i in 0..left_sibling_node.content.len() {
+            delete_node
+                .content
+                .insert(0, left_sibling_node.content.pop().unwrap())
+        }
+
+        parent_node.children_id.remove(left_sibling_index as usize);
+
+        for i in 0..left_sibling_node.children_id.len() {
+            delete_node.children_id.insert(0, i as i32)
+        }
+        set_parent(&mut (left_sibling_node.children_id), node_id, nodes);
+
+        nodes.nodes_map.insert(parent_id, parent_node);
+        nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+        nodes.nodes_map.insert(node_id, delete_node);
+        nodes.size = nodes.size - 1;
+    }
+
+    let parent_node = nodes.nodes_map.get(&node_id).unwrap();
+    if parent_id == 0 && parent_node.content.len() == 0 {
+        return false;
+    }
+
+    return rebalance(parent_id, value, nodes);
 }
 
 // leftSibling returns the node's left sibling and child index (in parent) if it exists, otherwise (-1,-1)
