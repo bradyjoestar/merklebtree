@@ -246,11 +246,15 @@ where
 {
     let node = nodes.nodes_map.get_mut(&node_id).unwrap();
 
+    // deleting from a leaf node
     if node.children_id.len() == 0 {
         let deleteItem  = node.content.remove(index as usize);
         rebalance(node_id,deleteItem,nodes);
         return ;
     }
+    // deleting from an internal node
+    let leftLargestNode = right(*node.children_id.get(index as usize).unwrap(),nodes); // largest node in the left sub-tree (assumed to exist)
+    println!("{}",leftLargestNode);
 }
 
 pub fn rebalance<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> bool
@@ -258,4 +262,10 @@ where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     true
+}
+
+fn right<T>(node_id:i32,nodes:&mut Nodes<T>) -> i32
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug,{
+    -1
 }

@@ -78,11 +78,28 @@ fn main() {
         }
     }
 
-    println!("--------------remove the node---------------------");
+    println!("--------------remove the content from leaf node---------------------");
     tree.remove(nodes.root_id, Item { key: 0, value: 1 }, &mut nodes);
 
     println!("-----------------------------------");
     let node = nodes.nodes_map.get_mut(&1).unwrap();
+
+    match node.get_content() {
+        None => println!("no data in the node"),
+        Some(T) => {
+            println!("nodeid:{}", 1);
+            println!("have data in the node");
+            for i in T.iter() {
+                println!("data is {:?}", i);
+            }
+        }
+    }
+
+    println!("--------------remove the content from internal node---------------------");
+    tree.remove(nodes.root_id, Item { key: 2, value: 2 }, &mut nodes);
+
+    println!("-----------------------------------");
+    let node = nodes.nodes_map.get_mut(&0).unwrap();
 
     match node.get_content() {
         None => println!("no data in the node"),
