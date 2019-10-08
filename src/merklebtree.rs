@@ -16,6 +16,23 @@ where
     pub m: u32,       // order (maximum number of children)
 }
 
+impl<T> Nodes<T>
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    pub fn iterator(&self) -> Vec<Vec<i32>> {
+        let mut a = Vec::new();
+
+        let b: Vec<i32> = Vec::new();
+
+        println!("println nodes");
+
+        a.push(b);
+
+        a
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct MerkleBTree {
     pub rootid: i32,
