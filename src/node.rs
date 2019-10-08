@@ -274,7 +274,67 @@ pub fn rebalance<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
+    let node = nodes.nodes_map.get_mut(&node_id).unwrap();
+    // check if rebalancing is needed
+    if node.content.len() >= minContents(nodes) as usize {
+        println!("min contents:{}", minContents(nodes));
+        println!("needn't to rebalance");
+    } else {
+        println!("need to rebalance, deletedItem  is :{:?}", value);
+    }
+
     true
+}
+
+// leftSibling returns the node's left sibling and child index (in parent) if it exists, otherwise (-1,-1)
+// key is any of keys in node (could even be deleted).
+pub fn leftSibling<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> (i32, i32)
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    let node = nodes.nodes_map.get_mut(&node_id).unwrap();
+    let parent_id = node.parent_id;
+    if parent_id != -1 {
+        let parent_node = nodes.nodes_map.get_mut(&parent_id).unwrap();
+        let content_slice = parent_node.content.as_slice();
+        match content_slice.binary_search(&value) {
+            Ok(t) => {}
+            Err(e) => {
+                let index = e as i32 - 1;
+                if index >= 0 && index < parent_node.children_id.len() as i32 {
+                    return (*parent_node.children_id.get(index as usize).unwrap(), index);
+                }
+            }
+        }
+    }
+    (-1, -1)
+}
+
+// rightSibling returns the node's right sibling and child index (in parent) if it exists, otherwise (-1,-1)
+// key is any of keys in node (could even be deleted).
+pub fn rightSibling<T>(node_id: i32, value: T, nodes: &mut Nodes<T>) -> (i32, i32)
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+
+    let node = nodes.nodes_map.get_mut(&node_id).unwrap();
+    let parent_id = node.parent_id;
+
+    if parent_id != -1 {
+        let parent_node = nodes.nodes_map.get_mut(&parent_id).unwrap();
+        let content_slice = parent_node.content.as_slice();
+        match content_slice.binary_search(&value) {
+            Ok(t) => {}
+            Err(e) => {
+                let index = e as i32 + 1;
+                if index < parent_node.children_id.len() as i32 {
+                    return (*parent_node.children_id.get(index as usize).unwrap(), index);
+                }
+            }
+        }
+    }
+
+    (-1, -1)
 }
 
 fn right<T>(mut node_id: i32, nodes: &mut Nodes<T>) -> i32
@@ -299,4 +359,32 @@ where
 
         node_id = *node.children_id.last().unwrap();
     }
+}
+
+fn minChildren<T>(nodes: &mut Nodes<T>) -> i32
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    return ((nodes.m + 1) / 2) as i32; // ceil(m/2)
+}
+
+fn minContents<T>(nodes: &mut Nodes<T>) -> i32
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    return minChildren(nodes) - 1;
+}
+
+fn maxChildren<T>(nodes: &mut Nodes<T>) -> i32
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    return nodes.m as i32;
+}
+
+fn maxContents<T>(nodes: &mut Nodes<T>) -> i32
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    return maxChildren(nodes) - 1;
 }

@@ -13,6 +13,7 @@ where
     pub size: u32, //the number of nodes
     pub root_id: i32,
     pub next_id: i32, //generate the index of new node
+    pub m: u32,       // order (maximum number of children)
 }
 
 #[derive(Clone, Debug)]
@@ -74,7 +75,7 @@ impl MerkleBTree {
             nodes.size = nodes.size + 1;
         } else {
             let a = self.rootid;
-            node::insert(a, value, self.m, nodes);
+            node::insert(a, value, nodes.m, nodes);
         }
     }
 

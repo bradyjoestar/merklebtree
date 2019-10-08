@@ -12,8 +12,11 @@ fn main() {
         size: 0,
         root_id: 0,
         next_id: 0,
+        m: 0,
     };
     let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 }, &mut nodes);
+
+    nodes.m = tree.m;
 
     for i in 0..7 {
         let item = Item { key: i, value: i };
@@ -78,23 +81,6 @@ fn main() {
         }
     }
 
-//    println!("--------------remove the content from leaf node---------------------");
-    //    tree.remove(nodes.root_id, Item { key: 0, value: 1 }, &mut nodes);
-    //
-    //    println!("-----------------------------------");
-    //    let node = nodes.nodes_map.get_mut(&1).unwrap();
-    //
-    //    match node.get_content() {
-    //        None => println!("no data in the node"),
-    //        Some(T) => {
-    //            println!("nodeid:{}", 1);
-    //            println!("have data in the node");
-    //            for i in T.iter() {
-    //                println!("data is {:?}", i);
-    //            }
-    //        }
-    //    }
-
     println!("--------------remove the content from internal node---------------------");
     tree.remove(nodes.root_id, Item { key: 2, value: 2 }, &mut nodes);
 
@@ -112,6 +98,23 @@ fn main() {
         }
     }
 
+    let node = nodes.nodes_map.get_mut(&1).unwrap();
+
+    match node.get_content() {
+        None => println!("no data in the node"),
+        Some(T) => {
+            println!("nodeid:{}", 1);
+            println!("have data in the node");
+            for i in T.iter() {
+                println!("data is {:?}", i);
+            }
+        }
+    }
+
+    println!("--------------remove the content from leaf node---------------------");
+    tree.remove(nodes.root_id, Item { key: 0, value: 1 }, &mut nodes);
+
+    println!("-----------------------------------");
     let node = nodes.nodes_map.get_mut(&1).unwrap();
 
     match node.get_content() {
