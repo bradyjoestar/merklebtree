@@ -20,10 +20,10 @@ impl<T> Nodes<T>
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    pub fn iterator(&self) -> Vec<Vec<i32>> {
+    pub fn iterator(&self) -> Vec<Vec<Node<T>>> {
         let mut a = Vec::new();
 
-        let b: Vec<i32> = Vec::new();
+        let b: Vec<Node<T>> = Vec::new();
 
         println!("println nodes");
 

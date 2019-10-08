@@ -108,5 +108,5 @@ where
     }
     println!("****************************************************");
 
-    nodes.println_nodes();
+    nodes.iterator();
 }
