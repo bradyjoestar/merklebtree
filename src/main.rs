@@ -20,7 +20,7 @@ fn main() {
 
     nodes.m = tree.m;
 
-    for i in 1..50 {
+    for i in 1..21 {
         let item = Item2 { key: i };
         tree.put(item, &mut nodes);
         println!("total node:{}", nodes.size);
@@ -28,19 +28,19 @@ fn main() {
 
     nodes.iterator();
 
-    let item = Item2 { key: 50 };
+    let item = Item2 { key: 21 };
     tree.put(item, &mut nodes);
     nodes.iterator();
 
     //    println!("--------------remove the content from internal node---------------------");
-    //    tree.remove(nodes.root_id, Item2 { key: 2 }, &mut nodes);
+    //    tree.remove(nodes.root_id, Item2 { key: 21 }, &mut nodes);
     //
     //    nodes.iterator();
     //
-    //    println!("--------------remove the content from leaf node---------------------");
-    //    tree.remove(nodes.root_id, Item2 { key: 0 }, &mut nodes);
-    //
-    //    nodes.iterator();
+    println!("--------------remove the content from leaf node---------------------");
+    tree.remove(nodes.root_id, Item2 { key: 15 }, &mut nodes);
+
+    nodes.iterator();
 }
 
 fn test1() {

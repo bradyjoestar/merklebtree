@@ -98,7 +98,6 @@ where
             node.content.insert(t, value);
         }
         Err(e) => {
-            println!("continute to insert: {}", *node.children_id.get(e).unwrap());
             insert(*node.children_id.get(e).unwrap(), value, order, nodes);
         }
     }
@@ -111,7 +110,6 @@ where
 {
     let node = nodes.nodes_map.get_mut(&split_id).unwrap();
     if !(node.content.len() > (order - 1) as usize) {
-        println!("needn't split");
         return;
     } else {
         if node.root_flag {
@@ -128,7 +126,6 @@ where
 {
     let middle = middle(order);
 
-    println!("split root node");
     let mut left_node = Node::new_empty(nodes.next_id);
     let mut right_node = Node::new_empty(nodes.next_id + 1);
     let mut root_node = Node::new_empty(nodes.root_id);
@@ -179,12 +176,9 @@ where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
     let middle = middle(order);
-    println!("split not root node");
     let mut node = nodes.nodes_map.remove(&split_id).unwrap();
-    println!("try to find error");
     let parent_id = node.parent_id;
     let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
-    println!("try to find next error");
 
     //remove index of split_node in parent
     for i in 0..parent_node.children_id.len() {
@@ -210,7 +204,6 @@ where
         set_parent(&mut (left_node.children_id), left_node.node_id, nodes);
         set_parent(&mut (right_node.children_id), right_node.node_id, nodes);
     }
-    println!("try to find the third error");
 
     // Insert middle key into parent
     let content_slice = parent_node.content.as_slice();
@@ -228,7 +221,6 @@ where
 
             nodes.next_id = nodes.next_id + 2;
             nodes.size = nodes.size + 1;
-            println!("try to find the fourth error");
             split_node(parent_id, order, nodes);
         }
         _ => {}
@@ -265,7 +257,6 @@ where
     }
     // deleting from an internal node
     let leftLargestNodeId = right(*node.children_id.get_mut(index as usize).unwrap(), nodes); // largest node in the left sub-tree (assumed to exist)
-    println!("{}", leftLargestNodeId);
     let mut leftLargestNode = nodes.nodes_map.remove(&leftLargestNodeId).unwrap();
     let leftLargestContentIndex = leftLargestNode.content.len() - 1;
 
@@ -296,7 +287,6 @@ where
     println!("need to rebalance, deletedItem  is :{:?}", value);
 
     let (left_sibling_id, left_sibling_index) = leftSibling(node_id, &value, nodes);
-
     if left_sibling_id != -1 {
         let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
@@ -347,6 +337,7 @@ where
     }
 
     let (right_sibling_id, right_sibling_index) = rightSibling(node_id, &value, nodes);
+    println!("{},{}", right_sibling_id, right_sibling_index);
     if right_sibling_id != -1 {
         let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
@@ -471,12 +462,13 @@ where
         let parent_node = nodes.nodes_map.get_mut(&parent_id).unwrap();
         let content_slice = parent_node.content.as_slice();
         match content_slice.binary_search(value) {
-            Ok(t) => {}
-            Err(e) => {
-                let index = e as i32 - 1;
+            Ok(t) => {
+                let index = t as i32 - 1;
                 if index >= 0 && index < parent_node.children_id.len() as i32 {
                     return (*parent_node.children_id.get(index as usize).unwrap(), index);
                 }
+            }
+            Err(e) => {
             }
         }
     }
@@ -495,12 +487,13 @@ where
         let parent_node = nodes.nodes_map.get_mut(&parent_id).unwrap();
         let content_slice = parent_node.content.as_slice();
         match content_slice.binary_search(value) {
-            Ok(t) => {}
-            Err(e) => {
-                let index = e as i32 + 1;
+            Ok(mut t) => {
+                let index = t as i32 + 1;
                 if index < parent_node.children_id.len() as i32 {
                     return (*parent_node.children_id.get(index as usize).unwrap(), index);
                 }
+            }
+            Err(e) => {
             }
         }
     }
