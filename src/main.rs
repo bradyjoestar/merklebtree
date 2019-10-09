@@ -2,6 +2,7 @@ extern crate merklebtree;
 use merklebtree::merklebtree::{MerkleBTree, Nodes};
 
 mod bean;
+use crate::bean::Item2;
 use bean::Item;
 use std::fmt::Debug;
 
@@ -15,11 +16,47 @@ fn main() {
         next_id: 0,
         m: 0,
     };
+    let mut tree = MerkleBTree::new_with(3, Item2 { key: 0 }, &mut nodes);
+
+    nodes.m = tree.m;
+
+    for i in 1..50 {
+        let item = Item2 { key: i };
+        tree.put(item, &mut nodes);
+        println!("total node:{}", nodes.size);
+    }
+
+    nodes.iterator();
+
+    let item = Item2 { key: 50 };
+    tree.put(item, &mut nodes);
+    nodes.iterator();
+
+    //    println!("--------------remove the content from internal node---------------------");
+    //    tree.remove(nodes.root_id, Item2 { key: 2 }, &mut nodes);
+    //
+    //    nodes.iterator();
+    //
+    //    println!("--------------remove the content from leaf node---------------------");
+    //    tree.remove(nodes.root_id, Item2 { key: 0 }, &mut nodes);
+    //
+    //    nodes.iterator();
+}
+
+fn test1() {
+    let mut nodes = Nodes {
+        nodes_map: Default::default(),
+        size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+
     let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 }, &mut nodes);
 
     nodes.m = tree.m;
 
-    for i in 0..7 {
+    for i in 0..30 {
         let item = Item { key: i, value: i };
         tree.put(item, &mut nodes);
         println!("total node:{}", nodes.size);
@@ -27,99 +64,21 @@ fn main() {
     let item = Item { key: 3, value: 4 };
     tree.put(item, &mut nodes);
 
-    println_node(&nodes);
+    nodes.iterator();
 
     tree.put(Item { key: 0, value: 1 }, &mut nodes);
     println!("-----------------------------------");
     let node = nodes.nodes_map.get(&1).unwrap();
 
-    println_node(&nodes);
+    nodes.iterator();
 
     println!("--------------remove the content from internal node---------------------");
     tree.remove(nodes.root_id, Item { key: 2, value: 2 }, &mut nodes);
 
-    println_node(&nodes);
-    //
+    nodes.iterator();
+
     println!("--------------remove the content from leaf node---------------------");
     tree.remove(nodes.root_id, Item { key: 0, value: 1 }, &mut nodes);
 
-    println_node(&nodes);
-}
-
-fn println_node<T>(nodes: &Nodes<T>)
-where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
-{
-    println!("****************************************************");
-    println!("-----------------------------------");
-    let node = nodes.nodes_map.get(&nodes.root_id).unwrap();
-
-    match node.get_content() {
-        None => println!("no data in the root"),
-        Some(T) => {
-            println!("nodeid:{}", nodes.root_id);
-            println!("have data in the root");
-            for i in T.iter() {
-                println!("data is {:?}", i);
-            }
-        }
-    }
-
-    println!("-----------------------------------");
-    let node = nodes.nodes_map.get(&3).unwrap();
-
-    match node.get_content() {
-        None => println!("no data in the node"),
-        Some(T) => {
-            println!("nodeid:{}", 3);
-            println!("have data in the node");
-            for i in T.iter() {
-                println!("data is {:?}", i);
-            }
-        }
-    }
-
-    println!("-----------------------------------");
-    let node = nodes.nodes_map.get(&4).unwrap();
-
-    match node.get_content() {
-        None => println!("no data in the node"),
-        Some(T) => {
-            println!("nodeid:{}", 4);
-            println!("have data in the node");
-            for i in T.iter() {
-                println!("data is {:?}", i);
-            }
-        }
-    }
-
-    println!("-----------------------------------");
-    let node = nodes.nodes_map.get(&1).unwrap();
-
-    match node.get_content() {
-        None => println!("no data in the node"),
-        Some(T) => {
-            println!("nodeid:{}", 1);
-            println!("have data in the node");
-            for i in T.iter() {
-                println!("data is {:?}", i);
-            }
-        }
-    }
-    println!("****************************************************");
-
-    let tree = nodes.iterator();
-    println!("tree.len:{}", tree.len());
-    for i in 0..tree.len() {
-        println!("****************************************************");
-        let sub_vec = tree.get(i).unwrap();
-        for j in 0..sub_vec.len() {
-            let node = *sub_vec.get(j).unwrap();
-            println!("node.node_id: {}", node.node_id);
-            println!("node.children_id: {:?}", node.children_id);
-            println!("node.content: {:?}", node.content);
-            println!("node.parent_id: {:?}", node.parent_id);
-        }
-        println!("****************************************************");
-    }
+    nodes.iterator();
 }

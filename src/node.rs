@@ -98,8 +98,8 @@ where
             node.content.insert(t, value);
         }
         Err(e) => {
-            println!("try to find leaf: {}", *node.children_id.get(e).unwrap());
-            insert_into_leaf(*node.children_id.get(e).unwrap(), value, order, nodes);
+            println!("continute to insert: {}", *node.children_id.get(e).unwrap());
+            insert(*node.children_id.get(e).unwrap(), value, order, nodes);
         }
     }
     true
@@ -201,6 +201,8 @@ where
     medium_node.content = node.content.split_off(middle as usize);
     right_node.content = medium_node.content.split_off(1);
     left_node.content = node.content.clone();
+    left_node.parent_id = parent_id;
+    right_node.parent_id = parent_id;
 
     if !(node.children_id.len() == 0) {
         right_node.children_id = node.children_id.split_off((middle + 1) as usize);

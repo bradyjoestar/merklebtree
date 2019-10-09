@@ -20,7 +20,7 @@ impl<T> Nodes<T>
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    pub fn iterator(&self) -> Vec<Vec<&Node<T>>> {
+    pub fn iterator(&self) -> () {
         let mut a = Vec::new();
 
         let mut looptime = 0;
@@ -55,7 +55,19 @@ where
             }
         }
         println!("println nodes");
-        a
+
+        for i in 0..a.len() {
+            println!("****************************************************");
+            let sub_vec = a.get(i).unwrap();
+            for j in 0..sub_vec.len() {
+                let node = *sub_vec.get(j).unwrap();
+                println!("node.node_id: {}", node.node_id);
+                println!("node.children_id: {:?}", node.children_id);
+                println!("node.content: {:?}", node.content);
+                println!("node.parent_id: {:?}", node.parent_id);
+            }
+            println!("****************************************************");
+        }
     }
 }
 
