@@ -39,6 +39,7 @@ where
                 for i in 0..len {
                     let node = pre_vec.get(i).unwrap();
                     if node.children_id.len() == 0 {
+                        a.insert(looptime - 1, pre_vec);
                         break 'outer;
                     }
 

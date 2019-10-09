@@ -108,5 +108,18 @@ where
     }
     println!("****************************************************");
 
-    nodes.iterator();
+    let tree = nodes.iterator();
+    println!("tree.len:{}", tree.len());
+    for i in 0..tree.len() {
+        println!("****************************************************");
+        let sub_vec = tree.get(i).unwrap();
+        for j in 0..sub_vec.len() {
+            let node = *sub_vec.get(j).unwrap();
+            println!("node.node_id: {}", node.node_id);
+            println!("node.children_id: {:?}", node.children_id);
+            println!("node.content: {:?}", node.content);
+            println!("node.parent_id: {:?}", node.parent_id);
+        }
+        println!("****************************************************");
+    }
 }
