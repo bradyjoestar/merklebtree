@@ -32,13 +32,14 @@ fn main() {
     tree.put(item, &mut nodes);
     nodes.iterator();
 
-    //    println!("--------------remove the content from internal node---------------------");
-    //    tree.remove(nodes.root_id, Item2 { key: 21 }, &mut nodes);
+    //    println!("--------------remove the content from leaf node---------------------");
+    //    tree.remove(nodes.root_id, Item2 { key: 15 }, &mut nodes);
     //
     //    nodes.iterator();
-    //
+
     println!("--------------remove the content from leaf node---------------------");
-    tree.remove(nodes.root_id, Item2 { key: 15 }, &mut nodes);
+    println!("wenbin test");
+    tree.remove(nodes.root_id, Item2 { key: 2 }, &mut nodes);
 
     nodes.iterator();
 }

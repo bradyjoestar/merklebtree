@@ -61,6 +61,9 @@ where
             let sub_vec = a.get(i).unwrap();
             for j in 0..sub_vec.len() {
                 let node = *sub_vec.get(j).unwrap();
+                //                if node.content.len() == 0 {
+                //                    panic!("nil node");
+                //                }
                 println!("node.node_id: {}", node.node_id);
                 println!("node.children_id: {:?}", node.children_id);
                 println!("node.content: {:?}", node.content);

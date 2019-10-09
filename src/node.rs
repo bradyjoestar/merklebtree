@@ -291,9 +291,6 @@ where
         let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
-        println!("{},{}", left_sibling_id, left_sibling_index);
-        println!("{}", minContents(nodes));
-        println!("{}", left_sibling_node.content.len());
         if left_sibling_node.content.len() > minContents(nodes) as usize {
             let sibling_data = left_sibling_node.content.pop().unwrap();
             let parent_data = parent_node
@@ -314,6 +311,7 @@ where
                     .remove(&left_sibling_left_most_child_id)
                     .unwrap();
                 left_sibling_left_most_child_node.parent_id = node_id;
+
                 delete_node
                     .children_id
                     .insert(0, left_sibling_left_most_child_id);
@@ -330,22 +328,18 @@ where
 
             return true;
         }
-
+        println!("{:?}",delete_node.children_id);
         nodes.nodes_map.insert(parent_id, parent_node);
         nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
         nodes.nodes_map.insert(node_id, delete_node);
     }
 
     let (right_sibling_id, right_sibling_index) = rightSibling(node_id, &value, nodes);
-    println!("{},{}", right_sibling_id, right_sibling_index);
     if right_sibling_id != -1 {
         let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
 
-        println!("{},{}", right_sibling_id, right_sibling_index);
-        println!("{}", minContents(nodes));
-        println!("{}", right_sibling_node.content.len());
         if right_sibling_node.content.len() > minContents(nodes) as usize {
             let sibling_data = right_sibling_node.content.remove(0);
             let parent_data = parent_node
@@ -404,7 +398,7 @@ where
         }
 
         for i in 0..right_sibling_node.children_id.len() {
-            delete_node.children_id.push(i as i32)
+            delete_node.children_id.push(right_sibling_node.children_id.remove(0));
         }
         set_parent(&mut (right_sibling_node.children_id), node_id, nodes);
         parent_node.children_id.remove(right_sibling_index as usize);
@@ -412,9 +406,11 @@ where
         nodes.nodes_map.insert(parent_id, parent_node);
         nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
         nodes.nodes_map.insert(node_id, delete_node);
+
         nodes.size = nodes.size - 1;
     } else if left_sibling_id != -1 {
         // merge with left sibling
+        println!("borrow from left_sibling_id");
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
         let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
@@ -429,16 +425,21 @@ where
                 .insert(0, left_sibling_node.content.pop().unwrap())
         }
 
-        parent_node.children_id.remove(left_sibling_index as usize);
-
         for i in 0..left_sibling_node.children_id.len() {
-            delete_node.children_id.insert(0, i as i32)
+            delete_node
+                .children_id
+                .insert(0, left_sibling_node.children_id.pop().unwrap() as i32)
         }
         set_parent(&mut (left_sibling_node.children_id), node_id, nodes);
+        parent_node.children_id.remove(left_sibling_index as usize);
+
+        println!("{}",delete_node.node_id);
+        println!("delete_node.children_id {:?}",delete_node.children_id);
 
         nodes.nodes_map.insert(parent_id, parent_node);
         nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
         nodes.nodes_map.insert(node_id, delete_node);
+
         nodes.size = nodes.size - 1;
     }
 
@@ -469,6 +470,10 @@ where
                 }
             }
             Err(e) => {
+                let index = e as i32 - 1;
+                if index >= 0 && index < parent_node.children_id.len() as i32 {
+                    return (*parent_node.children_id.get(index as usize).unwrap(), index);
+                }
             }
         }
     }
@@ -494,6 +499,10 @@ where
                 }
             }
             Err(e) => {
+                let index = e as i32 + 1;
+                if index < parent_node.children_id.len() as i32 {
+                    return (*parent_node.children_id.get(index as usize).unwrap(), index);
+                }
             }
         }
     }
