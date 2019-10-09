@@ -20,15 +20,40 @@ impl<T> Nodes<T>
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    pub fn iterator(&self) -> Vec<Vec<Node<T>>> {
+    pub fn iterator(&self) -> Vec<Vec<&Node<T>>> {
         let mut a = Vec::new();
 
-        let b: Vec<Node<T>> = Vec::new();
+        let mut looptime = 0;
 
+        'outer: loop {
+            if a.len() == 0 {
+                let mut b: Vec<&Node<T>> = Vec::new();
+                let node = self.nodes_map.get(&0).unwrap();
+                b.push(node);
+                a.push(b);
+                looptime = looptime + 1;
+            } else {
+                let pre_vec = a.remove(looptime - 1);
+                let len = pre_vec.len();
+                let mut b: Vec<&Node<T>> = Vec::new();
+                for i in 0..len {
+                    let node = pre_vec.get(i).unwrap();
+                    if node.children_id.len() == 0 {
+                        break 'outer;
+                    }
+
+                    for i in 0..node.children_id.len() {
+                        let node_id = node.children_id.get(i).unwrap();
+                        let node = self.nodes_map.get(node_id).unwrap();
+                        b.push(node);
+                    }
+                }
+                a.insert(looptime - 1, pre_vec);
+                a.push(b);
+                looptime = looptime + 1;
+            }
+        }
         println!("println nodes");
-
-        a.push(b);
-
         a
     }
 }

@@ -186,6 +186,14 @@ where
     let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
     println!("try to find next error");
 
+    //remove index of split_node in parent
+    for i in 0..parent_node.children_id.len() {
+        let find_id = *parent_node.children_id.get(i).unwrap();
+        if find_id == split_id {
+            parent_node.children_id.remove(i);
+        }
+    }
+
     let mut left_node = Node::new_empty(nodes.next_id);
     let mut right_node = Node::new_empty(nodes.next_id + 1);
     let mut medium_node = Node::new_empty(nodes.root_id);
