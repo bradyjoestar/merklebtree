@@ -59,7 +59,7 @@ fn test_btree_get_1() {
     let mut nodes = Nodes {
         nodes_map,
         size: 0,
-        root_id: -1,
+        root_id: 0,
         next_id: 0,
         m: 0,
     };
@@ -70,7 +70,7 @@ fn test_btree_get_1() {
     test_subdata1.push((
         Item {
             key: 0,
-            value: String::from("c"),
+            value: String::from("m"),
         },
         false,
     ));
@@ -100,15 +100,18 @@ fn test_btree_get_1() {
     test_subdata2.push((
         Item {
             key: 8,
-            value: String::from("m"),
+            value: String::from("n"),
         },
         false,
     ));
     testdata.push(test_subdata2);
 
     for test_vec in testdata.iter() {
-        for test_item in test_vec {
+        for test_item in test_vec.iter() {
+            println!("{:?}", test_item);
             let (value, found) = tree.get(test_item.0.clone(), &mut nodes);
+            assert_eq!(value, test_item.0);
+            assert_eq!(found, test_item.1);
         }
     }
 }

@@ -2,13 +2,20 @@ extern crate merklebtree;
 use merklebtree::merklebtree::{MerkleBTree, Nodes};
 
 mod bean;
+use crate::bean::Item;
 use crate::bean::Item2;
-use bean::Item;
+use merklebtree::node::Node;
+use std::cmp::Ordering;
+use std::collections::HashMap;
 use std::fmt::Debug;
 
 fn main() {
     println!("Hello, world!");
 
+    test1();
+}
+
+fn test1() {
     let mut nodes = Nodes {
         nodes_map: Default::default(),
         size: 0,
