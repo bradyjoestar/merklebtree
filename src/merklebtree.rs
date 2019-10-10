@@ -135,7 +135,7 @@ impl MerkleBTree {
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug,
     {
-        let (search_node_id, index, found) = self.searchRecursively(start_node_id, &value, nodes);
+        let (search_node_id, index, found) = self.search_recursively(start_node_id, &value, nodes);
         println!(
             "search_node_id:{},index:{},found:{}",
             search_node_id, index, found
@@ -150,7 +150,7 @@ impl MerkleBTree {
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug,
     {
-        let (node_id, content_index, found) = self.searchRecursively(0, &value, nodes);
+        let (node_id, content_index, found) = self.search_recursively(0, &value, nodes);
         if found {
             let mut node = nodes.nodes_map.remove(&node_id).unwrap();
             let value = node.content.remove(content_index as usize);
@@ -162,7 +162,7 @@ impl MerkleBTree {
         (value, false)
     }
 
-    pub fn searchRecursively<T>(
+    pub fn search_recursively<T>(
         &mut self,
         mut start_node_id: i32,
         value: &T,

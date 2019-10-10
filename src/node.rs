@@ -251,25 +251,25 @@ where
 
     // deleting from a leaf node
     if node.children_id.len() == 0 {
-        let deleteItem = node.content.remove(index as usize);
+        let delete_item = node.content.remove(index as usize);
         nodes.nodes_map.insert(node_id, node);
-        rebalance(node_id, deleteItem, nodes);
+        rebalance(node_id, delete_item, nodes);
         return;
     }
     // deleting from an internal node
-    let leftLargestNodeId = right(*node.children_id.get_mut(index as usize).unwrap(), nodes); // largest node in the left sub-tree (assumed to exist)
-    let mut leftLargestNode = nodes.nodes_map.remove(&leftLargestNodeId).unwrap();
-    let leftLargestContentIndex = leftLargestNode.content.len() - 1;
+    let left_largest_node_id = right(*node.children_id.get_mut(index as usize).unwrap(), nodes); // largest node in the left sub-tree (assumed to exist)
+    let mut left_largest_node = nodes.nodes_map.remove(&left_largest_node_id).unwrap();
+    let left_largest_content_index = left_largest_node.content.len() - 1;
 
     node.content.remove(index as usize);
-    let deleteItem = leftLargestNode.content.remove(leftLargestContentIndex);
-    let deleteItemClone = deleteItem.clone();
-    node.content.insert(index as usize, deleteItem);
+    let delete_item = left_largest_node.content.remove(left_largest_content_index);
+    let delete_item_clone = delete_item.clone();
+    node.content.insert(index as usize, delete_item);
 
     nodes.nodes_map.insert(node_id, node);
-    nodes.nodes_map.insert(leftLargestNodeId, leftLargestNode);
+    nodes.nodes_map.insert(left_largest_node_id, left_largest_node);
 
-    rebalance(leftLargestNodeId, deleteItemClone, nodes);
+    rebalance(left_largest_node_id, delete_item_clone, nodes);
 }
 
 pub fn rebalance<T>(node_id: i32, mut value: T, nodes: &mut Nodes<T>) -> bool
