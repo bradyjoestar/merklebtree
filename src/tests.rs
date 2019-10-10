@@ -270,3 +270,46 @@ where
         );
     }
 }
+
+fn assertValidTreeNode(
+    branch: &Vec<i32>, //from root  i.e vec![0,1,2] //0 replace root
+    expectedContents: i32,
+    expectedChildren: i32,
+    keys: &vec<i32>,
+    nodes: &Nodes<T>,
+    hasParent: bool,
+) where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+
+}
+
+fn find_nodeid_by_branch(branch: &Vec<i32>, nodes: &Nodes<T>) -> i32 {
+    let mut node_id = 0;
+    let mut node = nodes.nodes_map.get(&0).unwrap();
+    for i in branch.iter() {
+        if i == 0 {
+        } else {
+            node_id = node.children_id.get(i).unwrap();
+            node = nodes.nodes_map.get(&node_id).unwrap();
+        }
+    }
+    node_id
+}
+
+//func assertValidTreeNode(t *testing.T, node *Node, expectedContents int, expectedChildren int, keys []int, hasParent bool) {
+//if actualValue, expectedValue := node.Parent != nil, hasParent; actualValue != expectedValue {
+//t.Errorf("Got %v expected %v for hasParent", actualValue, expectedValue)
+//}
+//if actualValue, expectedValue := len(node.Contents), expectedContents; actualValue != expectedValue {
+//t.Errorf("Got %v expected %v for contents size", actualValue, expectedValue)
+//}
+//if actualValue, expectedValue := len(node.Children), expectedChildren; actualValue != expectedValue {
+//t.Errorf("Got %v expected %v for children size", actualValue, expectedValue)
+//}
+//for i, Key := range keys {
+//if actualValue, expectedValue := (*node.Contents[i]).(Item2).Key, Key; actualValue != expectedValue {
+//t.Errorf("Got %v expected %v for Key", actualValue, expectedValue)
+//}
+//}
+//}
