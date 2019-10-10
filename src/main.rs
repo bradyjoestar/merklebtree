@@ -44,7 +44,7 @@ fn main() {
     nodes.iterator();
 }
 
-fn test1() {
+fn test2() {
     let mut nodes = Nodes {
         nodes_map: Default::default(),
         size: 0,
