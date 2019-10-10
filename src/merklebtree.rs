@@ -86,17 +86,11 @@ impl MerkleBTree {
         T: PartialEq + PartialOrd + Ord + Clone + Debug,
     {
         let mut tree = MerkleBTree {
-            rootid: nodes.root_id,
+            rootid: -1,
             m: order,
         };
+        nodes.m = order;
 
-        nodes
-            .nodes_map
-            .insert(nodes.root_id, Node::new_empty(nodes.root_id));
-        nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
-
-        nodes.next_id = nodes.next_id + 1;
-        nodes.size = nodes.size + 1;
         tree
     }
 

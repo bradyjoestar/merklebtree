@@ -59,10 +59,18 @@ fn test_btree_get_1() {
     let mut nodes = Nodes {
         nodes_map,
         size: 0,
-        root_id: 0,
+        root_id: -1,
         next_id: 0,
         m: 0,
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
-    assert_eq!(1, 1);
+    for i in 1..8 {
+        tree.put(
+            Item {
+                key: i,
+                value: String::from_utf8(vec![(i + 96) as u8]).unwrap(), //'a'
+            },
+            &mut nodes,
+        );
+    }
 }
