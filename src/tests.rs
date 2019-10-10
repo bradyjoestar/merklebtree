@@ -242,3 +242,8 @@ fn test_btree_get_2() {
         }
     }
 }
+
+#[test]
+fn test_btree_put_1() {
+
+}
