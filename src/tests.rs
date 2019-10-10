@@ -64,13 +64,51 @@ fn test_btree_get_1() {
         m: 0,
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+    let mut testdata: Vec<Vec<(Item, bool)>> = Vec::new();
+
+    let mut test_subdata1 = Vec::new();
+    test_subdata1.push((
+        Item {
+            key: 0,
+            value: String::from("c"),
+        },
+        false,
+    ));
+    testdata.push(test_subdata1);
+
     for i in 1..8 {
+        let string = String::from_utf8(vec![(i + 96) as u8]).unwrap();
+        let mut test_subdata = Vec::new();
+        test_subdata.push((
+            Item {
+                key: i,
+                value: string.clone(),
+            },
+            true,
+        ));
+        testdata.push(test_subdata);
         tree.put(
             Item {
                 key: i,
-                value: String::from_utf8(vec![(i + 96) as u8]).unwrap(), //'a'
+                value: string.clone(), //'a'
             },
             &mut nodes,
         );
+    }
+
+    let mut test_subdata2 = Vec::new();
+    test_subdata2.push((
+        Item {
+            key: 8,
+            value: String::from("m"),
+        },
+        false,
+    ));
+    testdata.push(test_subdata2);
+
+    for test_vec in testdata.iter() {
+        for test_item in test_vec {
+            let (value, found) = tree.get(test_item.0.clone(), &mut nodes);
+        }
     }
 }
