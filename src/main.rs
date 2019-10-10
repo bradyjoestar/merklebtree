@@ -9,10 +9,13 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
+mod testdebug;
+
 fn main() {
     println!("Hello, world!");
 
-    test1();
+    //    test1();
+    testdebug::test_debug();
 }
 
 fn test1() {

@@ -1,5 +1,5 @@
-use crate::merklebtree::{MerkleBTree, Nodes};
-use crate::node::Node;
+use crate::Node;
+use crate::{MerkleBTree, Nodes};
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
@@ -53,8 +53,7 @@ impl PartialOrd for Item2 {
     }
 }
 
-#[test]
-fn test_btree_get_1() {
+pub fn test_debug() {
     let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
     let mut nodes = Nodes {
         nodes_map,
@@ -66,69 +65,7 @@ fn test_btree_get_1() {
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     let mut testdata: Vec<Vec<(Item, bool)>> = Vec::new();
 
-    let mut test_subdata1 = Vec::new();
-    test_subdata1.push((
-        Item {
-            key: 0,
-            value: String::from("m"),
-        },
-        false,
-    ));
-    testdata.push(test_subdata1);
-
-    for i in 1..8 {
-        let string = String::from_utf8(vec![(i + 96) as u8]).unwrap();
-        let mut test_subdata = Vec::new();
-        test_subdata.push((
-            Item {
-                key: i,
-                value: string.clone(),
-            },
-            true,
-        ));
-        testdata.push(test_subdata);
-        tree.put(
-            Item {
-                key: i,
-                value: string.clone(), //'a'
-            },
-            &mut nodes,
-        );
-    }
-
-    let mut test_subdata2 = Vec::new();
-    test_subdata2.push((
-        Item {
-            key: 8,
-            value: String::from("n"),
-        },
-        false,
-    ));
-    testdata.push(test_subdata2);
-
-    for test_vec in testdata.iter() {
-        for test_item in test_vec.iter() {
-            println!("{:?}", test_item);
-            let (value, found) = tree.get(test_item.0.clone(), &mut nodes);
-            assert_eq!(value, test_item.0);
-            assert_eq!(found, test_item.1);
-        }
-    }
-}
-
-#[test]
-fn test_btree_get_2() {
-    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
-    let mut nodes = Nodes {
-        nodes_map,
-        size: 0,
-        root_id: 0,
-        next_id: 0,
-        m: 0,
-    };
-    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
-    let mut testdata: Vec<Vec<(Item, bool)>> = Vec::new();
-
+    println!("test_debug");
     tree.put(
         Item {
             key: 7,
@@ -136,6 +73,7 @@ fn test_btree_get_2() {
         },
         &mut nodes,
     );
+    println!("test_debug1");
     tree.put(
         Item {
             key: 9,
@@ -143,6 +81,7 @@ fn test_btree_get_2() {
         },
         &mut nodes,
     );
+    println!("test_debug2");
     tree.put(
         Item {
             key: 10,
@@ -150,6 +89,7 @@ fn test_btree_get_2() {
         },
         &mut nodes,
     );
+    println!("test_debug3");
     tree.put(
         Item {
             key: 6,
@@ -157,6 +97,8 @@ fn test_btree_get_2() {
         },
         &mut nodes,
     );
+    nodes.iterator();
+    println!("test_debug4");
     tree.put(
         Item {
             key: 3,
@@ -164,6 +106,7 @@ fn test_btree_get_2() {
         },
         &mut nodes,
     );
+    println!("test_debug5");
     tree.put(
         Item {
             key: 4,
@@ -171,6 +114,7 @@ fn test_btree_get_2() {
         },
         &mut nodes,
     );
+    println!("test_debug6");
     tree.put(
         Item {
             key: 5,
@@ -178,6 +122,7 @@ fn test_btree_get_2() {
         },
         &mut nodes,
     );
+    println!("test_debug7");
     tree.put(
         Item {
             key: 8,

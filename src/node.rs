@@ -185,6 +185,7 @@ where
         let find_id = *parent_node.children_id.get(i).unwrap();
         if find_id == split_id {
             parent_node.children_id.remove(i);
+            break;
         }
     }
 
@@ -328,7 +329,6 @@ where
 
             return true;
         }
-        println!("{:?}", delete_node.children_id);
         nodes.nodes_map.insert(parent_id, parent_node);
         nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
         nodes.nodes_map.insert(node_id, delete_node);
@@ -434,9 +434,6 @@ where
         }
         set_parent(&mut (left_sibling_node.children_id), node_id, nodes);
         parent_node.children_id.remove(left_sibling_index as usize);
-
-        println!("{}", delete_node.node_id);
-        println!("delete_node.children_id {:?}", delete_node.children_id);
 
         nodes.nodes_map.insert(parent_id, parent_node);
         nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
