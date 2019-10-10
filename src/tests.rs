@@ -199,4 +199,46 @@ fn test_btree_get_2() {
         },
         &mut nodes,
     );
+
+    let mut test_subdata1 = Vec::new();
+    test_subdata1.push((
+        Item {
+            key: 0,
+            value: String::from("m"),
+        },
+        false,
+    ));
+    testdata.push(test_subdata1);
+
+    for i in 1..11 {
+        let string = String::from_utf8(vec![(i + 96) as u8]).unwrap();
+        let mut test_subdata = Vec::new();
+        test_subdata.push((
+            Item {
+                key: i,
+                value: string.clone(),
+            },
+            true,
+        ));
+        testdata.push(test_subdata);
+    }
+
+    let mut test_subdata2 = Vec::new();
+    test_subdata2.push((
+        Item {
+            key: 11,
+            value: String::from("n"),
+        },
+        false,
+    ));
+    testdata.push(test_subdata2);
+
+    for test_vec in testdata.iter() {
+        for test_item in test_vec.iter() {
+            println!("{:?}", test_item);
+            let (value, found) = tree.get(test_item.0.clone(), &mut nodes);
+            assert_eq!(value, test_item.0);
+            assert_eq!(found, test_item.1);
+        }
+    }
 }
