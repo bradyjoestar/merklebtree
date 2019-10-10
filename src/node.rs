@@ -267,7 +267,9 @@ where
     node.content.insert(index as usize, delete_item);
 
     nodes.nodes_map.insert(node_id, node);
-    nodes.nodes_map.insert(left_largest_node_id, left_largest_node);
+    nodes
+        .nodes_map
+        .insert(left_largest_node_id, left_largest_node);
 
     rebalance(left_largest_node_id, delete_item_clone, nodes);
 }

@@ -2,6 +2,7 @@ use crate::merklebtree::{MerkleBTree, Nodes};
 use crate::node::Node;
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use std::fmt::Debug;
 
 #[derive(Clone, Debug)]
 pub struct Item {
@@ -245,5 +246,27 @@ fn test_btree_get_2() {
 
 #[test]
 fn test_btree_put_1() {
+    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+    assertValidTree(&nodes, 0);
+}
 
+fn assertValidTree<T>(nodes: &Nodes<T>, expectedSize: i32)
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    let (actualValue, expectedValue) = (nodes.size, expectedSize);
+    if actualValue != expectedValue as u32 {
+        panic!(
+            "Got {} expected {} for tree size",
+            actualValue, expectedValue
+        );
+    }
 }
