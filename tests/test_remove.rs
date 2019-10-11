@@ -173,5 +173,167 @@ fn test_btree_remove_6() {
     tree.put(Item3 { key: 5 }, &mut nodes);
     tree.put(Item3 { key: 6 }, &mut nodes);
     tree.put(Item3 { key: 7 }, &mut nodes);
+
     assertValidTree(&nodes, 7);
+    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![4], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
+
+    tree.remove(Item3 { key: 7 }, &mut nodes);
+    assertValidTree(&nodes, 6);
+    assertValidTreeNodeItem3(&vec![0], 2, 3, &vec![2, 4], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 2], 2, 0, &vec![5, 6], true, &nodes);
+}
+
+#[test]
+fn test_btree_remove_7() {
+    let mut nodes_map: HashMap<i32, Node<Item3>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+    tree.put(Item3 { key: 1 }, &mut nodes);
+    tree.put(Item3 { key: 2 }, &mut nodes);
+    tree.put(Item3 { key: 3 }, &mut nodes);
+    tree.put(Item3 { key: 4 }, &mut nodes);
+    tree.put(Item3 { key: 5 }, &mut nodes);
+    tree.put(Item3 { key: 6 }, &mut nodes);
+    tree.put(Item3 { key: 7 }, &mut nodes);
+
+    assertValidTree(&nodes, 7);
+    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![4], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
+
+    tree.remove(Item3 { key: 1 }, &mut nodes); // series of underflows
+    assertValidTree(&nodes, 6);
+    assertValidTreeNodeItem3(&vec![0], 2, 3, &vec![4, 6], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 2, 0, &vec![2, 3], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![5], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 2], 1, 0, &vec![7], true, &nodes);
+
+    // clear all remaining
+    tree.remove(Item3 { key: 2 }, &mut nodes);
+    assertValidTree(&nodes, 5);
+    assertValidTreeNodeItem3(&vec![0], 2, 3, &vec![4, 6], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 1, 0, &vec![3], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![5], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 2], 1, 0, &vec![7], true, &nodes);
+
+    tree.remove(Item3 { key: 3 }, &mut nodes);
+    assertValidTree(&nodes, 4);
+    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![6], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 2, 0, &vec![4, 5], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![7], true, &nodes);
+
+    tree.remove(Item3 { key: 4 }, &mut nodes);
+    assertValidTree(&nodes, 3);
+    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![6], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 1, 0, &vec![5], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![7], true, &nodes);
+
+    tree.remove(Item3 { key: 5 }, &mut nodes);
+    assertValidTree(&nodes, 2);
+    assertValidTreeNodeItem3(&vec![0], 2, 0, &vec![6, 7], false, &nodes);
+
+    tree.remove(Item3 { key: 6 }, &mut nodes);
+    assertValidTree(&nodes, 1);
+    assertValidTreeNodeItem3(&vec![0], 1, 0, &vec![7], false, &nodes);
+
+    tree.remove(Item3 { key: 7 }, &mut nodes);
+    assertValidTree(&nodes, 0);
+}
+
+#[test]
+fn test_btree_remove_8() {
+    let mut nodes_map: HashMap<i32, Node<Item3>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+    tree.put(Item3 { key: 1 }, &mut nodes);
+    tree.put(Item3 { key: 2 }, &mut nodes);
+    tree.put(Item3 { key: 3 }, &mut nodes);
+    tree.put(Item3 { key: 4 }, &mut nodes);
+    tree.put(Item3 { key: 5 }, &mut nodes);
+    tree.put(Item3 { key: 6 }, &mut nodes);
+    tree.put(Item3 { key: 7 }, &mut nodes);
+    tree.put(Item3 { key: 8 }, &mut nodes);
+    tree.put(Item3 { key: 9 }, &mut nodes);
+
+    assertValidTree(&nodes, 9);
+    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![4], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 2, 3, &vec![6, 8], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 2], 1, 0, &vec![9], true, &nodes);
+
+    tree.remove(Item3 { key: 1 }, &mut nodes);
+    assertValidTree(&nodes, 8);
+    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![6], false, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0], 1, 2, &vec![4], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1], 1, 2, &vec![8], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0, 0], 2, 0, &vec![2, 3], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![5], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![7], true, &nodes);
+    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![9], true, &nodes);
+}
+
+#[test]
+fn test_btree_remove_9() {
+    let max = 1000;
+    let orders = vec![3, 4, 5, 6, 7, 8, 9, 10, 20, 100, 500, 1000, 5000, 10000];
+
+    for order in orders.iter() {
+        let mut nodes_map: HashMap<i32, Node<Item2>> = HashMap::new();
+        let mut nodes = Nodes {
+            nodes_map,
+            size: 0,
+            content_size: 0,
+            root_id: 0,
+            next_id: 0,
+            m: 0,
+        };
+        let mut tree = MerkleBTree::new_empty(*order, &mut nodes);
+        {
+            for i in 1..max + 1 {
+                tree.put(Item2 { key: i, value: i }, &mut nodes);
+            }
+            assertValidTree(&nodes, max);
+
+            for i in 1..max + 1 {
+                let (value, found) = tree.get(Item2 { key: i, value: 0 }, &mut nodes);
+                if !found {
+                    panic!("Not found {:?}", value);
+                }
+            }
+            for i in 1..max + 1 {
+                tree.remove(Item2 { key: i, value: i }, &mut nodes);
+            }
+            assertValidTree(&nodes, 0);
+        }
+    }
 }

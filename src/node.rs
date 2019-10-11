@@ -399,7 +399,7 @@ where
         value = parent_data.clone();
         delete_node.content.push(parent_data);
         for i in 0..right_sibling_node.content.len() {
-            let right_sibling_node_data = right_sibling_node.content.remove(i);
+            let right_sibling_node_data = right_sibling_node.content.remove(0);
             delete_node.content.push(right_sibling_node_data);
         }
 
@@ -457,6 +457,7 @@ where
         let mut node = nodes.nodes_map.remove(&node_id).unwrap();
         node.parent_id = -1;
         node.node_id = 0;
+        set_parent(&mut node.children_id, node.node_id, nodes);
         nodes.nodes_map.remove(&parent_id);
         nodes.nodes_map.insert(parent_id, node);
         return false;
@@ -474,6 +475,7 @@ where
     let node = nodes.nodes_map.get_mut(&node_id).unwrap();
     let parent_id = node.parent_id;
     if parent_id != -1 {
+        println!("{}", parent_id);
         let parent_node = nodes.nodes_map.get_mut(&parent_id).unwrap();
         let content_slice = parent_node.content.as_slice();
         match content_slice.binary_search(value) {
