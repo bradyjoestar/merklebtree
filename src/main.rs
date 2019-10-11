@@ -50,7 +50,7 @@ fn test1() {
 
     println!("--------------remove the content from leaf node---------------------");
     println!("wenbin test");
-    tree.remove(nodes.root_id, Item2 { key: 2 }, &mut nodes);
+    tree.remove(Item2 { key: 2 }, &mut nodes);
 
     nodes.iterator();
 
@@ -90,12 +90,12 @@ fn test2() {
     nodes.iterator();
 
     println!("--------------remove the content from internal node---------------------");
-    tree.remove(nodes.root_id, Item { key: 2, value: 2 }, &mut nodes);
+    tree.remove(Item { key: 2, value: 2 }, &mut nodes);
 
     nodes.iterator();
 
     println!("--------------remove the content from leaf node---------------------");
-    tree.remove(nodes.root_id, Item { key: 0, value: 1 }, &mut nodes);
+    tree.remove(Item { key: 0, value: 1 }, &mut nodes);
 
     nodes.iterator();
 }

@@ -279,6 +279,10 @@ pub fn rebalance<T>(node_id: i32, mut value: T, nodes: &mut Nodes<T>) -> bool
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
+    if (node_id == -1) {
+        return false;
+    }
+
     let mut node = nodes.nodes_map.get(&node_id).unwrap();
     let parent_id = node.parent_id;
     // check if rebalancing is needed

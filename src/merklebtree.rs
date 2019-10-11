@@ -137,11 +137,11 @@ impl MerkleBTree {
         }
     }
 
-    pub fn remove<T>(&mut self, start_node_id: i32, value: T, nodes: &mut Nodes<T>) -> ()
+    pub fn remove<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> ()
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug,
     {
-        let (search_node_id, index, found) = self.search_recursively(start_node_id, &value, nodes);
+        let (search_node_id, index, found) = self.search_recursively(nodes.root_id, &value, nodes);
         println!(
             "search_node_id:{},index:{},found:{}",
             search_node_id, index, found
