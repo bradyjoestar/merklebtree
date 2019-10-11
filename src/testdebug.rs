@@ -59,6 +59,7 @@ pub fn test_debug() {
         nodes_map,
         size: 0,
         root_id: 0,
+        content_size: 0,
         next_id: 0,
         m: 0,
     };

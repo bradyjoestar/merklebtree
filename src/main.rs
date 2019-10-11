@@ -23,6 +23,7 @@ fn test1() {
         nodes_map: Default::default(),
         size: 0,
         root_id: 0,
+        content_size: 0,
         next_id: 0,
         m: 0,
     };
@@ -63,6 +64,7 @@ fn test2() {
         nodes_map: Default::default(),
         size: 0,
         root_id: 0,
+        content_size: 0,
         next_id: 0,
         m: 0,
     };

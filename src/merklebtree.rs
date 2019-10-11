@@ -12,8 +12,9 @@ where
     pub nodes_map: HashMap<i32, Node<T>>,
     pub size: u32, //the number of nodes
     pub root_id: i32,
-    pub next_id: i32, //generate the index of new node
-    pub m: u32,       // order (maximum number of children)
+    pub content_size: i32, //the number of content_item
+    pub next_id: i32,      //generate the index of new node
+    pub m: u32,            // order (maximum number of children)
 }
 
 impl<T> Nodes<T>
@@ -109,6 +110,7 @@ impl MerkleBTree {
         nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
         nodes.next_id = nodes.next_id + 1;
         nodes.size = nodes.size + 1;
+        nodes.content_size = nodes.content_size + 1;
         tree
     }
 
@@ -125,9 +127,13 @@ impl MerkleBTree {
             nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
             nodes.next_id = nodes.next_id + 1;
             nodes.size = nodes.size + 1;
+            nodes.content_size = nodes.content_size + 1;
         } else {
             let a = self.rootid;
-            node::insert(a, value, nodes.m, nodes);
+            let mut pre_not_existed = node::insert(a, value, nodes.m, nodes);
+            if pre_not_existed {
+                nodes.content_size = nodes.content_size + 1;
+            }
         }
     }
 
@@ -143,6 +149,7 @@ impl MerkleBTree {
         if found {
             println!("try to remove node");
             node::delete(search_node_id, index, nodes);
+            nodes.content_size = nodes.content_size - 1;
         }
     }
 

@@ -60,6 +60,7 @@ fn test_btree_get_1() {
     let mut nodes = Nodes {
         nodes_map,
         size: 0,
+        content_size: 0,
         root_id: 0,
         next_id: 0,
         m: 0,
@@ -123,6 +124,7 @@ fn test_btree_get_2() {
     let mut nodes = Nodes {
         nodes_map,
         size: 0,
+        content_size: 0,
         root_id: 0,
         next_id: 0,
         m: 0,
@@ -251,6 +253,7 @@ fn test_btree_put_1() {
         nodes_map,
         size: 0,
         root_id: 0,
+        content_size: 0,
         next_id: 0,
         m: 0,
     };
@@ -259,21 +262,59 @@ fn test_btree_put_1() {
 
     tree.put(Item2 { key: 1, value: 0 }, &mut nodes);
     assertValidTree(&nodes, 1);
-    assertValidTreeNode(&vec![0],1,0,&vec![1],false,&nodes);
+    assertValidTreeNode(&vec![0], 1, 0, &vec![1], false, &nodes);
 
     tree.put(Item2 { key: 2, value: 1 }, &mut nodes);
-    assertValidTree(&nodes, 1);
-    assertValidTreeNode(&vec![0],2,0,&vec![1,2],false,&nodes);
+    assertValidTree(&nodes, 2);
+    assertValidTreeNode(&vec![0], 2, 0, &vec![1, 2], false, &nodes);
+
+    tree.put(Item2 { key: 3, value: 2 }, &mut nodes);
+    assertValidTree(&nodes, 3);
+    assertValidTreeNode(&vec![0], 1, 2, &vec![2], false, &nodes);
+    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNode(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
+
+
+    tree.put(Item2 { key: 4, value: 2 }, &mut nodes);
+    assertValidTree(&nodes, 4);
+    assertValidTreeNode(&vec![0], 1, 2, &vec![2], false, &nodes);
+    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNode(&vec![0, 1], 2, 0, &vec![3,4], true, &nodes);
+
+    tree.put(Item2 { key: 5, value: 2 }, &mut nodes);
+    assertValidTree(&nodes, 5);
+    assertValidTreeNode(&vec![0], 2, 3, &vec![2,4], false, &nodes);
+    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNode(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
+    assertValidTreeNode(&vec![0, 2], 1, 0, &vec![5], true, &nodes);
+
+    tree.put(Item2 { key: 6, value: 2 }, &mut nodes);
+    assertValidTree(&nodes, 6);
+    assertValidTreeNode(&vec![0], 2, 3, &vec![2,4], false, &nodes);
+    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNode(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
+    assertValidTreeNode(&vec![0, 2], 2, 0, &vec![5,6], true, &nodes);
+
+
+    tree.put(Item2 { key: 7, value: 2 }, &mut nodes);
+    assertValidTree(&nodes, 7);
+    assertValidTreeNode(&vec![0], 1, 2, &vec![4], false, &nodes);
+    assertValidTreeNode(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
+    assertValidTreeNode(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
+    assertValidTreeNode(&vec![0, 0,0], 1, 0, &vec![1], true, &nodes);
+    assertValidTreeNode(&vec![0, 0,1], 1, 0, &vec![3], true, &nodes);
+    assertValidTreeNode(&vec![0, 1,0], 1, 0, &vec![5], true, &nodes);
+    assertValidTreeNode(&vec![0, 1,1], 1, 0, &vec![7], true, &nodes);
 }
 
 fn assertValidTree<T>(nodes: &Nodes<T>, expectedSize: i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
-    let (actualValue, expectedValue) = (nodes.size, expectedSize);
-    if actualValue != expectedValue as u32 {
+    let (actualValue, expectedValue) = (nodes.content_size, expectedSize);
+    if actualValue != expectedValue as i32 {
         panic!(
-            "Got {} expected {} for tree size",
+            "Got {} expected {} for content size",
             actualValue, expectedValue
         );
     }

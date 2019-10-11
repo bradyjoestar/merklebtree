@@ -77,13 +77,14 @@ where
         Ok(t) => {
             node.content.remove(t);
             node.content.insert(t, value);
+            return false;
         }
         Err(e) => {
             node.content.insert(e, value);
             split_node(insert_id, order, nodes);
+            return true;
         }
     }
-    true
 }
 
 pub fn insert_into_internal<T>(insert_id: i32, value: T, order: u32, nodes: &mut Nodes<T>) -> bool
@@ -96,12 +97,12 @@ where
         Ok(t) => {
             node.content.remove(t);
             node.content.insert(t, value);
+            return false;
         }
         Err(e) => {
-            insert(*node.children_id.get(e).unwrap(), value, order, nodes);
+            return insert(*node.children_id.get(e).unwrap(), value, order, nodes);
         }
     }
-    true
 }
 
 pub fn split_node<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
