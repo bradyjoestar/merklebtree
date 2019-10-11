@@ -14,8 +14,8 @@ mod testdebug;
 fn main() {
     println!("Hello, world!");
 
-    //    test1();
-    testdebug::test_debug();
+    test1();
+    //    testdebug::test_debug();
 }
 
 fn test1() {
@@ -52,6 +52,10 @@ fn test1() {
     tree.remove(nodes.root_id, Item2 { key: 2 }, &mut nodes);
 
     nodes.iterator();
+
+    let mut branch = vec![0, 0, 0, 2];
+    let find_id = find_nodeid_by_branch(&branch, &nodes);
+    println!("{}", find_id);
 }
 
 fn test2() {
@@ -92,4 +96,23 @@ fn test2() {
     tree.remove(nodes.root_id, Item { key: 0, value: 1 }, &mut nodes);
 
     nodes.iterator();
+}
+
+fn find_nodeid_by_branch<T>(branch: &Vec<i32>, nodes: &Nodes<T>) -> i32
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    let root_id = *branch.get(0).unwrap();
+    let mut node = nodes.nodes_map.get(&root_id).unwrap();
+    let mut node_id = 0;
+    let mut iter_time = 0;
+    for i in branch.iter() {
+        if iter_time == 0 {
+        } else {
+            node_id = *node.children_id.get(*i as usize).unwrap();
+            node = nodes.nodes_map.get(&node_id).unwrap();
+        }
+        iter_time = iter_time + 1;
+    }
+    node_id
 }

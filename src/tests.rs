@@ -246,7 +246,7 @@ fn test_btree_get_2() {
 
 #[test]
 fn test_btree_put_1() {
-    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes_map: HashMap<i32, Node<Item2>> = HashMap::new();
     let mut nodes = Nodes {
         nodes_map,
         size: 0,
@@ -256,6 +256,14 @@ fn test_btree_put_1() {
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     assertValidTree(&nodes, 0);
+
+    tree.put(Item2 { key: 1, value: 0 }, &mut nodes);
+    assertValidTree(&nodes, 1);
+    assertValidTreeNode(&vec![0],1,0,&vec![1],false,&nodes);
+
+    tree.put(Item2 { key: 2, value: 1 }, &mut nodes);
+    assertValidTree(&nodes, 1);
+    assertValidTreeNode(&vec![0],2,0,&vec![1,2],false,&nodes);
 }
 
 fn assertValidTree<T>(nodes: &Nodes<T>, expectedSize: i32)
@@ -275,41 +283,57 @@ fn assertValidTreeNode(
     branch: &Vec<i32>, //from root  i.e vec![0,1,2] //0 replace root
     expectedContents: i32,
     expectedChildren: i32,
-    keys: &vec<i32>,
-    nodes: &Nodes<T>,
+    keys: &Vec<i32>,
     hasParent: bool,
-) where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
-{
+    nodes: &Nodes<Item2>,
+) {
+    let node_id = find_nodeid_by_branch(branch, nodes);
+    let node = nodes.nodes_map.get(&node_id).unwrap();
+    let actualValue = node.parent_id != -1;
+    if actualValue != hasParent {
+        panic!("Got {} expected {} for hasParent", actualValue, hasParent);
+    }
+    let actualValue = node.content.len();
+    if actualValue != expectedContents as usize {
+        panic!(
+            "Got {} expected {} for contents size",
+            actualValue, expectedContents
+        );
+    }
+    let actualValue = node.children_id.len();
+    if actualValue != expectedChildren as usize {
+        panic!(
+            "Got {} expected {} for contents size",
+            actualValue, expectedChildren
+        );
+    }
 
+    let mut loop_time = 0;
+    for i in keys.iter() {
+        let actual_vale = node.content.get(loop_time).unwrap();
+        println!("{:?}", actual_vale);
+        if actual_vale.key != *i {
+            panic!("Got {} expected {} for for Key", actual_vale.key, *i);
+        }
+        loop_time = loop_time + 1;
+    }
 }
 
-fn find_nodeid_by_branch(branch: &Vec<i32>, nodes: &Nodes<T>) -> i32 {
+fn find_nodeid_by_branch<T>(branch: &Vec<i32>, nodes: &Nodes<T>) -> i32
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    let root_id = *branch.get(0).unwrap();
+    let mut node = nodes.nodes_map.get(&root_id).unwrap();
     let mut node_id = 0;
-    let mut node = nodes.nodes_map.get(&0).unwrap();
+    let mut iter_time = 0;
     for i in branch.iter() {
-        if i == 0 {
+        if iter_time == 0 {
         } else {
-            node_id = node.children_id.get(i).unwrap();
+            node_id = *node.children_id.get(*i as usize).unwrap();
             node = nodes.nodes_map.get(&node_id).unwrap();
         }
+        iter_time = iter_time + 1;
     }
     node_id
 }
-
-//func assertValidTreeNode(t *testing.T, node *Node, expectedContents int, expectedChildren int, keys []int, hasParent bool) {
-//if actualValue, expectedValue := node.Parent != nil, hasParent; actualValue != expectedValue {
-//t.Errorf("Got %v expected %v for hasParent", actualValue, expectedValue)
-//}
-//if actualValue, expectedValue := len(node.Contents), expectedContents; actualValue != expectedValue {
-//t.Errorf("Got %v expected %v for contents size", actualValue, expectedValue)
-//}
-//if actualValue, expectedValue := len(node.Children), expectedChildren; actualValue != expectedValue {
-//t.Errorf("Got %v expected %v for children size", actualValue, expectedValue)
-//}
-//for i, Key := range keys {
-//if actualValue, expectedValue := (*node.Contents[i]).(Item2).Key, Key; actualValue != expectedValue {
-//t.Errorf("Got %v expected %v for Key", actualValue, expectedValue)
-//}
-//}
-//}
