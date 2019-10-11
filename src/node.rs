@@ -301,9 +301,8 @@ where
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
         if left_sibling_node.content.len() > min_contents(nodes) as usize {
             let sibling_data = left_sibling_node.content.pop().unwrap();
-            let parent_data = parent_node
-                .content
-                .remove((left_sibling_index - 1) as usize);
+            println!("{}", left_sibling_index);
+            let parent_data = parent_node.content.remove((left_sibling_index) as usize);
             delete_node.content.insert(0, parent_data);
             parent_node
                 .content
@@ -449,8 +448,17 @@ where
         nodes.size = nodes.size - 1;
     }
 
-    let parent_node = nodes.nodes_map.get(&node_id).unwrap();
-    if parent_id == 0 && parent_node.content.len() == 0 {
+    if parent_id == -1 {
+        return false;
+    }
+    // make the merged node the root if its parent was the root and the root is empty
+    let parent_node = nodes.nodes_map.get(&parent_id).unwrap();
+    if parent_id == nodes.root_id && parent_node.content.len() == 0 {
+        let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+        node.parent_id = -1;
+        node.node_id = 0;
+        nodes.nodes_map.remove(&parent_id);
+        nodes.nodes_map.insert(parent_id, node);
         return false;
     }
 
