@@ -299,3 +299,601 @@ fn test_btree_iterator_next_on_empty() {
         panic!("Shouldn't iterate on empty tree");
     }
 }
+
+#[test]
+fn test_btree_iterator_prev_on_empty() {
+    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    loop {
+        if !prev(&mut btree_iterator) {
+            break;
+        }
+        panic!("Shouldn't iterate on empty tree");
+    }
+}
+
+#[test]
+fn test_btree_iterator_1_next() {
+    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+
+    tree.put(
+        Item {
+            key: 5,
+            value: String::from("e"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 6,
+            value: String::from("f"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 7,
+            value: String::from("g"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 3,
+            value: String::from("c"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 4,
+            value: String::from("d"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("x"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 2,
+            value: String::from("b"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("a"),
+        },
+        &mut nodes,
+    ); // overwrite
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    let mut count = 0;
+
+    loop {
+        if !next(&mut btree_iterator) {
+            break;
+        }
+        count = count + 1;
+        let mut key = item(&mut btree_iterator).key;
+
+        match key {
+            count => {
+                let actual_value = key;
+                let expected_value = count;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+            _ => {
+                let actual_value = key;
+                let expected_value = count;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+        }
+    }
+    let actual_value = count;
+    let expected_value = btree_iterator.nodes.content_size;
+    if actual_value != expected_value {
+        panic!("Got {} expected {}", actual_value, expected_value);
+    }
+}
+
+#[test]
+fn test_btree_iterator_1_prev() {
+    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+
+    tree.put(
+        Item {
+            key: 5,
+            value: String::from("e"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 6,
+            value: String::from("f"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 7,
+            value: String::from("g"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 3,
+            value: String::from("c"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 4,
+            value: String::from("d"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("x"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 2,
+            value: String::from("b"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("a"),
+        },
+        &mut nodes,
+    ); // overwrite
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    let mut countDown = btree_iterator.nodes.content_size;
+
+    loop {
+        if !prev(&mut btree_iterator) {
+            break;
+        }
+        let mut key = item(&mut btree_iterator).key;
+
+        match key {
+            count => {
+                let actual_value = key;
+                let expected_value = countDown;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+            _ => {
+                let actual_value = key;
+                let expected_value = countDown;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+        }
+        countDown = countDown - 1;
+    }
+    let actual_value = countDown;
+    let expected_value = btree_iterator.nodes.content_size;
+    if actual_value != expected_value {
+        panic!("Got {} expected {}", actual_value, expected_value);
+    }
+}
+
+#[test]
+fn test_btree_iterator_2_next() {
+    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+
+    tree.put(
+        Item {
+            key: 3,
+            value: String::from("c"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("a"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 2,
+            value: String::from("b"),
+        },
+        &mut nodes,
+    );
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    let mut count = 0;
+
+    loop {
+        if !next(&mut btree_iterator) {
+            break;
+        }
+        count = count + 1;
+        let mut key = item(&mut btree_iterator).key;
+
+        match key {
+            count => {
+                let actual_value = key;
+                let expected_value = count;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+            _ => {
+                let actual_value = key;
+                let expected_value = count;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+        }
+    }
+    let actual_value = count;
+    let expected_value = btree_iterator.nodes.content_size;
+    if actual_value != expected_value {
+        panic!("Got {} expected {}", actual_value, expected_value);
+    }
+}
+
+#[test]
+fn test_btree_iterator_2_prev() {
+    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+
+    tree.put(
+        Item {
+            key: 3,
+            value: String::from("c"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("a"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 2,
+            value: String::from("b"),
+        },
+        &mut nodes,
+    );
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    let mut countDown = btree_iterator.nodes.content_size;
+
+    loop {
+        if !prev(&mut btree_iterator) {
+            break;
+        }
+        let mut key = item(&mut btree_iterator).key;
+
+        match key {
+            count => {
+                let actual_value = key;
+                let expected_value = countDown;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+            _ => {
+                let actual_value = key;
+                let expected_value = countDown;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+        }
+        countDown = countDown - 1;
+    }
+    let actual_value = countDown;
+    let expected_value = btree_iterator.nodes.content_size;
+    if actual_value != expected_value {
+        panic!("Got {} expected {}", actual_value, expected_value);
+    }
+}
+
+#[test]
+fn test_btree_iterator_3_next() {
+    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("a"),
+        },
+        &mut nodes,
+    );
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    let mut count = 0;
+
+    loop {
+        if !next(&mut btree_iterator) {
+            break;
+        }
+        count = count + 1;
+        let mut key = item(&mut btree_iterator).key;
+
+        match key {
+            count => {
+                let actual_value = key;
+                let expected_value = count;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+            _ => {
+                let actual_value = key;
+                let expected_value = count;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+        }
+    }
+    let actual_value = count;
+    let expected_value = btree_iterator.nodes.content_size;
+    if actual_value != expected_value {
+        panic!("Got {} expected {}", actual_value, expected_value);
+    }
+}
+
+#[test]
+fn test_btree_iterator_3_prev() {
+    let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("a"),
+        },
+        &mut nodes,
+    );
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    let mut countDown = btree_iterator.nodes.content_size;
+
+    loop {
+        if !prev(&mut btree_iterator) {
+            break;
+        }
+        let mut key = item(&mut btree_iterator).key;
+
+        match key {
+            count => {
+                let actual_value = key;
+                let expected_value = countDown;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+            _ => {
+                let actual_value = key;
+                let expected_value = countDown;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+        }
+        countDown = countDown - 1;
+    }
+    let actual_value = countDown;
+    let expected_value = btree_iterator.nodes.content_size;
+    if actual_value != expected_value {
+        panic!("Got {} expected {}", actual_value, expected_value);
+    }
+}
+
+
+
+#[test]
+fn test_btree_iterator_4_next() {
+    let mut nodes_map: HashMap<i32, Node<Item2>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+
+    tree.put(Item2 { key: 13, value: 5 }, &mut nodes);
+    tree.put(Item2 { key: 8, value: 3 }, &mut nodes);
+    tree.put(Item2 { key: 17, value: 7 }, &mut nodes);
+    tree.put(Item2 { key: 1, value: 1 }, &mut nodes);
+    tree.put(Item2 { key: 11, value: 4 }, &mut nodes);
+    tree.put(Item2 { key: 15, value: 6 }, &mut nodes);
+    tree.put(Item2 { key: 25, value: 9 }, &mut nodes);
+    tree.put(Item2 { key: 6, value: 2 }, &mut nodes);
+    tree.put(Item2 { key: 22, value: 8 }, &mut nodes);
+    tree.put(Item2 { key: 27, value: 10 }, &mut nodes);
+
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    let mut count = 0;
+
+    loop {
+        if !next(&mut btree_iterator) {
+            break;
+        }
+        count = count + 1;
+        let mut key = item(&mut btree_iterator).key;
+
+        match key {
+            count => {
+                let actual_value = key;
+                let expected_value = count;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+            _ => {
+                let actual_value = key;
+                let expected_value = count;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+        }
+    }
+    let actual_value = count;
+    let expected_value = btree_iterator.nodes.content_size;
+    if actual_value != expected_value {
+        panic!("Got {} expected {}", actual_value, expected_value);
+    }
+}
+
+#[test]
+fn test_btree_iterator_4_prev() {
+    let mut nodes_map: HashMap<i32, Node<Item2>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        content_size: 0,
+        root_id: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+
+    tree.put(Item2 { key: 13, value: 5 }, &mut nodes);
+    tree.put(Item2 { key: 8, value: 3 }, &mut nodes);
+    tree.put(Item2 { key: 17, value: 7 }, &mut nodes);
+    tree.put(Item2 { key: 1, value: 1 }, &mut nodes);
+    tree.put(Item2 { key: 11, value: 4 }, &mut nodes);
+    tree.put(Item2 { key: 15, value: 6 }, &mut nodes);
+    tree.put(Item2 { key: 25, value: 9 }, &mut nodes);
+    tree.put(Item2 { key: 6, value: 2 }, &mut nodes);
+    tree.put(Item2 { key: 22, value: 8 }, &mut nodes);
+    tree.put(Item2 { key: 27, value: 10 }, &mut nodes);
+
+    let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
+
+    let mut countDown = btree_iterator.nodes.content_size;
+
+    loop {
+        if !prev(&mut btree_iterator) {
+            break;
+        }
+        let mut key = item(&mut btree_iterator).key;
+
+        match key {
+            count => {
+                let actual_value = key;
+                let expected_value = countDown;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+            _ => {
+                let actual_value = key;
+                let expected_value = countDown;
+                if actual_value != expected_value {
+                    panic!("Got {} expected {}", actual_value, expected_value);
+                }
+            }
+        }
+        countDown = countDown - 1;
+    }
+    let actual_value = countDown;
+    let expected_value = btree_iterator.nodes.content_size;
+    if actual_value != expected_value {
+        panic!("Got {} expected {}", actual_value, expected_value);
+    }
+}
