@@ -308,17 +308,17 @@ fn test_btree_remove_9() {
     let orders = vec![3, 4, 5, 6, 7, 8, 9, 10, 20, 100, 500, 1000, 5000, 10000];
 
     for order in orders.iter() {
-        let mut nodes_map: HashMap<i32, Node<Item2>> = HashMap::new();
-        let mut nodes = Nodes {
-            nodes_map,
-            size: 0,
-            content_size: 0,
-            root_id: 0,
-            next_id: 0,
-            m: 0,
-        };
-        let mut tree = MerkleBTree::new_empty(*order, &mut nodes);
         {
+            let mut nodes_map: HashMap<i32, Node<Item2>> = HashMap::new();
+            let mut nodes = Nodes {
+                nodes_map,
+                size: 0,
+                content_size: 0,
+                root_id: 0,
+                next_id: 0,
+                m: 0,
+            };
+            let mut tree = MerkleBTree::new_empty(*order, &mut nodes);
             for i in 1..max + 1 {
                 tree.put(Item2 { key: i, value: i }, &mut nodes);
             }
@@ -335,5 +335,53 @@ fn test_btree_remove_9() {
             }
             assertValidTree(&nodes, 0);
         }
+        {
+            let mut nodes_map: HashMap<i32, Node<Item2>> = HashMap::new();
+            let mut nodes = Nodes {
+                nodes_map,
+                size: 0,
+                content_size: 0,
+                root_id: 0,
+                next_id: 0,
+                m: 0,
+            };
+            let mut tree = MerkleBTree::new_empty(*order, &mut nodes);
+
+            for i in 0..max {
+                tree.put(
+                    Item2 {
+                        key: max - i,
+                        value: max - i,
+                    },
+                    &mut nodes,
+                );
+            }
+            assertValidTree(&nodes, max);
+
+            for i in 0..max {
+                let (value, found) = tree.get(
+                    Item2 {
+                        key: max - i,
+                        value: 0,
+                    },
+                    &mut nodes,
+                );
+                if !found {
+                    panic!("Not found {:?}", value);
+                }
+            }
+
+            for i in 0..max {
+                tree.remove(
+                    Item2 {
+                        key: max - i,
+                        value: 0,
+                    },
+                    &mut nodes,
+                );
+            }
+            assertValidTree(&nodes, 0);
+        }
     }
 }
+
