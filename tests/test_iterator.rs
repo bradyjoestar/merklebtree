@@ -165,7 +165,7 @@ fn test_btree_left_and_right() {
         panic!("Got {:?} expected {:?}", item, expected_item);
     }
 
-    item = tree.rightItem(nodes.root_id,&mut nodes).unwrap();
+    item = tree.rightItem(nodes.root_id, &mut nodes).unwrap();
     expected_item = Item {
         key: 7,
         value: String::from("g"),
