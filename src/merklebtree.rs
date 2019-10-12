@@ -152,6 +152,26 @@ impl MerkleBTree {
             nodes.content_size = nodes.content_size - 1;
         }
     }
+    pub fn height<T>(&self, nodes: &Nodes<T>) -> i32
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    {
+        let mut height = 1;
+        let mut node_id = nodes.root_id;
+        loop {
+            if nodes.content_size == 0 {
+                return 0;
+            } else {
+                let node = nodes.nodes_map.get(&node_id).unwrap();
+                if node.children_id.len() != 0 {
+                    height = height + 1;
+                    node_id = *node.children_id.get(0).unwrap();
+                } else {
+                    return height;
+                }
+            }
+        }
+    }
 
     pub fn get<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> (T, bool)
     where
@@ -197,6 +217,72 @@ impl MerkleBTree {
                     start_node_id = *node.children_id.get(e).unwrap();
                 }
             }
+        }
+    }
+
+    pub fn left<T>(&self, mut node_id: i32, nodes: &Nodes<T>) -> i32
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    {
+        if nodes.content_size == 0 {
+            return -1;
+        }
+        let mut node = nodes.nodes_map.get(&node_id).unwrap();
+        loop {
+            if node.children_id.len() == 0 {
+                return node_id;
+            } else {
+                node_id = *node.children_id.get(0).unwrap();
+                node = nodes.nodes_map.get(&node_id).unwrap();
+            }
+        }
+    }
+
+    pub fn leftItem<T>(&self, mut node_id: i32, nodes: &mut Nodes<T>) -> Option<T>
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    {
+        let node_id = self.left(node_id, nodes);
+        if node_id == -1 {
+            return None;
+        } else {
+            let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+            let mut node_clone = node.clone();
+            nodes.nodes_map.insert(node_id, node);
+            return Some(node_clone.content.remove(0));
+        }
+    }
+
+    pub fn right<T>(&self, mut node_id: i32, nodes: &Nodes<T>) -> i32
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    {
+        if nodes.content_size == 0 {
+            return -1;
+        }
+        let mut node = nodes.nodes_map.get(&node_id).unwrap();
+        loop {
+            if node.children_id.len() == 0 {
+                return node_id;
+            } else {
+                node_id = *node.children_id.last().unwrap();
+                node = nodes.nodes_map.get(&node_id).unwrap();
+            }
+        }
+    }
+
+    pub fn rightItem<T>(&self, mut node_id: i32, nodes: &mut Nodes<T>) -> Option<T>
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    {
+        let node_id = self.right(node_id, nodes);
+        if node_id == -1 {
+            return None;
+        } else {
+            let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+            let mut node_clone = node.clone();
+            nodes.nodes_map.insert(node_id, node);
+            Some(node_clone.content.pop().unwrap())
         }
     }
 }
