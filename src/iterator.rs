@@ -34,7 +34,7 @@ where
         mbtree,
         nodes,
         position,
-        node_id: 0,
+        node_id: -1,
         content: None,
     }
 }
@@ -68,7 +68,7 @@ where
             return true;
         }
         position::between => {
-            println!("{}", btree_iterator.node_id);
+            println!("btree_iterator.node_id {}", btree_iterator.node_id);
             let node = btree_iterator
                 .nodes
                 .nodes_map
@@ -104,15 +104,20 @@ where
             let mut find_node = &node.clone();
             // Reached leaf node and there are no contents to the right of the current entry, so go up to the parent
             loop {
+                println!("find_node.parent_id:{}", find_node.parent_id);
                 if find_node.parent_id == -1 {
+                    println!("break");
                     break;
                 }
-                btree_iterator.node_id = node.parent_id;
+                btree_iterator.node_id = find_node.parent_id;
                 find_node = btree_iterator
                     .nodes
                     .nodes_map
                     .get(&btree_iterator.node_id)
                     .unwrap();
+
+                println!("find_node.parent_id:{}", find_node.parent_id);
+                println!("btree_iterator.node_id:{}", btree_iterator.node_id);
                 match find_node.content.binary_search(&entry) {
                     Ok(e) => {
                         let current_node = btree_iterator
@@ -120,7 +125,10 @@ where
                             .nodes_map
                             .get(&btree_iterator.node_id)
                             .unwrap();
+
+                        println!("wenbin test0.1");
                         if e < current_node.content.len() {
+                            println!("wenbin test1");
                             btree_iterator.content = Some(get_content_in_node(
                                 btree_iterator.node_id,
                                 &mut btree_iterator,
@@ -137,7 +145,12 @@ where
                             .nodes_map
                             .get(&btree_iterator.node_id)
                             .unwrap();
+
+                        println!("wenbin test0.2");
+                        println!("{}", e);
+                        println!("{}", current_node.content.len());
                         if e < current_node.content.len() {
+                            println!("wenbin test1");
                             btree_iterator.content = Some(get_content_in_node(
                                 btree_iterator.node_id,
                                 &mut btree_iterator,
@@ -185,12 +198,13 @@ where
                 .remove(&right_node_id)
                 .unwrap();
             let node_clone = node.clone();
+
+            btree_iterator.nodes.nodes_map.insert(right_node_id, node);
             btree_iterator.content = Some(get_content_in_node(
                 right_node_id,
                 &mut btree_iterator,
-                (node.content.len() - 1) as i32,
+                (node_clone.content.len() - 1) as i32,
             ));
-            btree_iterator.nodes.nodes_map.insert(right_node_id, node);
             between(&mut btree_iterator);
             return true;
         }
@@ -256,7 +270,7 @@ where
                 if find_node.parent_id == -1 {
                     break;
                 }
-                btree_iterator.node_id = node_clone.parent_id;
+                btree_iterator.node_id = find_node.parent_id;
                 find_node = btree_iterator
                     .nodes
                     .nodes_map
@@ -320,7 +334,7 @@ where
 
 // End moves the iterator past the last element (one-past-the-end).
 // Call Prev() to fetch the last element if any.
-fn end<T>(btree_iterator: &mut btree_iterator<T>)
+pub fn end<T>(btree_iterator: &mut btree_iterator<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -331,7 +345,7 @@ where
 
 // Begin resets the iterator to its initial state (one-before-first)
 // Call Next() to fetch the first element if any.
-fn begin<T>(btree_iterator: &mut btree_iterator<T>)
+pub fn begin<T>(btree_iterator: &mut btree_iterator<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -340,7 +354,7 @@ where
     btree_iterator.content = None;
 }
 
-fn between<T>(btree_iterator: &mut btree_iterator<T>)
+pub fn between<T>(btree_iterator: &mut btree_iterator<T>)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug,
 {
@@ -367,4 +381,26 @@ where
         }
     }
     content
+}
+
+// First moves the iterator to the first element and returns true if there was a first element in the container.
+// If First() returns true, then first element's key and value can be retrieved by Key() and Value().
+// Modifies the state of the iterator
+pub fn first<T>(btree_iterator: &mut btree_iterator<T>) -> bool
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    begin(btree_iterator);
+    next(btree_iterator)
+}
+
+// Last moves the iterator to the last element and returns true if there was a last element in the container.
+// If Last() returns true, then last element's key and value can be retrieved by Key() and Value().
+// Modifies the state of the iterator.
+pub fn last<T>(btree_iterator: &mut btree_iterator<T>) -> bool
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+{
+    end(btree_iterator);
+    prev(btree_iterator)
 }

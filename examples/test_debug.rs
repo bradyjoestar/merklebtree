@@ -80,8 +80,6 @@ impl PartialOrd for Item3 {
 }
 
 pub fn main() {
-    println!("test");
-
     let mut nodes_map: HashMap<i32, Node<Item>> = HashMap::new();
     let mut nodes = Nodes {
         nodes_map,
@@ -91,15 +89,8 @@ pub fn main() {
         next_id: 0,
         m: 0,
     };
-    let mut tree = MerkleBTree::new_empty(4, &mut nodes);
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
-    tree.put(
-        Item {
-            key: 4,
-            value: String::from("d"),
-        },
-        &mut nodes,
-    );
     tree.put(
         Item {
             key: 5,
@@ -116,6 +107,13 @@ pub fn main() {
     );
     tree.put(
         Item {
+            key: 7,
+            value: String::from("g"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
             key: 3,
             value: String::from("c"),
         },
@@ -123,23 +121,15 @@ pub fn main() {
     );
     tree.put(
         Item {
-            key: 1,
-            value: String::from("a"),
-        },
-        &mut nodes,
-    );
-    tree.put(
-        Item {
-            key: 7,
-            value: String::from("g"),
-        },
-        &mut nodes,
-    );
-
-    tree.put(
-        Item {
             key: 4,
             value: String::from("d"),
+        },
+        &mut nodes,
+    );
+    tree.put(
+        Item {
+            key: 1,
+            value: String::from("x"),
         },
         &mut nodes,
     );
@@ -153,14 +143,47 @@ pub fn main() {
     tree.put(
         Item {
             key: 1,
-            value: String::from("x"),
+            value: String::from("a"),
         },
         &mut nodes,
     ); // overwrite
-
-    nodes.iterator();
-
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
-    let content_vec = contents(&mut btree_iterator);
-    println!("{:?}", content_vec);
+
+    let mut count = 0;
+    //
+    //    loop {
+    //        if !next(&mut btree_iterator) {
+    //            break;
+    //        }
+    //        count = count + 1;
+    //        let mut key = item(&mut btree_iterator).key;
+    //
+    //        match key {
+    //            count => {
+    //                let actual_value = key;
+    //                let expected_value = count;
+    //                if actual_value != expected_value {
+    //                    panic!("Got {} expected {}", actual_value, expected_value);
+    //                }
+    //            }
+    //            _ => {
+    //                let actual_value = key;
+    //                let expected_value = count;
+    //                if actual_value != expected_value {
+    //                    panic!("Got {} expected {}", actual_value, expected_value);
+    //                }
+    //            }
+    //        }
+    //    }
+    //    let actual_value = count;
+    //    let expected_value = btree_iterator.nodes.content_size;
+    //    if actual_value != expected_value {
+    //        panic!("Got {} expected {}", actual_value, expected_value);
+    //    }
+    loop {
+        if !next(&mut btree_iterator) {
+            println!("outside break");
+            break;
+        }
+    }
 }
