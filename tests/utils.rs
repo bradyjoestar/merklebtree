@@ -1,11 +1,12 @@
 use merklebtree::merklebtree::{MerkleBTree, Nodes};
 use merklebtree::node::Node;
 use merklebtree::traits::CalculateHash;
+use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Item {
     pub key: i32,
     pub value: String,
@@ -36,7 +37,7 @@ impl PartialOrd for Item {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Item2 {
     pub key: i32,
     pub value: i32,
@@ -67,7 +68,7 @@ impl CalculateHash for Item2 {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Item3 {
     pub key: i32,
 }

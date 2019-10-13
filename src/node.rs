@@ -4,6 +4,8 @@ use core::borrow::BorrowMut;
 use std::fmt::Debug;
 use std::io::BufRead;
 
+use serde::{Deserialize, Serialize};
+
 #[derive(Clone, Debug)]
 pub struct Node<T>
 where
@@ -13,6 +15,16 @@ where
     pub parent_id: i32,
     pub children_id: Vec<i32>,
     pub content: Vec<T>,
+    pub node_id: i32,
+    pub hash: String,
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct NodeSer {
+    pub root_flag: bool, //whether is root node
+    pub parent_id: i32,
+    pub children_id: Vec<i32>,
+    pub content: Vec<String>,
     pub node_id: i32,
     pub hash: String,
 }
@@ -47,17 +59,17 @@ where
         Some(&(self.content))
     }
 
-    pub fn calculate_hash(&mut self, nodes: &Nodes<T>) {
-        let mut hash = String::new();
-        for i in self.content.iter() {
-            hash.push_str(i.calculate().as_str());
-        }
-        for i in self.children_id.iter() {
-            let child_node = nodes.nodes_map.get(i).unwrap();
-            hash.push_str(child_node.hash.as_str());
-        }
-        self.hash = hex::encode(hash);
-    }
+    //    pub fn calculate_hash(&mut self, nodes: &Nodes<T>) {
+    //        let mut hash = String::new();
+    //        for i in self.content.iter() {
+    //            hash.push_str(i.calculate().as_str());
+    //        }
+    //        for i in self.children_id.iter() {
+    //            let child_node = nodes.nodes_map.get(i).unwrap();
+    //            hash.push_str(child_node.hash.as_str());
+    //        }
+    //        self.hash = hex::encode(hash);
+    //    }
 }
 
 pub fn is_leaf<T>(nodeid: i32, nodes: &Nodes<T>) -> bool

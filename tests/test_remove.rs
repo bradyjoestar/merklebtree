@@ -18,7 +18,7 @@ fn test_btree_remove_1() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     tree.remove(Item3 { key: 1 }, &mut nodes);
@@ -36,7 +36,7 @@ fn test_btree_remove_2() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     tree.put(Item3 { key: 1 }, &mut nodes);
@@ -62,7 +62,7 @@ fn test_btree_remove_3() {
             root_id: 0,
             next_id: 0,
             m: 0,
-            merkleroot_hash: "".to_string()
+            merkleroot_hash: "".to_string(),
         };
         let mut tree = MerkleBTree::new_empty(3, &mut nodes);
         tree.put(Item3 { key: 1 }, &mut nodes);
@@ -83,7 +83,7 @@ fn test_btree_remove_3() {
             root_id: 0,
             next_id: 0,
             m: 0,
-            merkleroot_hash: "".to_string()
+            merkleroot_hash: "".to_string(),
         };
         let mut tree = MerkleBTree::new_empty(3, &mut nodes);
         tree.put(Item3 { key: 1 }, &mut nodes);
@@ -107,7 +107,7 @@ fn test_btree_remove_4() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     tree.put(Item3 { key: 1 }, &mut nodes);
@@ -138,7 +138,7 @@ fn test_btree_remove_5() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     tree.put(Item3 { key: 1 }, &mut nodes);
@@ -170,7 +170,7 @@ fn test_btree_remove_6() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     tree.put(Item3 { key: 1 }, &mut nodes);
@@ -208,7 +208,7 @@ fn test_btree_remove_7() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     tree.put(Item3 { key: 1 }, &mut nodes);
@@ -277,7 +277,7 @@ fn test_btree_remove_8() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     tree.put(Item3 { key: 1 }, &mut nodes);
@@ -326,7 +326,7 @@ fn test_btree_remove_9() {
                 root_id: 0,
                 next_id: 0,
                 m: 0,
-                merkleroot_hash: "".to_string()
+                merkleroot_hash: "".to_string(),
             };
             let mut tree = MerkleBTree::new_empty(*order, &mut nodes);
             for i in 1..max + 1 {
@@ -354,7 +354,7 @@ fn test_btree_remove_9() {
                 root_id: 0,
                 next_id: 0,
                 m: 0,
-                merkleroot_hash: "".to_string()
+                merkleroot_hash: "".to_string(),
             };
             let mut tree = MerkleBTree::new_empty(*order, &mut nodes);
 

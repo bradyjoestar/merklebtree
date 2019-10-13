@@ -6,8 +6,11 @@ use merklebtree::traits::CalculateHash;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
+extern crate serde;
 
-#[derive(Clone, Debug)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct Item {
     pub key: u32,
     pub value: u32,
@@ -37,7 +40,7 @@ impl CalculateHash for Item {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct Item2 {
     pub key: i32,
 }
@@ -80,7 +83,7 @@ fn test1() {
         content_size: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_with(3, Item2 { key: 0 }, &mut nodes);
 
@@ -117,7 +120,7 @@ fn test2() {
         content_size: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
 
     let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 }, &mut nodes);

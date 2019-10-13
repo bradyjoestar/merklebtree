@@ -6,7 +6,10 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-#[derive(Clone, Debug)]
+extern crate serde;
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct Item {
     pub key: i32,
     pub value: String,
@@ -37,7 +40,7 @@ impl CalculateHash for Item {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct Item2 {
     pub key: i32,
     pub value: i32,
@@ -68,7 +71,7 @@ impl CalculateHash for Item2 {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct Item3 {
     pub key: i32,
 }
@@ -107,7 +110,7 @@ pub fn main() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 

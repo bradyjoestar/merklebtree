@@ -18,7 +18,7 @@ fn test_btree_height() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -86,7 +86,7 @@ fn test_btree_left_and_right() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     let mut actual_value = 0;
@@ -188,7 +188,7 @@ fn test_btree_iterator_values_and_keys() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(4, &mut nodes);
 
@@ -291,7 +291,7 @@ fn test_btree_iterator_next_on_empty() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
@@ -314,7 +314,7 @@ fn test_btree_iterator_prev_on_empty() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
@@ -337,7 +337,7 @@ fn test_btree_iterator_1_next() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -442,7 +442,7 @@ fn test_btree_iterator_1_prev() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -547,7 +547,7 @@ fn test_btree_iterator_2_next() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -617,7 +617,7 @@ fn test_btree_iterator_2_prev() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -687,7 +687,7 @@ fn test_btree_iterator_3_next() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -743,7 +743,7 @@ fn test_btree_iterator_3_prev() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -799,7 +799,7 @@ fn test_btree_iterator_4_next() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -859,7 +859,7 @@ fn test_btree_iterator_4_prev() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -919,7 +919,7 @@ fn test_btree_iterator_begin() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -987,7 +987,7 @@ fn test_btree_iterator_end() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
@@ -1050,7 +1050,7 @@ fn test_btree_iterator_first() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -1103,7 +1103,7 @@ fn test_btree_iterator_last() {
         root_id: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string()
+        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 

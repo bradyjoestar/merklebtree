@@ -6,11 +6,24 @@ use core::borrow::{Borrow, BorrowMut};
 use std::collections::HashMap;
 use std::fmt::Debug;
 
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Debug)]
 pub struct Nodes<T>
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     pub nodes_map: HashMap<i32, Node<T>>,
+    pub size: u32, //the number of nodes
+    pub root_id: i32,
+    pub content_size: i32, //the number of content_item
+    pub next_id: i32,      //generate the index of new node
+    pub m: u32,            // order (maximum number of children)
+    pub merkleroot_hash: String,
+}
+
+#[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct NodesSerialize {
     pub size: u32, //the number of nodes
     pub root_id: i32,
     pub content_size: i32, //the number of content_item
