@@ -1128,8 +1128,3 @@ fn test_btree_iterator_last() {
         panic!("Got {:?} expected {:?}", item, expected_item);
     }
 }
-
-#[test]
-fn test_btree_search() {
-
-}
