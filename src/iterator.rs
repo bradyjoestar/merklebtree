@@ -12,14 +12,7 @@ pub enum position {
 
 pub struct btree_iterator<'a, T>
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     pub mbtree: &'a mut MerkleBTree,
 
@@ -38,14 +31,7 @@ pub fn new_btree_iterator<'a, T>(
     mbtree: &'a mut MerkleBTree,
 ) -> btree_iterator<'a, T>
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     btree_iterator {
         mbtree,
@@ -62,14 +48,7 @@ where
 // Modifies the state of the iterator.
 pub fn next<T>(mut btree_iterator: &mut btree_iterator<T>) -> bool
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     match btree_iterator.position {
         position::end => {
@@ -198,14 +177,7 @@ where
 // Modifies the state of the iterator.
 pub fn prev<T>(mut btree_iterator: &mut btree_iterator<T>) -> bool
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     // If already at beginning, go to begin
     match btree_iterator.position {
@@ -354,14 +326,7 @@ pub fn get_content_in_node<T>(
     content_index: i32,
 ) -> T
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = btree_iterator.nodes.nodes_map.remove(&node_id).unwrap();
     let mut node_clone = node.clone();
@@ -374,14 +339,7 @@ where
 // Call Prev() to fetch the last element if any.
 pub fn end<T>(btree_iterator: &mut btree_iterator<T>)
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     btree_iterator.node_id = -1;
     btree_iterator.position = position::end;
@@ -392,14 +350,7 @@ where
 // Call Next() to fetch the first element if any.
 pub fn begin<T>(btree_iterator: &mut btree_iterator<T>)
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     btree_iterator.node_id = -1;
     btree_iterator.position = position::begin;
@@ -408,42 +359,21 @@ where
 
 pub fn between<T>(btree_iterator: &mut btree_iterator<T>)
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     btree_iterator.position = position::between;
 }
 
 pub fn item<T>(mut btree_iterator: &mut btree_iterator<T>) -> T
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     return btree_iterator.content.clone().unwrap();
 }
 
 pub fn contents<T>(mut btree_iterator: &mut btree_iterator<T>) -> Vec<T>
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let mut content = Vec::new();
     loop {
@@ -461,14 +391,7 @@ where
 // Modifies the state of the iterator
 pub fn first<T>(btree_iterator: &mut btree_iterator<T>) -> bool
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     begin(btree_iterator);
     next(btree_iterator)
@@ -479,14 +402,7 @@ where
 // Modifies the state of the iterator.
 pub fn last<T>(btree_iterator: &mut btree_iterator<T>) -> bool
 where
-    T: PartialEq
-        + PartialOrd
-        + Ord
-        + Clone
-        + Debug
-        + CalculateHash
-        + Serialize
-        + Deserialize<'static>,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     end(btree_iterator);
     prev(btree_iterator)

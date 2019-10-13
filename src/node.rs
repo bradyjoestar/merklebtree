@@ -45,31 +45,65 @@ where
     }
 
     pub fn new_node(value: T, id: i32) -> Self {
-        Node {
+        let value_clone = value.clone();
+        let mut node = Node {
             root_flag: false,
             parent_id: -1,
             children_id: vec![],
             content: vec![value],
             node_id: id,
             hash: "".to_string(),
-        }
+        };
+        node.hash = value_clone.calculate();
+        node
     }
 
     pub fn get_content(&self) -> Option<&Vec<T>> {
         Some(&(self.content))
     }
+}
 
-    //    pub fn calculate_hash(&mut self, nodes: &Nodes<T>) {
-    //        let mut hash = String::new();
-    //        for i in self.content.iter() {
-    //            hash.push_str(i.calculate().as_str());
+pub fn calculate_hash<T>(node_id: i32, nodes: &mut Nodes<T>)
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+{
+    let mut hash = String::new();
+    let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+    for i in node.content.iter() {
+        hash.push_str(i.calculate().as_str());
+    }
+    for i in node.children_id.iter() {
+        let child_node = nodes.nodes_map.get(i).unwrap();
+        hash.push_str(child_node.hash.as_str());
+    }
+    node.hash = hex::encode(hash);
+    nodes.nodes_map.insert(node_id,node);
+}
+
+//ReCalculateMerkleRoot update Merkleroot from node to root node.
+pub fn recalculate_hash<T>(nodes: &mut Nodes<T>, node_id: i32)
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+{
+    //        if node == tree.Root {
+    //            return tree.CalculateHash(node)
+    //        } else {
+    //            _, err := tree.CalculateHash(node)
+    //            if err != nil {
+    //                return nil, err
+    //            }
+    //            return tree.ReCalculateMerkleRoot(node.Parent)
     //        }
-    //        for i in self.children_id.iter() {
-    //            let child_node = nodes.nodes_map.get(i).unwrap();
-    //            hash.push_str(child_node.hash.as_str());
-    //        }
-    //        self.hash = hex::encode(hash);
-    //    }
+    let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+    if node.node_id == nodes.root_id {
+        nodes.nodes_map.insert(node.node_id,node);
+        return calculate_hash(node_id, nodes);
+    } else {
+        let parent_id = node.parent_id;
+        nodes.nodes_map.insert(node.node_id,node);
+        calculate_hash(node_id, nodes);
+        return recalculate_hash(nodes, parent_id);
+    }
 }
 
 pub fn is_leaf<T>(nodeid: i32, nodes: &Nodes<T>) -> bool

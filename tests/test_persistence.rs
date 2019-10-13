@@ -41,7 +41,6 @@ fn test_btree_persistence_1() {
     assertValidTreeNode(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
     assertValidTreeNode(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
 
-
     let nodes_serialize = NodesSerialize {
         size: nodes.size,
         root_id: nodes.root_id,
