@@ -1,4 +1,5 @@
 use crate::merklebtree::Nodes;
+use crate::traits::CalculateHash;
 use core::borrow::BorrowMut;
 use std::fmt::Debug;
 use std::io::BufRead;
@@ -6,18 +7,19 @@ use std::io::BufRead;
 #[derive(Clone, Debug)]
 pub struct Node<T>
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     pub root_flag: bool, //whether is root node
     pub parent_id: i32,
     pub children_id: Vec<i32>,
     pub content: Vec<T>,
     pub node_id: i32,
+    pub hash: String,
 }
 
 impl<T> Node<T>
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     pub fn new_empty(id: i32) -> Self {
         Node {
@@ -26,6 +28,7 @@ where
             children_id: vec![],
             content: vec![],
             node_id: id,
+            hash: "".to_string(),
         }
     }
 
@@ -36,17 +39,30 @@ where
             children_id: vec![],
             content: vec![value],
             node_id: id,
+            hash: "".to_string(),
         }
     }
 
     pub fn get_content(&self) -> Option<&Vec<T>> {
         Some(&(self.content))
     }
+
+    pub fn calculate_hash(&mut self, nodes: &Nodes<T>) {
+        let mut hash = String::new();
+        for i in self.content.iter() {
+            hash.push_str(i.calculate().as_str());
+        }
+        for i in self.children_id.iter() {
+            let child_node = nodes.nodes_map.get(i).unwrap();
+            hash.push_str(child_node.hash.as_str());
+        }
+        self.hash = hex::encode(hash);
+    }
 }
 
 pub fn is_leaf<T>(nodeid: i32, nodes: &Nodes<T>) -> bool
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = nodes.nodes_map.get(&nodeid).unwrap();
     if node.children_id.len() == 0 {
@@ -58,7 +74,7 @@ where
 
 pub fn insert<T>(insert_id: i32, value: T, order: u32, nodes: &mut Nodes<T>) -> bool
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     if is_leaf(insert_id, nodes) {
         insert_into_leaf(insert_id, value, order, nodes)
@@ -69,7 +85,7 @@ where
 
 pub fn insert_into_leaf<T>(insert_id: i32, value: T, order: u32, nodes: &mut Nodes<T>) -> bool
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
     let content_slice = node.content.as_slice();
@@ -89,7 +105,7 @@ where
 
 pub fn insert_into_internal<T>(insert_id: i32, value: T, order: u32, nodes: &mut Nodes<T>) -> bool
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
     let content_slice = node.content.as_slice();
@@ -107,7 +123,7 @@ where
 
 pub fn split_node<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = nodes.nodes_map.get_mut(&split_id).unwrap();
     if !(node.content.len() > (order - 1) as usize) {
@@ -123,7 +139,7 @@ where
 
 pub fn split_root<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let middle = middle(order);
 
@@ -174,7 +190,7 @@ where
 
 pub fn split_not_root<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let middle = middle(order);
     let mut node = nodes.nodes_map.remove(&split_id).unwrap();
@@ -235,7 +251,7 @@ pub fn middle(order: u32) -> u32 {
 
 pub fn set_parent<T>(childrens: &mut Vec<i32>, parent_id: i32, nodes: &mut Nodes<T>) -> bool
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     for i in childrens {
         let node = nodes.nodes_map.get_mut(&i).unwrap();
@@ -246,7 +262,7 @@ where
 
 pub fn delete<T>(node_id: i32, index: i32, nodes: &mut Nodes<T>) -> ()
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let mut node = nodes.nodes_map.remove(&node_id).unwrap();
 
@@ -277,7 +293,7 @@ where
 
 pub fn rebalance<T>(node_id: i32, mut value: T, nodes: &mut Nodes<T>) -> bool
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     if (node_id == -1) {
         return false;
@@ -470,7 +486,7 @@ where
 // key is any of keys in node (could even be deleted).
 pub fn left_sibling<T>(node_id: i32, value: &T, nodes: &mut Nodes<T>) -> (i32, i32)
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = nodes.nodes_map.get_mut(&node_id).unwrap();
     let parent_id = node.parent_id;
@@ -500,7 +516,7 @@ where
 // key is any of keys in node (could even be deleted).
 pub fn right_sibling<T>(node_id: i32, value: &T, nodes: &mut Nodes<T>) -> (i32, i32)
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = nodes.nodes_map.get_mut(&node_id).unwrap();
     let parent_id = node.parent_id;
@@ -527,7 +543,7 @@ where
 
 fn right<T>(mut node_id: i32, nodes: &mut Nodes<T>) -> i32
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     if nodes.size == 0 {
         return -1;
@@ -551,28 +567,28 @@ where
 
 fn min_children<T>(nodes: &Nodes<T>) -> i32
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     return ((nodes.m + 1) / 2) as i32; // ceil(m/2)
 }
 
 fn min_contents<T>(nodes: &Nodes<T>) -> i32
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     return min_children(nodes) - 1;
 }
 
 fn max_children<T>(nodes: &Nodes<T>) -> i32
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     return nodes.m as i32;
 }
 
 fn max_contents<T>(nodes: &Nodes<T>) -> i32
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     return max_children(nodes) - 1;
 }

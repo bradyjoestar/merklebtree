@@ -10,3 +10,5 @@ name = "merklebtree"
 path = "src/lib.rs"
 
 [dependencies]
+ring = "0.16.9"
+hex = "0.4.0"

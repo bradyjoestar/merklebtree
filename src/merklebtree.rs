@@ -1,13 +1,14 @@
 use crate::node;
 use crate::node::is_leaf;
 use crate::node::Node;
+use crate::traits::CalculateHash;
 use core::borrow::{Borrow, BorrowMut};
 use std::collections::HashMap;
 use std::fmt::Debug;
 
 pub struct Nodes<T>
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     pub nodes_map: HashMap<i32, Node<T>>,
     pub size: u32, //the number of nodes
@@ -19,7 +20,7 @@ where
 
 impl<T> Nodes<T>
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     pub fn iterator(&self) -> () {
         let mut a = Vec::new();
@@ -84,7 +85,7 @@ pub struct MerkleBTree {
 impl MerkleBTree {
     pub fn new_empty<T>(order: u32, nodes: &mut Nodes<T>) -> Self
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         let mut tree = MerkleBTree {
             rootid: -1,
@@ -97,7 +98,7 @@ impl MerkleBTree {
 
     pub fn new_with<T>(order: u32, value: T, nodes: &mut Nodes<T>) -> Self
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         println!("{:?}", value);
         let mut tree = MerkleBTree {
@@ -116,7 +117,7 @@ impl MerkleBTree {
 
     pub fn put<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> ()
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         if nodes.size == 0 {
             //insert root node
@@ -139,7 +140,7 @@ impl MerkleBTree {
 
     pub fn remove<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> ()
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         let (search_node_id, index, found) = self.search_recursively(nodes.root_id, &value, nodes);
         println!(
@@ -154,7 +155,7 @@ impl MerkleBTree {
     }
     pub fn height<T>(&self, nodes: &Nodes<T>) -> i32
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         let mut height = 1;
         let mut node_id = nodes.root_id;
@@ -175,7 +176,7 @@ impl MerkleBTree {
 
     pub fn get<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> (T, bool)
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         let (node_id, content_index, found) = self.search_recursively(0, &value, nodes);
         if found {
@@ -196,7 +197,7 @@ impl MerkleBTree {
         nodes: &mut Nodes<T>,
     ) -> (i32, i32, bool)
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         if nodes.size == 0 {
             return (-1, -1, false);
@@ -222,7 +223,7 @@ impl MerkleBTree {
 
     pub fn left<T>(&self, mut node_id: i32, nodes: &Nodes<T>) -> i32
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         if nodes.content_size == 0 {
             return -1;
@@ -240,7 +241,7 @@ impl MerkleBTree {
 
     pub fn leftItem<T>(&self, mut node_id: i32, nodes: &mut Nodes<T>) -> Option<T>
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         let node_id = self.left(node_id, nodes);
         if node_id == -1 {
@@ -255,7 +256,7 @@ impl MerkleBTree {
 
     pub fn right<T>(&self, mut node_id: i32, nodes: &Nodes<T>) -> i32
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         if nodes.content_size == 0 {
             return -1;
@@ -273,7 +274,7 @@ impl MerkleBTree {
 
     pub fn rightItem<T>(&self, mut node_id: i32, nodes: &mut Nodes<T>) -> Option<T>
     where
-        T: PartialEq + PartialOrd + Ord + Clone + Debug,
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         let node_id = self.right(node_id, nodes);
         if node_id == -1 {

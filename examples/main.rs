@@ -2,6 +2,7 @@ extern crate merklebtree;
 use merklebtree::merklebtree::{MerkleBTree, Nodes};
 
 use merklebtree::node::Node;
+use merklebtree::traits::CalculateHash;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
@@ -30,6 +31,11 @@ impl PartialOrd for Item {
         Some(self.cmp(other))
     }
 }
+impl CalculateHash for Item {
+    fn calculate(&self) -> String {
+        String::new()
+    }
+}
 
 #[derive(Clone, Debug)]
 pub struct Item2 {
@@ -52,6 +58,11 @@ impl Ord for Item2 {
 impl PartialOrd for Item2 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
+    }
+}
+impl CalculateHash for Item2 {
+    fn calculate(&self) -> String {
+        String::new()
     }
 }
 
@@ -140,7 +151,7 @@ fn test2() {
 
 fn find_nodeid_by_branch<T>(branch: &Vec<i32>, nodes: &Nodes<T>) -> i32
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let root_id = *branch.get(0).unwrap();
     let mut node = nodes.nodes_map.get(&root_id).unwrap();

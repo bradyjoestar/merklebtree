@@ -1,5 +1,6 @@
 use merklebtree::merklebtree::{MerkleBTree, Nodes};
 use merklebtree::node::Node;
+use merklebtree::traits::CalculateHash;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
@@ -20,6 +21,12 @@ impl Eq for Item {}
 impl Ord for Item {
     fn cmp(&self, other: &Self) -> Ordering {
         (self.key).cmp(&(other.key))
+    }
+}
+
+impl CalculateHash for Item {
+    fn calculate(&self) -> String {
+        String::new()
     }
 }
 
@@ -54,6 +61,12 @@ impl PartialOrd for Item2 {
     }
 }
 
+impl CalculateHash for Item2 {
+    fn calculate(&self) -> String {
+        String::new()
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Item3 {
     pub key: i32,
@@ -78,9 +91,15 @@ impl PartialOrd for Item3 {
     }
 }
 
+impl CalculateHash for Item3 {
+    fn calculate(&self) -> String {
+        String::new()
+    }
+}
+
 pub fn assertValidTree<T>(nodes: &Nodes<T>, expectedSize: i32)
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let (actualValue, expectedValue) = (nodes.content_size, expectedSize);
     if actualValue != expectedValue as i32 {
@@ -173,7 +192,7 @@ pub fn assertValidTreeNodeItem3(
 
 pub fn find_nodeid_by_branch<T>(branch: &Vec<i32>, nodes: &Nodes<T>) -> i32
 where
-    T: PartialEq + PartialOrd + Ord + Clone + Debug,
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let root_id = *branch.get(0).unwrap();
     let mut node = nodes.nodes_map.get(&root_id).unwrap();

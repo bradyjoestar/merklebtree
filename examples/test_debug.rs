@@ -1,6 +1,7 @@
 use merklebtree::iterator::*;
 use merklebtree::merklebtree::{MerkleBTree, Nodes};
 use merklebtree::node::Node;
+use merklebtree::traits::CalculateHash;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
@@ -30,6 +31,12 @@ impl PartialOrd for Item {
     }
 }
 
+impl CalculateHash for Item {
+    fn calculate(&self) -> String {
+        String::new()
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Item2 {
     pub key: i32,
@@ -55,6 +62,12 @@ impl PartialOrd for Item2 {
     }
 }
 
+impl CalculateHash for Item2 {
+    fn calculate(&self) -> String {
+        String::new()
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Item3 {
     pub key: i32,
@@ -76,6 +89,12 @@ impl Ord for Item3 {
 impl PartialOrd for Item3 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
+    }
+}
+
+impl CalculateHash for Item3 {
+    fn calculate(&self) -> String {
+        String::new()
     }
 }
 
@@ -150,36 +169,7 @@ pub fn main() {
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
 
     let mut count = 0;
-    //
-    //    loop {
-    //        if !next(&mut btree_iterator) {
-    //            break;
-    //        }
-    //        count = count + 1;
-    //        let mut key = item(&mut btree_iterator).key;
-    //
-    //        match key {
-    //            count => {
-    //                let actual_value = key;
-    //                let expected_value = count;
-    //                if actual_value != expected_value {
-    //                    panic!("Got {} expected {}", actual_value, expected_value);
-    //                }
-    //            }
-    //            _ => {
-    //                let actual_value = key;
-    //                let expected_value = count;
-    //                if actual_value != expected_value {
-    //                    panic!("Got {} expected {}", actual_value, expected_value);
-    //                }
-    //            }
-    //        }
-    //    }
-    //    let actual_value = count;
-    //    let expected_value = btree_iterator.nodes.content_size;
-    //    if actual_value != expected_value {
-    //        panic!("Got {} expected {}", actual_value, expected_value);
-    //    }
+
     loop {
         if !next(&mut btree_iterator) {
             println!("outside break");
