@@ -17,6 +17,7 @@ fn test_btree_get_1() {
         root_id: 0,
         next_id: 0,
         m: 0,
+        merkleroot_hash: "".to_string()
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     let mut testdata: Vec<Vec<(Item, bool)>> = Vec::new();
@@ -81,6 +82,7 @@ fn test_btree_get_2() {
         root_id: 0,
         next_id: 0,
         m: 0,
+        merkleroot_hash: "".to_string()
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     let mut testdata: Vec<Vec<(Item, bool)>> = Vec::new();
@@ -209,6 +211,7 @@ fn test_btree_put_1() {
         content_size: 0,
         next_id: 0,
         m: 0,
+        merkleroot_hash: "".to_string()
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     assertValidTree(&nodes, 0);
@@ -268,6 +271,7 @@ fn test_btree_put_2() {
         content_size: 0,
         next_id: 0,
         m: 0,
+        merkleroot_hash: "".to_string()
     };
     let mut tree = MerkleBTree::new_empty(4, &mut nodes);
     assertValidTree(&nodes, 0);
@@ -318,6 +322,7 @@ fn test_btree_put_3() {
         content_size: 0,
         next_id: 0,
         m: 0,
+        merkleroot_hash: "".to_string()
     };
     let mut tree = MerkleBTree::new_empty(6, &mut nodes);
     assertValidTree(&nodes, 0);
@@ -378,6 +383,7 @@ fn test_btree_put_4() {
         content_size: 0,
         next_id: 0,
         m: 0,
+        merkleroot_hash: "".to_string()
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
     assertValidTree(&nodes, 0);

@@ -16,6 +16,7 @@ where
     pub content_size: i32, //the number of content_item
     pub next_id: i32,      //generate the index of new node
     pub m: u32,            // order (maximum number of children)
+    pub merkleroot_hash: String,
 }
 
 impl<T> Nodes<T>

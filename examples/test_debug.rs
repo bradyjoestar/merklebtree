@@ -107,6 +107,7 @@ pub fn main() {
         root_id: 0,
         next_id: 0,
         m: 0,
+        merkleroot_hash: "".to_string()
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
