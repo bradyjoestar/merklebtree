@@ -36,7 +36,7 @@ impl<T> Nodes<T>
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
-    pub fn iterator(&self) -> () {
+    pub fn iterator(&self) {
         let mut a = Vec::new();
 
         let mut looptime = 0;
@@ -143,7 +143,7 @@ impl MerkleBTree {
             nodes.next_id = nodes.next_id + 1;
             nodes.size = nodes.size + 1;
             nodes.content_size = nodes.content_size + 1;
-        } else {
+        }else {
             let a = self.rootid;
             let mut pre_not_existed = node::insert(a, value, nodes.m, nodes);
             if pre_not_existed {

@@ -77,7 +77,7 @@ where
         hash.push_str(child_node.hash.as_str());
     }
     node.hash = hex::encode(hash);
-    nodes.nodes_map.insert(node_id,node);
+    nodes.nodes_map.insert(node_id, node);
 }
 
 //ReCalculateMerkleRoot update Merkleroot from node to root node.
@@ -85,22 +85,13 @@ pub fn recalculate_hash<T>(nodes: &mut Nodes<T>, node_id: i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
-    //        if node == tree.Root {
-    //            return tree.CalculateHash(node)
-    //        } else {
-    //            _, err := tree.CalculateHash(node)
-    //            if err != nil {
-    //                return nil, err
-    //            }
-    //            return tree.ReCalculateMerkleRoot(node.Parent)
-    //        }
     let mut node = nodes.nodes_map.remove(&node_id).unwrap();
     if node.node_id == nodes.root_id {
-        nodes.nodes_map.insert(node.node_id,node);
+        nodes.nodes_map.insert(node.node_id, node);
         return calculate_hash(node_id, nodes);
     } else {
         let parent_id = node.parent_id;
-        nodes.nodes_map.insert(node.node_id,node);
+        nodes.nodes_map.insert(node.node_id, node);
         calculate_hash(node_id, nodes);
         return recalculate_hash(nodes, parent_id);
     }
@@ -139,6 +130,7 @@ where
         Ok(t) => {
             node.content.remove(t);
             node.content.insert(t, value);
+            recalculate_hash(nodes,insert_id);
             return false;
         }
         Err(e) => {
@@ -159,6 +151,7 @@ where
         Ok(t) => {
             node.content.remove(t);
             node.content.insert(t, value);
+            recalculate_hash(nodes,insert_id);
             return false;
         }
         Err(e) => {
@@ -173,6 +166,7 @@ where
 {
     let node = nodes.nodes_map.get_mut(&split_id).unwrap();
     if !(node.content.len() > (order - 1) as usize) {
+        recalculate_hash(nodes,split_id);
         return;
     } else {
         if node.root_flag {
@@ -351,6 +345,7 @@ where
     if node.content.len() >= min_contents(nodes) as usize {
         println!("min contents:{}", min_contents(nodes));
         println!("needn't to rebalance");
+        recalculate_hash(nodes,node_id);
         return false;
     }
 
