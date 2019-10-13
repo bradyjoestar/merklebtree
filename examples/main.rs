@@ -83,7 +83,6 @@ fn test1() {
         content_size: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_with(3, Item2 { key: 0 }, &mut nodes);
 
@@ -120,7 +119,6 @@ fn test2() {
         content_size: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string(),
     };
 
     let mut tree = MerkleBTree::new_with(5, Item { key: 1, value: 4 }, &mut nodes);

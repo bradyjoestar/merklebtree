@@ -21,7 +21,6 @@ fn test_btree_persistence_1() {
         content_size: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string(),
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
 
@@ -47,7 +46,6 @@ fn test_btree_persistence_1() {
         content_size: nodes.content_size,
         next_id: nodes.next_id,
         m: nodes.m,
-        merkleroot_hash: nodes.merkleroot_hash.clone(),
     };
 
     let serialized = serde_json::to_string(&nodes_serialize).unwrap();
@@ -154,14 +152,12 @@ pub fn load_nodes() -> Nodes<Item2> {
         content_size: 0,
         next_id: 0,
         m: 0,
-        merkleroot_hash: "".to_string(),
     };
     let mut count = 0;
     for line in fin.lines() {
         if count == 0 {
             let nodes_serailize = line.unwrap();
             deserialized = serde_json::from_str(&nodes_serailize).unwrap();
-            nodes.merkleroot_hash = deserialized.merkleroot_hash.clone();
             nodes.m = deserialized.m;
             nodes.next_id = deserialized.next_id;
             nodes.content_size = deserialized.content_size;
