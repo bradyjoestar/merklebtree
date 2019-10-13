@@ -130,7 +130,7 @@ where
         Ok(t) => {
             node.content.remove(t);
             node.content.insert(t, value);
-            recalculate_hash(nodes,insert_id);
+            recalculate_hash(nodes, insert_id);
             return false;
         }
         Err(e) => {
@@ -151,7 +151,7 @@ where
         Ok(t) => {
             node.content.remove(t);
             node.content.insert(t, value);
-            recalculate_hash(nodes,insert_id);
+            recalculate_hash(nodes, insert_id);
             return false;
         }
         Err(e) => {
@@ -166,7 +166,7 @@ where
 {
     let node = nodes.nodes_map.get_mut(&split_id).unwrap();
     if !(node.content.len() > (order - 1) as usize) {
-        recalculate_hash(nodes,split_id);
+        recalculate_hash(nodes, split_id);
         return;
     } else {
         if node.root_flag {
@@ -207,9 +207,18 @@ where
     root_node.children_id.push(left_node.node_id);
     root_node.children_id.push(right_node.node_id);
 
+    let left_id = left_node.node_id;
+    let right_id = right_node.node_id;
+    let root_id = root_node.node_id;
+
     nodes.nodes_map.insert(nodes.next_id, left_node);
     nodes.nodes_map.insert(nodes.next_id + 1, right_node);
     nodes.nodes_map.insert(nodes.root_id, root_node);
+
+
+    calculate_hash(left_id, nodes);
+    calculate_hash(right_id, nodes);
+    calculate_hash(root_id, nodes);
 
     nodes.next_id = nodes.next_id + 2;
     nodes.size = nodes.size + 2;
@@ -273,9 +282,19 @@ where
             parent_node.children_id.insert(e + 1, right_node.node_id);
 
             println!("parent_node: node id,{}", parent_node.node_id);
+
+
+            let left_id = left_node.node_id;
+            let right_id = right_node.node_id;
+            let parent_id = parent_node.node_id;
+
             nodes.nodes_map.insert(parent_node.node_id, parent_node);
             nodes.nodes_map.insert(nodes.next_id, left_node);
             nodes.nodes_map.insert(nodes.next_id + 1, right_node);
+
+            calculate_hash(left_id, nodes);
+            calculate_hash(right_id, nodes);
+            calculate_hash(parent_id, nodes);
 
             nodes.next_id = nodes.next_id + 2;
             nodes.size = nodes.size + 1;
@@ -345,7 +364,7 @@ where
     if node.content.len() >= min_contents(nodes) as usize {
         println!("min contents:{}", min_contents(nodes));
         println!("needn't to rebalance");
-        recalculate_hash(nodes,node_id);
+        recalculate_hash(nodes, node_id);
         return false;
     }
 
@@ -385,11 +404,12 @@ where
                     left_sibling_left_most_child_id,
                     left_sibling_left_most_child_node,
                 );
+                calculate_hash(left_sibling_id, nodes);
             }
-
-            nodes.nodes_map.insert(parent_id, parent_node);
             nodes.nodes_map.insert(node_id, delete_node);
-
+            nodes.nodes_map.insert(parent_id, parent_node);
+            calculate_hash(node_id, nodes);
+            recalculate_hash(nodes, parent_id);
             return true;
         }
         nodes.nodes_map.insert(parent_id, parent_node);
@@ -432,10 +452,12 @@ where
                     right_sibling_left_most_child_id,
                     right_sibling_left_most_child_node,
                 );
+                calculate_hash(right_sibling_id, nodes);
             }
-
             nodes.nodes_map.insert(parent_id, parent_node);
             nodes.nodes_map.insert(node_id, delete_node);
+            calculate_hash(node_id, nodes);
+            recalculate_hash(nodes, parent_id);
             return true;
         }
         nodes.nodes_map.insert(parent_id, parent_node);
@@ -472,6 +494,9 @@ where
         nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
         nodes.nodes_map.insert(node_id, delete_node);
 
+        calculate_hash(node_id,nodes);
+        calculate_hash(parent_id,nodes);
+
         nodes.size = nodes.size - 1;
     } else if left_sibling_id != -1 {
         // merge with left sibling
@@ -502,6 +527,9 @@ where
         nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
         nodes.nodes_map.insert(node_id, delete_node);
 
+        calculate_hash(node_id,nodes);
+        calculate_hash(parent_id,nodes);
+
         nodes.size = nodes.size - 1;
     }
 
@@ -517,6 +545,7 @@ where
         set_parent(&mut node.children_id, node.node_id, nodes);
         nodes.nodes_map.remove(&parent_id);
         nodes.nodes_map.insert(parent_id, node);
+        calculate_hash(0,nodes);
         return false;
     }
 
