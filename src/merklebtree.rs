@@ -81,6 +81,7 @@ where
                 println!("node.children_id: {:?}", node.children_id);
                 println!("node.content: {:?}", node.content);
                 println!("node.parent_id: {:?}", node.parent_id);
+                println!("node.hash:{}", node.hash);
             }
             println!("****************************************************");
         }

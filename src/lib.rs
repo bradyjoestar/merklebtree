@@ -6,5 +6,6 @@ pub mod iterator;
 
 pub mod traits;
 
+extern crate ring;
 extern crate serde;
 extern crate serde_json;

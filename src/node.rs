@@ -4,6 +4,7 @@ use core::borrow::BorrowMut;
 use std::fmt::Debug;
 use std::io::BufRead;
 
+use ring::digest;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug)]
@@ -54,7 +55,12 @@ where
             node_id: id,
             hash: "".to_string(),
         };
-        node.hash = value_clone.calculate();
+        let node_hash = hex::encode(digest::digest(
+            &digest::SHA256,
+            value_clone.calculate().as_ref(),
+        ));
+        node.hash = node_hash;
+        println!("{}", node.hash);
         node
     }
 
@@ -76,7 +82,9 @@ where
         let child_node = nodes.nodes_map.get(i).unwrap();
         hash.push_str(child_node.hash.as_str());
     }
-    node.hash = hex::encode(hash);
+    println!("hash_input:{}", hash);
+    node.hash = hex::encode(digest::digest(&digest::SHA256, hash.as_ref()));
+    println!("node.id:{},node.hash:{}", node_id, node.hash);
     nodes.nodes_map.insert(node_id, node);
 }
 
@@ -221,7 +229,6 @@ where
 
     nodes.next_id = nodes.next_id + 2;
     nodes.size = nodes.size + 2;
-
 }
 
 pub fn split_not_root<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
@@ -267,7 +274,6 @@ where
             parent_node.content.insert(e, value);
             parent_node.children_id.insert(e, left_node.node_id);
             parent_node.children_id.insert(e + 1, right_node.node_id);
-
 
             let left_id = left_node.node_id;
             let right_id = right_node.node_id;
@@ -350,7 +356,6 @@ where
         recalculate_hash(nodes, node_id);
         return false;
     }
-
 
     let (left_sibling_id, left_sibling_index) = left_sibling(node_id, &value, nodes);
     if left_sibling_id != -1 {

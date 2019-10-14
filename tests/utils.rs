@@ -6,6 +6,10 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
+extern crate ring;
+use ring::digest;
+use ring::digest::Digest;
+
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Item {
     pub key: i32,
@@ -27,7 +31,9 @@ impl Ord for Item {
 
 impl CalculateHash for Item {
     fn calculate(&self) -> String {
-        String::new()
+        let hash = digest::digest(&digest::SHA256, self.key.to_string().as_ref());
+        let hex = hex::encode(hash);
+        hex
     }
 }
 
@@ -64,7 +70,9 @@ impl PartialOrd for Item2 {
 
 impl CalculateHash for Item2 {
     fn calculate(&self) -> String {
-        String::new()
+        let hash = digest::digest(&digest::SHA256, self.key.to_string().as_ref());
+        let hex = hex::encode(hash);
+        hex
     }
 }
 
@@ -94,7 +102,9 @@ impl PartialOrd for Item3 {
 
 impl CalculateHash for Item3 {
     fn calculate(&self) -> String {
-        String::new()
+        let hash = digest::digest(&digest::SHA256, self.key.to_string().as_ref());
+        let hex = hex::encode(hash);
+        hex
     }
 }
 
