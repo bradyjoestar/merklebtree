@@ -360,6 +360,7 @@ where
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
         if left_sibling_node.content.len() > min_contents(nodes) as usize {
+            println!("borrow from left sibling");
             let sibling_data = left_sibling_node.content.pop().unwrap();
             let parent_data = parent_node.content.remove((left_sibling_index) as usize);
             delete_node.content.insert(0, parent_data);
@@ -368,6 +369,7 @@ where
                 .insert(left_sibling_index as usize, sibling_data);
 
             nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+            calculate_hash(left_sibling_id, nodes);
 
             if !is_leaf(left_sibling_id, nodes) {
                 let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
@@ -407,6 +409,7 @@ where
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
 
         if right_sibling_node.content.len() > min_contents(nodes) as usize {
+            println!("borrow from right sibling");
             let sibling_data = right_sibling_node.content.remove(0);
             let parent_data = parent_node
                 .content
@@ -417,6 +420,7 @@ where
                 .insert((right_sibling_index - 1) as usize, sibling_data);
 
             nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+            calculate_hash(right_sibling_id, nodes);
 
             if !is_leaf(right_sibling_id, nodes) {
                 let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
@@ -451,6 +455,7 @@ where
     // merge with siblings
     if right_sibling_id != -1 {
         // merge with right sibling
+        println!("// merge with right sibling");
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
         let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
@@ -478,11 +483,13 @@ where
         nodes.nodes_map.insert(node_id, delete_node);
 
         calculate_hash(node_id, nodes);
+        calculate_hash(right_sibling_id, nodes);
         calculate_hash(parent_id, nodes);
 
         nodes.size = nodes.size - 1;
     } else if left_sibling_id != -1 {
         // merge with left sibling
+        println!("// merge with left sibling");
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
         let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
@@ -510,6 +517,7 @@ where
         nodes.nodes_map.insert(node_id, delete_node);
 
         calculate_hash(node_id, nodes);
+        calculate_hash(left_sibling_id, nodes);
         calculate_hash(parent_id, nodes);
 
         nodes.size = nodes.size - 1;
