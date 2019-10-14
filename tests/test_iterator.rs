@@ -497,7 +497,7 @@ fn test_btree_iterator_1_prev() {
     ); // overwrite
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
 
-    let mut countDown = btree_iterator.nodes.content_size;
+    let mut count_down = btree_iterator.nodes.content_size;
 
     loop {
         if !prev(&mut btree_iterator) {
@@ -508,22 +508,22 @@ fn test_btree_iterator_1_prev() {
         match key {
             count => {
                 let actual_value = key;
-                let expected_value = countDown;
+                let expected_value = count_down;
                 if actual_value != expected_value {
                     panic!("Got {} expected {}", actual_value, expected_value);
                 }
             }
             _ => {
                 let actual_value = key;
-                let expected_value = countDown;
+                let expected_value = count_down;
                 if actual_value != expected_value {
                     panic!("Got {} expected {}", actual_value, expected_value);
                 }
             }
         }
-        countDown = countDown - 1;
+        count_down = count_down - 1;
     }
-    let actual_value = countDown;
+    let actual_value = count_down;
     let expected_value = btree_iterator.nodes.content_size;
     if actual_value != expected_value {
         panic!("Got {} expected {}", actual_value, expected_value);
@@ -635,7 +635,7 @@ fn test_btree_iterator_2_prev() {
     );
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
 
-    let mut countDown = btree_iterator.nodes.content_size;
+    let mut count_down = btree_iterator.nodes.content_size;
 
     loop {
         if !prev(&mut btree_iterator) {
@@ -646,22 +646,22 @@ fn test_btree_iterator_2_prev() {
         match key {
             count => {
                 let actual_value = key;
-                let expected_value = countDown;
+                let expected_value = count_down;
                 if actual_value != expected_value {
                     panic!("Got {} expected {}", actual_value, expected_value);
                 }
             }
             _ => {
                 let actual_value = key;
-                let expected_value = countDown;
+                let expected_value = count_down;
                 if actual_value != expected_value {
                     panic!("Got {} expected {}", actual_value, expected_value);
                 }
             }
         }
-        countDown = countDown - 1;
+        count_down = count_down - 1;
     }
-    let actual_value = countDown;
+    let actual_value = count_down;
     let expected_value = btree_iterator.nodes.content_size;
     if actual_value != expected_value {
         panic!("Got {} expected {}", actual_value, expected_value);
@@ -745,7 +745,7 @@ fn test_btree_iterator_3_prev() {
     );
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
 
-    let mut countDown = btree_iterator.nodes.content_size;
+    let mut count_down = btree_iterator.nodes.content_size;
 
     loop {
         if !prev(&mut btree_iterator) {
@@ -756,22 +756,22 @@ fn test_btree_iterator_3_prev() {
         match key {
             count => {
                 let actual_value = key;
-                let expected_value = countDown;
+                let expected_value = count_down;
                 if actual_value != expected_value {
                     panic!("Got {} expected {}", actual_value, expected_value);
                 }
             }
             _ => {
                 let actual_value = key;
-                let expected_value = countDown;
+                let expected_value = count_down;
                 if actual_value != expected_value {
                     panic!("Got {} expected {}", actual_value, expected_value);
                 }
             }
         }
-        countDown = countDown - 1;
+        count_down = count_down - 1;
     }
-    let actual_value = countDown;
+    let actual_value = count_down;
     let expected_value = btree_iterator.nodes.content_size;
     if actual_value != expected_value {
         panic!("Got {} expected {}", actual_value, expected_value);
@@ -863,7 +863,7 @@ fn test_btree_iterator_4_prev() {
 
     let mut btree_iterator = new_btree_iterator(&mut nodes, position::begin, &mut tree);
 
-    let mut countDown = btree_iterator.nodes.content_size;
+    let mut count_down = btree_iterator.nodes.content_size;
 
     loop {
         if !prev(&mut btree_iterator) {
@@ -874,22 +874,22 @@ fn test_btree_iterator_4_prev() {
         match key {
             count => {
                 let actual_value = key;
-                let expected_value = countDown;
+                let expected_value = count_down;
                 if actual_value != expected_value {
                     panic!("Got {} expected {}", actual_value, expected_value);
                 }
             }
             _ => {
                 let actual_value = key;
-                let expected_value = countDown;
+                let expected_value = count_down;
                 if actual_value != expected_value {
                     panic!("Got {} expected {}", actual_value, expected_value);
                 }
             }
         }
-        countDown = countDown - 1;
+        count_down = count_down - 1;
     }
-    let actual_value = countDown;
+    let actual_value = count_down;
     let expected_value = btree_iterator.nodes.content_size;
     if actual_value != expected_value {
         panic!("Got {} expected {}", actual_value, expected_value);

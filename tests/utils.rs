@@ -108,45 +108,45 @@ impl CalculateHash for Item3 {
     }
 }
 
-pub fn assertValidTree<T>(nodes: &Nodes<T>, expectedSize: i32)
+pub fn assert_valid_tree<T>(nodes: &Nodes<T>, expected_size: i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
-    let (actualValue, expectedValue) = (nodes.content_size, expectedSize);
-    if actualValue != expectedValue as i32 {
+    let (actual_value, expected_value) = (nodes.content_size, expected_size);
+    if actual_value != expected_value as i32 {
         panic!(
             "Got {} expected {} for content size",
-            actualValue, expectedValue
+            actual_value, expected_value
         );
     }
 }
 
-pub fn assertValidTreeNode(
+pub fn assert_valid_tree_node(
     branch: &Vec<i32>, //from root  i.e vec![0,1,2] //0 replace root
-    expectedContents: i32,
-    expectedChildren: i32,
+    expected_contents: i32,
+    expected_children: i32,
     keys: &Vec<i32>,
-    hasParent: bool,
+    has_parent: bool,
     nodes: &Nodes<Item2>,
 ) {
     let node_id = find_nodeid_by_branch(branch, nodes);
     let node = nodes.nodes_map.get(&node_id).unwrap();
-    let actualValue = node.parent_id != -1;
-    if actualValue != hasParent {
-        panic!("Got {} expected {} for hasParent", actualValue, hasParent);
+    let actual_value = node.parent_id != -1;
+    if actual_value != has_parent {
+        panic!("Got {} expected {} for has_parent", actual_value, has_parent);
     }
-    let actualValue = node.content.len();
-    if actualValue != expectedContents as usize {
+    let actual_value = node.content.len();
+    if actual_value != expected_contents as usize {
         panic!(
             "Got {} expected {} for contents size",
-            actualValue, expectedContents
+            actual_value, expected_contents
         );
     }
-    let actualValue = node.children_id.len();
-    if actualValue != expectedChildren as usize {
+    let actual_value = node.children_id.len();
+    if actual_value != expected_children as usize {
         panic!(
             "Got {} expected {} for contents size",
-            actualValue, expectedChildren
+            actual_value, expected_children
         );
     }
 
@@ -161,32 +161,32 @@ pub fn assertValidTreeNode(
     }
 }
 
-pub fn assertValidTreeNodeItem3(
+pub fn assert_valid_tree_node_item3(
     branch: &Vec<i32>, //from root  i.e vec![0,1,2] //0 replace root
-    expectedContents: i32,
-    expectedChildren: i32,
+    expected_contents: i32,
+    expected_children: i32,
     keys: &Vec<i32>,
-    hasParent: bool,
+    has_parent: bool,
     nodes: &Nodes<Item3>,
 ) {
     let node_id = find_nodeid_by_branch(branch, nodes);
     let node = nodes.nodes_map.get(&node_id).unwrap();
-    let actualValue = node.parent_id != -1;
-    if actualValue != hasParent {
-        panic!("Got {} expected {} for hasParent", actualValue, hasParent);
+    let actual_value = node.parent_id != -1;
+    if actual_value != has_parent {
+        panic!("Got {} expected {} for has_parent", actual_value, has_parent);
     }
-    let actualValue = node.content.len();
-    if actualValue != expectedContents as usize {
+    let actual_value = node.content.len();
+    if actual_value != expected_contents as usize {
         panic!(
             "Got {} expected {} for contents size",
-            actualValue, expectedContents
+            actual_value, expected_contents
         );
     }
-    let actualValue = node.children_id.len();
-    if actualValue != expectedChildren as usize {
+    let actual_value = node.children_id.len();
+    if actual_value != expected_children as usize {
         panic!(
             "Got {} expected {} for contents size",
-            actualValue, expectedChildren
+            actual_value, expected_children
         );
     }
 

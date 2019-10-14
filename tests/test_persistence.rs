@@ -31,14 +31,14 @@ fn test_btree_persistence_1() {
     tree.put(Item2 { key: 5, value: 2 }, &mut nodes);
     tree.put(Item2 { key: 6, value: 2 }, &mut nodes);
     tree.put(Item2 { key: 7, value: 2 }, &mut nodes);
-    assertValidTree(&nodes, 7);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![4], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
-    assertValidTreeNode(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
-    assertValidTreeNode(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
-    assertValidTreeNode(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
-    assertValidTreeNode(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
+    assert_valid_tree(&nodes, 7);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![4], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
+    assert_valid_tree_node(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
+    assert_valid_tree_node(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
 
     let nodes_serialize = NodesSerialize {
         size: nodes.size,
@@ -53,14 +53,14 @@ fn test_btree_persistence_1() {
     save_nodes(&mut nodes);
     let nodes_load = load_nodes();
 
-    assertValidTree(&nodes, 7);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![4], false, &nodes_load);
-    assertValidTreeNode(&vec![0, 0], 1, 2, &vec![2], true, &nodes_load);
-    assertValidTreeNode(&vec![0, 1], 1, 2, &vec![6], true, &nodes_load);
-    assertValidTreeNode(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes_load);
-    assertValidTreeNode(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes_load);
-    assertValidTreeNode(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes_load);
-    assertValidTreeNode(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes_load);
+    assert_valid_tree(&nodes, 7);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![4], false, &nodes_load);
+    assert_valid_tree_node(&vec![0, 0], 1, 2, &vec![2], true, &nodes_load);
+    assert_valid_tree_node(&vec![0, 1], 1, 2, &vec![6], true, &nodes_load);
+    assert_valid_tree_node(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes_load);
+    assert_valid_tree_node(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes_load);
+    assert_valid_tree_node(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes_load);
+    assert_valid_tree_node(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes_load);
 
     remove_file();
 }

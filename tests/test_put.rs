@@ -212,79 +212,79 @@ fn test_btree_put_1() {
         m: 0,
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
-    assertValidTree(&nodes, 0);
+    assert_valid_tree(&nodes, 0);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 1, value: 0 }, &mut nodes);
-    assertValidTree(&nodes, 1);
-    assertValidTreeNode(&vec![0], 1, 0, &vec![1], false, &nodes);
+    assert_valid_tree(&nodes, 1);
+    assert_valid_tree_node(&vec![0], 1, 0, &vec![1], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 2, value: 1 }, &mut nodes);
-    assertValidTree(&nodes, 2);
-    assertValidTreeNode(&vec![0], 2, 0, &vec![1, 2], false, &nodes);
+    assert_valid_tree(&nodes, 2);
+    assert_valid_tree_node(&vec![0], 2, 0, &vec![1, 2], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 3, value: 2 }, &mut nodes);
-    assertValidTree(&nodes, 3);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![2], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
+    assert_valid_tree(&nodes, 3);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![2], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 4, value: 2 }, &mut nodes);
-    assertValidTree(&nodes, 4);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![2], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 2, 0, &vec![3, 4], true, &nodes);
+    assert_valid_tree(&nodes, 4);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![2], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 2, 0, &vec![3, 4], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 5, value: 2 }, &mut nodes);
-    assertValidTree(&nodes, 5);
-    assertValidTreeNode(&vec![0], 2, 3, &vec![2, 4], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
-    assertValidTreeNode(&vec![0, 2], 1, 0, &vec![5], true, &nodes);
+    assert_valid_tree(&nodes, 5);
+    assert_valid_tree_node(&vec![0], 2, 3, &vec![2, 4], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
+    assert_valid_tree_node(&vec![0, 2], 1, 0, &vec![5], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 6, value: 2 }, &mut nodes);
-    assertValidTree(&nodes, 6);
-    assertValidTreeNode(&vec![0], 2, 3, &vec![2, 4], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
-    assertValidTreeNode(&vec![0, 2], 2, 0, &vec![5, 6], true, &nodes);
+    assert_valid_tree(&nodes, 6);
+    assert_valid_tree_node(&vec![0], 2, 3, &vec![2, 4], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 0, &vec![1], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 1, 0, &vec![3], true, &nodes);
+    assert_valid_tree_node(&vec![0, 2], 2, 0, &vec![5, 6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 7, value: 2 }, &mut nodes);
-    assertValidTree(&nodes, 7);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![4], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
-    assertValidTreeNode(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
-    assertValidTreeNode(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
-    assertValidTreeNode(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
-    assertValidTreeNode(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
+    assert_valid_tree(&nodes, 7);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![4], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
+    assert_valid_tree_node(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
+    assert_valid_tree_node(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
@@ -303,70 +303,70 @@ fn test_btree_put_2() {
         m: 0,
     };
     let mut tree = MerkleBTree::new_empty(4, &mut nodes);
-    assertValidTree(&nodes, 0);
+    assert_valid_tree(&nodes, 0);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 0, value: 0 }, &mut nodes);
-    assertValidTree(&nodes, 1);
-    assertValidTreeNode(&vec![0], 1, 0, &vec![0], false, &nodes);
+    assert_valid_tree(&nodes, 1);
+    assert_valid_tree_node(&vec![0], 1, 0, &vec![0], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 2, value: 2 }, &mut nodes);
-    assertValidTree(&nodes, 2);
-    assertValidTreeNode(&vec![0], 2, 0, &vec![0, 2], false, &nodes);
+    assert_valid_tree(&nodes, 2);
+    assert_valid_tree_node(&vec![0], 2, 0, &vec![0, 2], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 1, value: 1 }, &mut nodes);
-    assertValidTree(&nodes, 3);
-    assertValidTreeNode(&vec![0], 3, 0, &vec![0, 1, 2], false, &nodes);
+    assert_valid_tree(&nodes, 3);
+    assert_valid_tree_node(&vec![0], 3, 0, &vec![0, 1, 2], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 1, value: 1 }, &mut nodes);
-    assertValidTree(&nodes, 3);
-    assertValidTreeNode(&vec![0], 3, 0, &vec![0, 1, 2], false, &nodes);
+    assert_valid_tree(&nodes, 3);
+    assert_valid_tree_node(&vec![0], 3, 0, &vec![0, 1, 2], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 3, value: 3 }, &mut nodes);
-    assertValidTree(&nodes, 4);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![1], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![0], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 2, 0, &vec![2, 3], true, &nodes);
+    assert_valid_tree(&nodes, 4);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![1], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 0, &vec![0], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 2, 0, &vec![2, 3], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 4, value: 4 }, &mut nodes);
-    assertValidTree(&nodes, 5);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![1], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![0], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 3, 0, &vec![2, 3, 4], true, &nodes);
+    assert_valid_tree(&nodes, 5);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![1], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 0, &vec![0], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 3, 0, &vec![2, 3, 4], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 5, value: 5 }, &mut nodes);
-    assertValidTree(&nodes, 6);
-    assertValidTreeNode(&vec![0], 2, 3, &vec![1, 3], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 1, 0, &vec![0], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 1, 0, &vec![2], true, &nodes);
-    assertValidTreeNode(&vec![0, 2], 2, 0, &vec![4, 5], true, &nodes);
+    assert_valid_tree(&nodes, 6);
+    assert_valid_tree_node(&vec![0], 2, 3, &vec![1, 3], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 1, 0, &vec![0], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 1, 0, &vec![2], true, &nodes);
+    assert_valid_tree_node(&vec![0, 2], 2, 0, &vec![4, 5], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
@@ -385,88 +385,88 @@ fn test_btree_put_3() {
         m: 0,
     };
     let mut tree = MerkleBTree::new_empty(6, &mut nodes);
-    assertValidTree(&nodes, 0);
+    assert_valid_tree(&nodes, 0);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 10, value: 0 }, &mut nodes);
-    assertValidTree(&nodes, 1);
-    assertValidTreeNode(&vec![0], 1, 0, &vec![10], false, &nodes);
+    assert_valid_tree(&nodes, 1);
+    assert_valid_tree_node(&vec![0], 1, 0, &vec![10], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 20, value: 1 }, &mut nodes);
-    assertValidTree(&nodes, 2);
-    assertValidTreeNode(&vec![0], 2, 0, &vec![10, 20], false, &nodes);
+    assert_valid_tree(&nodes, 2);
+    assert_valid_tree_node(&vec![0], 2, 0, &vec![10, 20], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 30, value: 2 }, &mut nodes);
-    assertValidTree(&nodes, 3);
-    assertValidTreeNode(&vec![0], 3, 0, &vec![10, 20, 30], false, &nodes);
+    assert_valid_tree(&nodes, 3);
+    assert_valid_tree_node(&vec![0], 3, 0, &vec![10, 20, 30], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 40, value: 3 }, &mut nodes);
-    assertValidTree(&nodes, 4);
-    assertValidTreeNode(&vec![0], 4, 0, &vec![10, 20, 30, 40], false, &nodes);
+    assert_valid_tree(&nodes, 4);
+    assert_valid_tree_node(&vec![0], 4, 0, &vec![10, 20, 30, 40], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 50, value: 4 }, &mut nodes);
-    assertValidTree(&nodes, 5);
-    assertValidTreeNode(&vec![0], 5, 0, &vec![10, 20, 30, 40, 50], false, &nodes);
+    assert_valid_tree(&nodes, 5);
+    assert_valid_tree_node(&vec![0], 5, 0, &vec![10, 20, 30, 40, 50], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 60, value: 5 }, &mut nodes);
-    assertValidTree(&nodes, 6);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![30], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 2, 0, &vec![10, 20], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 3, 0, &vec![40, 50, 60], true, &nodes);
+    assert_valid_tree(&nodes, 6);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![30], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 2, 0, &vec![10, 20], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 3, 0, &vec![40, 50, 60], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 70, value: 6 }, &mut nodes);
-    assertValidTree(&nodes, 7);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![30], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 2, 0, &vec![10, 20], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 4, 0, &vec![40, 50, 60, 70], true, &nodes);
+    assert_valid_tree(&nodes, 7);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![30], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 2, 0, &vec![10, 20], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 4, 0, &vec![40, 50, 60, 70], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 80, value: 7 }, &mut nodes);
-    assertValidTree(&nodes, 8);
-    assertValidTreeNode(&vec![0], 1, 2, &vec![30], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 2, 0, &vec![10, 20], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 5, 0, &vec![40, 50, 60, 70, 80], true, &nodes);
+    assert_valid_tree(&nodes, 8);
+    assert_valid_tree_node(&vec![0], 1, 2, &vec![30], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 2, 0, &vec![10, 20], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 5, 0, &vec![40, 50, 60, 70, 80], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item2 { key: 90, value: 8 }, &mut nodes);
-    assertValidTree(&nodes, 9);
-    assertValidTreeNode(&vec![0], 2, 3, &vec![30, 60], false, &nodes);
-    assertValidTreeNode(&vec![0, 0], 2, 0, &vec![10, 20], true, &nodes);
-    assertValidTreeNode(&vec![0, 1], 2, 0, &vec![40, 50], true, &nodes);
-    assertValidTreeNode(&vec![0, 2], 3, 0, &vec![70, 80, 90], true, &nodes);
+    assert_valid_tree(&nodes, 9);
+    assert_valid_tree_node(&vec![0], 2, 3, &vec![30, 60], false, &nodes);
+    assert_valid_tree_node(&vec![0, 0], 2, 0, &vec![10, 20], true, &nodes);
+    assert_valid_tree_node(&vec![0, 1], 2, 0, &vec![40, 50], true, &nodes);
+    assert_valid_tree_node(&vec![0, 2], 3, 0, &vec![70, 80, 90], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
@@ -485,140 +485,140 @@ fn test_btree_put_4() {
         m: 0,
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
-    assertValidTree(&nodes, 0);
+    assert_valid_tree(&nodes, 0);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: 6 }, &mut nodes);
-    assertValidTree(&nodes, 1);
-    assertValidTreeNodeItem3(&vec![0], 1, 0, &vec![6], false, &nodes);
+    assert_valid_tree(&nodes, 1);
+    assert_valid_tree_node_item3(&vec![0], 1, 0, &vec![6], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: 5 }, &mut nodes);
-    assertValidTree(&nodes, 2);
-    assertValidTreeNodeItem3(&vec![0], 2, 0, &vec![5, 6], false, &nodes);
+    assert_valid_tree(&nodes, 2);
+    assert_valid_tree_node_item3(&vec![0], 2, 0, &vec![5, 6], false, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: 4 }, &mut nodes);
-    assertValidTree(&nodes, 3);
-    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![5], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 1, 0, &vec![4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 3);
+    assert_valid_tree_node_item3(&vec![0], 1, 2, &vec![5], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 1, 0, &vec![4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: 3 }, &mut nodes);
-    assertValidTree(&nodes, 4);
-    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![5], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 2, 0, &vec![3, 4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 4);
+    assert_valid_tree_node_item3(&vec![0], 1, 2, &vec![5], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 2, 0, &vec![3, 4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: 2 }, &mut nodes);
-    assertValidTree(&nodes, 5);
-    assertValidTreeNodeItem3(&vec![0], 2, 3, &vec![3, 5], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 1, 0, &vec![2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 2], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 5);
+    assert_valid_tree_node_item3(&vec![0], 2, 3, &vec![3, 5], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 1, 0, &vec![2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 0, &vec![4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 2], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: 1 }, &mut nodes);
-    assertValidTree(&nodes, 6);
-    assertValidTreeNodeItem3(&vec![0], 2, 3, &vec![3, 5], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 2, 0, &vec![1, 2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 0, &vec![4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 2], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 6);
+    assert_valid_tree_node_item3(&vec![0], 2, 3, &vec![3, 5], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 2, 0, &vec![1, 2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 0, &vec![4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 2], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: 0 }, &mut nodes);
-    assertValidTree(&nodes, 7);
-    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![3], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 1, 2, &vec![1], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 2, &vec![5], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 0], 1, 0, &vec![0], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 7);
+    assert_valid_tree_node_item3(&vec![0], 1, 2, &vec![3], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 1, 2, &vec![1], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 2, &vec![5], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 0], 1, 0, &vec![0], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 1], 1, 0, &vec![2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 0], 1, 0, &vec![4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 1], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: -1 }, &mut nodes);
-    assertValidTree(&nodes, 8);
-    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![3], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 1, 2, &vec![1], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 2, &vec![5], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 0], 2, 0, &vec![-1, 0], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 8);
+    assert_valid_tree_node_item3(&vec![0], 1, 2, &vec![3], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 1, 2, &vec![1], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 2, &vec![5], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 0], 2, 0, &vec![-1, 0], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 1], 1, 0, &vec![2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 0], 1, 0, &vec![4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 1], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: -2 }, &mut nodes);
-    assertValidTree(&nodes, 9);
-    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![3], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 2, 3, &vec![-1, 1], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 2, &vec![5], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 0], 1, 0, &vec![-2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![0], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 2], 1, 0, &vec![2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 9);
+    assert_valid_tree_node_item3(&vec![0], 1, 2, &vec![3], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 2, 3, &vec![-1, 1], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 2, &vec![5], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 0], 1, 0, &vec![-2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 1], 1, 0, &vec![0], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 2], 1, 0, &vec![2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 0], 1, 0, &vec![4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 1], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: -3 }, &mut nodes);
-    assertValidTree(&nodes, 10);
-    assertValidTreeNodeItem3(&vec![0], 1, 2, &vec![3], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 2, 3, &vec![-1, 1], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 2, &vec![5], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 0], 2, 0, &vec![-3, -2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![0], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 2], 1, 0, &vec![2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 10);
+    assert_valid_tree_node_item3(&vec![0], 1, 2, &vec![3], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 2, 3, &vec![-1, 1], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 2, &vec![5], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 0], 2, 0, &vec![-3, -2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 1], 1, 0, &vec![0], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 2], 1, 0, &vec![2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 0], 1, 0, &vec![4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 1], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
     );
 
     tree.put(Item3 { key: -4 }, &mut nodes);
-    assertValidTree(&nodes, 11);
-    assertValidTreeNodeItem3(&vec![0], 2, 3, &vec![-1, 3], false, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0], 1, 2, &vec![-3], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1], 1, 2, &vec![1], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 2], 1, 2, &vec![5], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 0], 1, 0, &vec![-4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 0, 1], 1, 0, &vec![-2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 0], 1, 0, &vec![0], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 1, 1], 1, 0, &vec![2], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 2, 0], 1, 0, &vec![4], true, &nodes);
-    assertValidTreeNodeItem3(&vec![0, 2, 1], 1, 0, &vec![6], true, &nodes);
+    assert_valid_tree(&nodes, 11);
+    assert_valid_tree_node_item3(&vec![0], 2, 3, &vec![-1, 3], false, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0], 1, 2, &vec![-3], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1], 1, 2, &vec![1], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 2], 1, 2, &vec![5], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 0], 1, 0, &vec![-4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 0, 1], 1, 0, &vec![-2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 0], 1, 0, &vec![0], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 1, 1], 1, 0, &vec![2], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 2, 0], 1, 0, &vec![4], true, &nodes);
+    assert_valid_tree_node_item3(&vec![0, 2, 1], 1, 0, &vec![6], true, &nodes);
     assert_eq!(
         nodes.merkleroot(),
         nodes.recalculate_merkleroot().merkleroot()
