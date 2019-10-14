@@ -70,8 +70,6 @@ impl CalculateHash for Item2 {
 }
 
 fn main() {
-    println!("Hello, world!");
-
     test1();
 }
 
@@ -91,7 +89,6 @@ fn test1() {
     for i in 1..21 {
         let item = Item2 { key: i };
         tree.put(item, &mut nodes);
-        println!("total node:{}", nodes.size);
     }
 
     nodes.iterator();
@@ -101,14 +98,12 @@ fn test1() {
     nodes.iterator();
 
     println!("--------------remove the content from leaf node---------------------");
-    println!("wenbin test");
     tree.remove(Item2 { key: 2 }, &mut nodes);
 
     nodes.iterator();
 
     let mut branch = vec![0, 0, 0, 2];
     let find_id = find_nodeid_by_branch(&branch, &nodes);
-    println!("{}", find_id);
 }
 
 fn test2() {

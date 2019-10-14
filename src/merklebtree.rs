@@ -68,7 +68,6 @@ where
                 looptime = looptime + 1;
             }
         }
-        println!("println nodes");
 
         for i in 0..a.len() {
             println!("****************************************************");
@@ -112,7 +111,6 @@ impl MerkleBTree {
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
-        println!("{:?}", value);
         let mut tree = MerkleBTree {
             rootid: nodes.root_id,
             m: order,
@@ -155,12 +153,8 @@ impl MerkleBTree {
         T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
         let (search_node_id, index, found) = self.search_recursively(nodes.root_id, &value, nodes);
-        println!(
-            "search_node_id:{},index:{},found:{}",
-            search_node_id, index, found
-        );
+
         if found {
-            println!("try to remove node");
             node::delete(search_node_id, index, nodes);
             nodes.content_size = nodes.content_size - 1;
         }
@@ -219,11 +213,9 @@ impl MerkleBTree {
             let content_slice = node.content.as_slice();
             match content_slice.binary_search(&value) {
                 Ok(t) => {
-                    println!("found");
                     return (node.node_id, t as i32, true);
                 }
                 Err(e) => {
-                    println!("not found");
                     if node.children_id.len() == 0 {
                         return (-1, -1, false);
                     }

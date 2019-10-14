@@ -222,18 +222,6 @@ where
     nodes.next_id = nodes.next_id + 2;
     nodes.size = nodes.size + 2;
 
-    println!(
-        "left node:{:?}",
-        nodes.nodes_map.get(&(nodes.next_id - 2)).unwrap().content
-    );
-    println!(
-        "right node: {:?}",
-        nodes.nodes_map.get(&(nodes.next_id - 1)).unwrap().content
-    );
-    println!(
-        "root node:{:?}",
-        nodes.nodes_map.get(&(nodes.root_id)).unwrap().content
-    );
 }
 
 pub fn split_not_root<T>(split_id: i32, order: u32, nodes: &mut Nodes<T>)
@@ -280,7 +268,6 @@ where
             parent_node.children_id.insert(e, left_node.node_id);
             parent_node.children_id.insert(e + 1, right_node.node_id);
 
-            println!("parent_node: node id,{}", parent_node.node_id);
 
             let left_id = left_node.node_id;
             let right_id = right_node.node_id;
@@ -360,13 +347,10 @@ where
     let parent_id = node.parent_id;
     // check if rebalancing is needed
     if node.content.len() >= min_contents(nodes) as usize {
-        println!("min contents:{}", min_contents(nodes));
-        println!("needn't to rebalance");
         recalculate_hash(nodes, node_id);
         return false;
     }
 
-    println!("need to rebalance, deletedItem  is :{:?}", value);
 
     let (left_sibling_id, left_sibling_index) = left_sibling(node_id, &value, nodes);
     if left_sibling_id != -1 {
@@ -375,7 +359,6 @@ where
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
         if left_sibling_node.content.len() > min_contents(nodes) as usize {
             let sibling_data = left_sibling_node.content.pop().unwrap();
-            println!("{}", left_sibling_index);
             let parent_data = parent_node.content.remove((left_sibling_index) as usize);
             delete_node.content.insert(0, parent_data);
             parent_node
@@ -498,7 +481,6 @@ where
         nodes.size = nodes.size - 1;
     } else if left_sibling_id != -1 {
         // merge with left sibling
-        println!("borrow from left_sibling_id");
         let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
         let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
         let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
@@ -559,7 +541,6 @@ where
     let node = nodes.nodes_map.get_mut(&node_id).unwrap();
     let parent_id = node.parent_id;
     if parent_id != -1 {
-        println!("{}", parent_id);
         let parent_node = nodes.nodes_map.get_mut(&parent_id).unwrap();
         let content_slice = parent_node.content.as_slice();
         match content_slice.binary_search(value) {
