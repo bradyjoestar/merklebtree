@@ -87,19 +87,19 @@ where
         }
     }
 
-    pub fn merkleroot(&self) -> String{
+    pub fn merkleroot(&self) -> String {
         let node = self.nodes_map.get(&0).unwrap();
         node.hash.clone()
     }
 
-    pub fn recalculate_merkleroot(&mut self) -> Self{
+    pub fn recalculate_merkleroot(&mut self) -> Self {
         let mut a = Vec::new();
 
         let mut nodes_clone = self.clone();
-        for (i,j) in self.nodes_map.iter(){
+        for (i, j) in self.nodes_map.iter() {
             let mut node = nodes_clone.nodes_map.remove(i).unwrap();
             node.hash = String::new();
-            nodes_clone.nodes_map.insert(node.node_id,node);
+            nodes_clone.nodes_map.insert(node.node_id, node);
         }
 
         let mut looptime = 0;
@@ -136,11 +136,11 @@ where
 
         for i in 0..a.len() {
             println!("****************************************************");
-            let sub_vec = a.get(a.len()-1-i).unwrap();
+            let sub_vec = a.get(a.len() - 1 - i).unwrap();
             for j in 0..sub_vec.len() {
                 let node = *sub_vec.get(j).unwrap();
                 let node_in_clone = nodes_clone.nodes_map.get(&node.node_id).unwrap();
-                calculate_hash(node.node_id,&mut nodes_clone);
+                calculate_hash(node.node_id, &mut nodes_clone);
             }
             println!("****************************************************");
         }

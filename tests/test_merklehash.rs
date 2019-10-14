@@ -49,10 +49,7 @@ fn test_merkle_put_2() {
 
     let mut nodes_clone = nodes.recalculate_merkleroot();
     nodes_clone.iterator();
-    assert_eq!(
-        merkle_root,
-        nodes_clone.merkleroot()
-    );
+    assert_eq!(merkle_root, nodes_clone.merkleroot());
 }
 
 #[test]
@@ -74,10 +71,7 @@ fn test_merkle_put_3() {
 
     let mut nodes_clone = nodes.recalculate_merkleroot();
     nodes_clone.iterator();
-    assert_eq!(
-        merkle_root,
-        nodes_clone.merkleroot()
-    );
+    assert_eq!(merkle_root, nodes_clone.merkleroot());
 }
 
 #[test]
@@ -101,8 +95,5 @@ fn test_merkle_put_4() {
 
     let mut nodes_clone = nodes.recalculate_merkleroot();
     nodes_clone.iterator();
-    assert_eq!(
-        merkle_root,
-        nodes_clone.merkleroot()
-    );
+    assert_eq!(merkle_root, nodes_clone.merkleroot());
 }
