@@ -60,7 +60,6 @@ where
             value_clone.calculate().as_ref(),
         ));
         node.hash = node_hash;
-        println!("{}", node.hash);
         node
     }
 
@@ -82,9 +81,7 @@ where
         let child_node = nodes.nodes_map.get(i).unwrap();
         hash.push_str(child_node.hash.as_str());
     }
-    println!("hash_input:{}", hash);
     node.hash = hex::encode(digest::digest(&digest::SHA256, hash.as_ref()));
-    println!("node.id:{},node.hash:{}", node_id, node.hash);
     nodes.nodes_map.insert(node_id, node);
 }
 

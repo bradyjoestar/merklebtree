@@ -46,9 +46,12 @@ fn test_merkle_put_2() {
 
     tree.put(Item2 { key: 1, value: 5 }, &mut nodes);
     let merkle_root = nodes.nodes_map.get(&0).unwrap().hash.clone();
+
+    let mut nodes_clone = nodes.recalculate_merkleroot();
+    nodes_clone.iterator();
     assert_eq!(
         merkle_root,
-        String::from("e0bc614e4fd035a488619799853b075143deea596c477b8dc077e309c0fe42e9")
+        nodes_clone.merkleroot()
     );
 }
 
@@ -68,9 +71,12 @@ fn test_merkle_put_3() {
     tree.put(Item2 { key: 1, value: 5 }, &mut nodes);
     tree.put(Item2 { key: 2, value: 5 }, &mut nodes);
     let merkle_root = nodes.nodes_map.get(&0).unwrap().hash.clone();
+
+    let mut nodes_clone = nodes.recalculate_merkleroot();
+    nodes_clone.iterator();
     assert_eq!(
         merkle_root,
-        String::from("33b675636da5dcc86ec847b38c08fa49ff1cace9749931e0a5d4dfdbdedd808a")
+        nodes_clone.merkleroot()
     );
 }
 
@@ -92,10 +98,11 @@ fn test_merkle_put_4() {
     tree.put(Item2 { key: 3, value: 5 }, &mut nodes);
 
     let merkle_root = nodes.nodes_map.get(&0).unwrap().hash.clone();
-    nodes.iterator();
+
+    let mut nodes_clone = nodes.recalculate_merkleroot();
+    nodes_clone.iterator();
     assert_eq!(
         merkle_root,
-        String::from("487a269353d53d84e9b53afc0985704c69face091613bb2a21b9e68f5bf7664c")
+        nodes_clone.merkleroot()
     );
-    assert_eq!(1,2);
 }

@@ -1,6 +1,6 @@
 use crate::node;
-use crate::node::is_leaf;
 use crate::node::Node;
+use crate::node::{calculate_hash, is_leaf};
 use crate::traits::CalculateHash;
 use core::borrow::{Borrow, BorrowMut};
 use std::collections::HashMap;
@@ -85,6 +85,66 @@ where
             }
             println!("****************************************************");
         }
+    }
+
+    pub fn merkleroot(&self) -> String{
+        let node = self.nodes_map.get(&0).unwrap();
+        node.hash.clone()
+    }
+
+    pub fn recalculate_merkleroot(&mut self) -> Self{
+        let mut a = Vec::new();
+
+        let mut nodes_clone = self.clone();
+        for (i,j) in self.nodes_map.iter(){
+            let mut node = nodes_clone.nodes_map.remove(i).unwrap();
+            node.hash = String::new();
+            nodes_clone.nodes_map.insert(node.node_id,node);
+        }
+
+        let mut looptime = 0;
+
+        'outer: loop {
+            if a.len() == 0 {
+                let mut b: Vec<&Node<T>> = Vec::new();
+                let node = self.nodes_map.get(&0).unwrap();
+                b.push(node);
+                a.push(b);
+                looptime = looptime + 1;
+            } else {
+                let pre_vec = a.remove(looptime - 1);
+                let len = pre_vec.len();
+                let mut b: Vec<&Node<T>> = Vec::new();
+                for i in 0..len {
+                    let node = pre_vec.get(i).unwrap();
+                    if node.children_id.len() == 0 {
+                        a.insert(looptime - 1, pre_vec);
+                        break 'outer;
+                    }
+
+                    for i in 0..node.children_id.len() {
+                        let node_id = node.children_id.get(i).unwrap();
+                        let node = self.nodes_map.get(node_id).unwrap();
+                        b.push(node);
+                    }
+                }
+                a.insert(looptime - 1, pre_vec);
+                a.push(b);
+                looptime = looptime + 1;
+            }
+        }
+
+        for i in 0..a.len() {
+            println!("****************************************************");
+            let sub_vec = a.get(a.len()-1-i).unwrap();
+            for j in 0..sub_vec.len() {
+                let node = *sub_vec.get(j).unwrap();
+                let node_in_clone = nodes_clone.nodes_map.get(&node.node_id).unwrap();
+                calculate_hash(node.node_id,&mut nodes_clone);
+            }
+            println!("****************************************************");
+        }
+        nodes_clone
     }
 }
 
