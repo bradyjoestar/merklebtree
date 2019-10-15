@@ -133,7 +133,10 @@ pub fn assert_valid_tree_node(
     let node = nodes.nodes_map.get(&node_id).unwrap();
     let actual_value = node.parent_id != -1;
     if actual_value != has_parent {
-        panic!("Got {} expected {} for has_parent", actual_value, has_parent);
+        panic!(
+            "Got {} expected {} for has_parent",
+            actual_value, has_parent
+        );
     }
     let actual_value = node.content.len();
     if actual_value != expected_contents as usize {
@@ -173,7 +176,10 @@ pub fn assert_valid_tree_node_item3(
     let node = nodes.nodes_map.get(&node_id).unwrap();
     let actual_value = node.parent_id != -1;
     if actual_value != has_parent {
-        panic!("Got {} expected {} for has_parent", actual_value, has_parent);
+        panic!(
+            "Got {} expected {} for has_parent",
+            actual_value, has_parent
+        );
     }
     let actual_value = node.content.len();
     if actual_value != expected_contents as usize {

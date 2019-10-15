@@ -85,7 +85,7 @@ where
     nodes.nodes_map.insert(node_id, node);
 }
 
-//ReCalculateMerkleRoot update Merkleroot from node to root node.
+/// ReCalculateMerkleRoot update Merkleroot from node to root node.
 pub fn recalculate_hash<T>(nodes: &mut Nodes<T>, node_id: i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
@@ -538,8 +538,8 @@ where
     return rebalance(parent_id, value, nodes);
 }
 
-// leftSibling returns the node's left sibling and child index (in parent) if it exists, otherwise (-1,-1)
-// key is any of keys in node (could even be deleted).
+/// leftSibling returns the node's left sibling and child index (in parent) if it exists, otherwise (-1,-1)
+/// key is any of keys in node (could even be deleted).
 pub fn left_sibling<T>(node_id: i32, value: &T, nodes: &mut Nodes<T>) -> (i32, i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
@@ -567,8 +567,8 @@ where
     (-1, -1)
 }
 
-// rightSibling returns the node's right sibling and child index (in parent) if it exists, otherwise (-1,-1)
-// key is any of keys in node (could even be deleted).
+/// rightSibling returns the node's right sibling and child index (in parent) if it exists, otherwise (-1,-1)
+/// key is any of keys in node (could even be deleted).
 pub fn right_sibling<T>(node_id: i32, value: &T, nodes: &mut Nodes<T>) -> (i32, i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,

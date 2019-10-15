@@ -8,6 +8,8 @@ use std::fmt::Debug;
 
 use serde::{Deserialize, Serialize};
 
+///A content addressed B-tree backed by a content addressed hashtable.
+/// Each tree node is stored as an object in the content addressed storage, and contains links to its children. Each link is a hash which can be loooked up from the content addressed storage.
 #[derive(Clone, Debug)]
 pub struct Nodes<T>
 where
@@ -74,9 +76,6 @@ where
             let sub_vec = a.get(i).unwrap();
             for j in 0..sub_vec.len() {
                 let node = *sub_vec.get(j).unwrap();
-                //                if node.content.len() == 0 {
-                //                    panic!("nil node");
-                //                }
                 println!("node.node_id: {}", node.node_id);
                 println!("node.children_id: {:?}", node.children_id);
                 println!("node.content: {:?}", node.content);
