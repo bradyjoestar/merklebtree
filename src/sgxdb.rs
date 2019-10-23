@@ -31,6 +31,10 @@ where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
+
+    let subnode_clone = node.clone();
+    subnodes.nodes_map.insert(insert_id, subnode_clone);
+
     let content_slice = node.content.as_slice();
     match content_slice.binary_search(&value) {
         Ok(t) => {
@@ -58,7 +62,13 @@ where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
+
+    let subnode_clone = node.clone();
+    subnodes.nodes_map.insert(insert_id, subnode_clone);
+
+
     let content_slice = node.content.as_slice();
+
     match content_slice.binary_search(&value) {
         Ok(t) => {
             node.content.remove(t);
