@@ -1,6 +1,7 @@
 use crate::node;
 use crate::node::Node;
 use crate::node::{calculate_hash, is_leaf};
+use crate::sgxdb::*;
 use crate::traits::CalculateHash;
 use core::borrow::{Borrow, BorrowMut};
 use std::collections::HashMap;
@@ -211,6 +212,38 @@ impl MerkleBTree {
                 nodes.content_size = nodes.content_size + 1;
             }
         }
+    }
+
+    pub fn put_clone<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> Nodes<T>
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+    {
+        let mut clone_nodes = Nodes {
+            nodes_map: Default::default(),
+            size: nodes.size,
+            root_id: nodes.root_id,
+            content_size: nodes.content_size,
+            next_id: nodes.next_id,
+            m: nodes.m,
+        };
+        if nodes.size == 0 {
+            //insert root node
+            self.rootid = nodes.root_id;
+            nodes
+                .nodes_map
+                .insert(nodes.root_id, Node::new_node(value, self.rootid));
+            nodes.nodes_map.get_mut(&(nodes.root_id)).unwrap().root_flag = true;
+            nodes.next_id = nodes.next_id + 1;
+            nodes.size = nodes.size + 1;
+            nodes.content_size = nodes.content_size + 1;
+        } else {
+            let a = self.rootid;
+            let mut pre_not_existed = clone_insert(a, value, nodes.m, nodes, &mut clone_nodes);
+            if pre_not_existed {
+                nodes.content_size = nodes.content_size + 1;
+            }
+        }
+        clone_nodes
     }
 
     pub fn remove<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> ()
