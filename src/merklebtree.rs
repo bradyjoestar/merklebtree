@@ -290,36 +290,44 @@ impl MerkleBTree {
         }
     }
 
-    pub fn find_branch_from_root<T>(
+    pub fn clone_search_subnode_from_root<T>(
         &mut self,
         mut start_node_id: i32,
         value: &T,
         nodes: &mut Nodes<T>,
-    ) -> (Vec<i32>, HashMap<i32, Node<T>>, i32, bool)
+    ) -> Nodes<T>
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
+        let mut clone_nodes = Nodes {
+            nodes_map: Default::default(),
+            size: nodes.size,
+            root_id: nodes.root_id,
+            content_size: nodes.content_size,
+            next_id: nodes.next_id,
+            m: nodes.m,
+        };
+
         let mut nodes_map: HashMap<i32, Node<T>> = HashMap::new();
-        let mut branch = Vec::new();
         if nodes.size == 0 {
-            branch.push(-1);
-            return (branch, nodes_map, -1, false);
+            clone_nodes.nodes_map = nodes_map.clone();
+            return clone_nodes;
         }
+
         loop {
             let node = nodes.nodes_map.get_mut(&start_node_id).unwrap();
-            branch.push(start_node_id);
             nodes_map.insert(start_node_id, node.clone());
             let content_slice = node.content.as_slice();
             match content_slice.binary_search(&value) {
                 Ok(t) => {
-                    return (branch, nodes_map, t as i32, true);
+                    clone_nodes.nodes_map = nodes_map.clone();
+                    return clone_nodes;
                 }
                 Err(e) => {
                     if node.children_id.len() == 0 {
-                        branch.clear();
-                        branch.push(-1);
                         nodes_map.clear();
-                        return (branch, nodes_map, -1, false);
+                        clone_nodes.nodes_map.clear();
+                        return clone_nodes;
                     }
                     start_node_id = *node.children_id.get(e).unwrap();
                 }

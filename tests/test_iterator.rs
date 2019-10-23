@@ -1130,7 +1130,7 @@ fn test_btree_iterator_last() {
 }
 
 #[test]
-fn test_btree_iterator_find_branch() {
+fn test_clone_subnode_from_root() {
     let mut nodes_map: HashMap<i32, Node<Item3>> = HashMap::new();
     let mut nodes = Nodes {
         nodes_map,
@@ -1166,10 +1166,13 @@ fn test_btree_iterator_find_branch() {
     assert_valid_tree_node_item3(&vec![0, 2, 0], 1, 0, &vec![4], true, &nodes);
     assert_valid_tree_node_item3(&vec![0, 2, 1], 1, 0, &vec![6], true, &nodes);
 
-    let (branch, nodes_map, index, found) =
-        tree.find_branch_from_root(0, &Item3 { key: -4 }, &mut nodes);
+    let mut subnodes = tree.clone_search_subnode_from_root(0, &Item3 { key: -4 }, &mut nodes);
 
-    assert_eq!(branch, vec![0, 13, 11]);
-    assert_eq!(index, 0);
-    assert_eq!(found, true);
+    let mut subtree = MerkleBTree {
+        rootid: subnodes.root_id,
+        m: subnodes.m,
+    };
+
+    let (value, found) = subtree.get(Item3 { key: -4 }, &mut subnodes);
+    assert_eq!(true, found);
 }
