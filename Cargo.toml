@@ -8,7 +8,7 @@ repository      = "https://github.com/bradyjoestar/merklebtree"
 homepage        = "https://github.com/bradyjoestar/merklebtree"
 keywords        = ["merkle","merkle-btree"]
 readme          = "README.md"
-version         = "0.1.1"
+version         = "0.1.2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]

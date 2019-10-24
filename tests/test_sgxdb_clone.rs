@@ -232,8 +232,6 @@ pub fn test_sgxdb_remove_clone_from_root() {
     tree.remove(Item4 { key: 7, value: 0 }, &mut subnodes);
     println!("subnodes.merkleroot: {:?}", subnodes.merkleroot());
     println!("subnodes.nodemap: {:?}", subnodes.nodes_map);
-
-    assert_eq!(1, 2);
 }
 
 pub fn assert_valid_tree_node_item4(
