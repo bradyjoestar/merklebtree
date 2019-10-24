@@ -82,7 +82,6 @@ where
         hash.push_str(i.calculate().as_str());
     }
     for i in node.children_id.iter() {
-        println!("children_id:{:?}",i);
         let child_node = nodes.nodes_map.get(i).unwrap();
         hash.push_str(child_node.hash.as_str());
     }
@@ -95,7 +94,6 @@ pub fn recalculate_hash<T>(nodes: &mut Nodes<T>, node_id: i32)
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
-    println!("locate bug before");
     let mut node = nodes.nodes_map.remove(&node_id).unwrap();
     if node.node_id == nodes.root_id {
         nodes.nodes_map.insert(node.node_id, node);
@@ -106,7 +104,6 @@ where
         calculate_hash(node_id, nodes);
         return recalculate_hash(nodes, parent_id);
     }
-    println!("locate bug after");
 }
 
 pub fn is_leaf<T>(nodeid: i32, nodes: &Nodes<T>) -> bool

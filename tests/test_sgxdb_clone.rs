@@ -1,9 +1,9 @@
 use merklebtree::merklebtree::{MerkleBTree, Nodes};
 use merklebtree::node::Node;
 use merklebtree::traits::CalculateHash;
+use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::collections::HashMap;
-use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
 mod utils;
@@ -122,7 +122,6 @@ fn test_sgxdb_insert_clone_from_root() {
     assert_valid_tree_node_item4(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
     assert_valid_tree_node_item4(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
 
-
     println!("-------------------put before------------------------");
     nodes.iterator();
     println!("nodes.merkleroot: {:?}", nodes.merkleroot());
@@ -132,14 +131,14 @@ fn test_sgxdb_insert_clone_from_root() {
 
     println!("-------------------put after------------------------");
     println!("nodes.merkleroot: {:?}", nodes.merkleroot());
-    println!("subnodes.merkleroot:{:?}",subnodes.merkleroot());
+    println!("subnodes.merkleroot:{:?}", subnodes.merkleroot());
     println!("{:?}", subnodes.nodes_map);
 
     nodes.iterator();
 
     println!("-------------------subnodes put------------------------");
-//    tree.put(Item4{key:7,value:1},&mut subnodes);
-//    println!("subnodes.merkleroot:{:?}",subnodes.merkleroot());
+    tree.put(Item4 { key: 7, value: 1 }, &mut subnodes);
+    println!("subnodes.merkleroot:{:?}", subnodes.merkleroot());
 
 }
 
