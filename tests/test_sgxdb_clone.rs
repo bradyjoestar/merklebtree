@@ -10,41 +10,6 @@ mod utils;
 use ring::digest;
 use utils::*;
 
-#[derive(Clone, Serialize, Deserialize, Debug)]
-pub struct Item4 {
-    pub key: i32,
-    pub value: i32,
-}
-
-impl PartialEq for Item4 {
-    fn eq(&self, other: &Self) -> bool {
-        self.key == other.key
-    }
-}
-impl Eq for Item4 {}
-
-impl Ord for Item4 {
-    fn cmp(&self, other: &Self) -> Ordering {
-        (self.key).cmp(&(other.key))
-    }
-}
-
-impl PartialOrd for Item4 {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl CalculateHash for Item4 {
-    fn calculate(&self) -> String {
-        let mut hash_str = self.key.to_string();
-        hash_str.push_str(self.value.to_string().as_str());
-        let hash = digest::digest(&digest::SHA256, hash_str.as_str().as_ref());
-        let hex = hex::encode(hash);
-        hex
-    }
-}
-
 #[test]
 fn test_clone_search_subnode_from_root() {
     let mut nodes_map: HashMap<i32, Node<Item3>> = HashMap::new();
@@ -232,47 +197,4 @@ pub fn test_sgxdb_remove_clone_from_root() {
     tree.remove(Item4 { key: 7, value: 0 }, &mut subnodes);
     println!("subnodes.merkleroot: {:?}", subnodes.merkleroot());
     println!("subnodes.nodemap: {:?}", subnodes.nodes_map);
-}
-
-pub fn assert_valid_tree_node_item4(
-    branch: &Vec<i32>, //from root  i.e vec![0,1,2] //0 replace root
-    expected_contents: i32,
-    expected_children: i32,
-    keys: &Vec<i32>,
-    has_parent: bool,
-    nodes: &Nodes<Item4>,
-) {
-    let node_id = find_nodeid_by_branch(branch, nodes);
-    let node = nodes.nodes_map.get(&node_id).unwrap();
-    let actual_value = node.parent_id != -1;
-    if actual_value != has_parent {
-        panic!(
-            "Got {} expected {} for has_parent",
-            actual_value, has_parent
-        );
-    }
-    let actual_value = node.content.len();
-    if actual_value != expected_contents as usize {
-        panic!(
-            "Got {} expected {} for contents size",
-            actual_value, expected_contents
-        );
-    }
-    let actual_value = node.children_id.len();
-    if actual_value != expected_children as usize {
-        panic!(
-            "Got {} expected {} for contents size",
-            actual_value, expected_children
-        );
-    }
-
-    let mut loop_time = 0;
-    for i in keys.iter() {
-        let actual_vale = node.content.get(loop_time).unwrap();
-        println!("{:?}", actual_vale);
-        if actual_vale.key != *i {
-            panic!("Got {} expected {} for for Key", actual_vale.key, *i);
-        }
-        loop_time = loop_time + 1;
-    }
 }
