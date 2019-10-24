@@ -532,6 +532,7 @@ where
         let mut node = nodes.nodes_map.remove(&node_id).unwrap();
         node.parent_id = -1;
         node.node_id = 0;
+        node.root_flag = true;
         set_parent(&mut node.children_id, node.node_id, nodes);
         nodes.nodes_map.remove(&parent_id);
         nodes.nodes_map.insert(parent_id, node);

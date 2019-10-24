@@ -215,6 +215,25 @@ pub fn test_sgxdb_remove_clone_from_root() {
     assert_valid_tree_node_item4(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
     assert_valid_tree_node_item4(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
     assert_valid_tree_node_item4(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
+
+    println!("-------------------remove before------------------------");
+    nodes.iterator();
+    println!("nodes.merkleroot: {:?}", nodes.merkleroot());
+    println!("{:?}", nodes.nodes_map);
+
+    let mut subnodes = tree.remove_clone(Item4 { key: 7, value: 0 }, &mut nodes);
+
+    println!("-------------------remove after------------------------");
+    println!("nodes.merkleroot: {:?}", nodes.merkleroot());
+    println!("subnodes.merkleroot: {:?}", subnodes.merkleroot());
+    nodes.iterator();
+
+    println!("-------------------subnodes remove------------------------");
+    tree.remove(Item4 { key: 7, value: 0 }, &mut subnodes);
+    println!("subnodes.merkleroot: {:?}", subnodes.merkleroot());
+    println!("subnodes.nodemap: {:?}", subnodes.nodes_map);
+
+    assert_eq!(1, 2);
 }
 
 pub fn assert_valid_tree_node_item4(
