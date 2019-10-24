@@ -34,7 +34,9 @@ where
     let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
 
     let subnode_clone = node.clone();
-    subnodes.nodes_map.insert(insert_id, subnode_clone);
+    if !subnodes.nodes_map.contains_key(&insert_id) {
+        subnodes.nodes_map.insert(insert_id, subnode_clone);
+    }
 
     let content_slice = node.content.as_slice();
     match content_slice.binary_search(&value) {
@@ -65,7 +67,9 @@ where
     let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
 
     let subnode_clone = node.clone();
-    subnodes.nodes_map.insert(insert_id, subnode_clone);
+    if subnodes.nodes_map.contains_key(&insert_id) {
+        subnodes.nodes_map.insert(insert_id, subnode_clone);
+    }
 
     let content_slice = node.content.as_slice();
 
@@ -226,14 +230,21 @@ where
     let mut hash = String::new();
     let mut node = nodes.nodes_map.remove(&node_id).unwrap();
 
-    subnodes.nodes_map.insert(node.node_id, node.clone());
+    if !subnodes.nodes_map.contains_key(&node.node_id) {
+        subnodes.nodes_map.insert(node.node_id, node.clone());
+    }
 
     for i in node.content.iter() {
         hash.push_str(i.calculate().as_str());
     }
     for i in node.children_id.iter() {
         let child_node = nodes.nodes_map.get(i).unwrap();
-        subnodes.nodes_map.insert(child_node.node_id,child_node.clone());
+        if !subnodes.nodes_map.contains_key(&child_node.node_id) {
+            subnodes
+                .nodes_map
+                .insert(child_node.node_id, child_node.clone());
+        }
+
         hash.push_str(child_node.hash.as_str());
     }
     node.hash = hex::encode(digest::digest(&digest::SHA256, hash.as_ref()));
@@ -246,8 +257,9 @@ where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     let mut node = nodes.nodes_map.remove(&node_id).unwrap();
-
-    subnodes.nodes_map.insert(node.node_id, node.clone());
+    if !subnodes.nodes_map.contains_key(&node.node_id) {
+        subnodes.nodes_map.insert(node.node_id, node.clone());
+    }
 
     if node.node_id == nodes.root_id {
         nodes.nodes_map.insert(node.node_id, node);
@@ -259,3 +271,281 @@ where
         return clone_recalculate_hash(nodes, parent_id, subnodes);
     }
 }
+
+pub fn clone_delete<T>(
+    node_id: i32,
+    index: i32,
+    nodes: &mut Nodes<T>,
+    subnodes: &mut Nodes<T>,
+) -> ()
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+{
+    let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+
+    // deleting from a leaf node
+    if node.children_id.len() == 0 {
+        let delete_item = node.content.remove(index as usize);
+        nodes.nodes_map.insert(node_id, node);
+        rebalance(node_id, delete_item, nodes);
+        return;
+    }
+    // deleting from an internal node
+    let left_largest_node_id = right(*node.children_id.get_mut(index as usize).unwrap(), nodes); // largest node in the left sub-tree (assumed to exist)
+    let mut left_largest_node = nodes.nodes_map.remove(&left_largest_node_id).unwrap();
+    let left_largest_content_index = left_largest_node.content.len() - 1;
+
+    node.content.remove(index as usize);
+    let delete_item = left_largest_node.content.remove(left_largest_content_index);
+    let delete_item_clone = delete_item.clone();
+    node.content.insert(index as usize, delete_item);
+
+    nodes.nodes_map.insert(node_id, node);
+    nodes
+        .nodes_map
+        .insert(left_largest_node_id, left_largest_node);
+
+    rebalance(left_largest_node_id, delete_item_clone, nodes);
+}
+
+//
+//pub fn clone_delete<T>(
+//    node_id: i32,
+//    index: i32,
+//    nodes: &mut Nodes<T>,
+//    subnodes: &mut Nodes<T>,
+//) -> ()
+//where
+//    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+//{
+//    let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+//
+//    // deleting from a leaf node
+//    if node.children_id.len() == 0 {
+//        let delete_item = node.content.remove(index as usize);
+//        nodes.nodes_map.insert(node_id, node);
+//        clone_rebalance(node_id, delete_item, nodes, subnodes);
+//        return;
+//    }
+//    // deleting from an internal node
+//    let left_largest_node_id = right(*node.children_id.get_mut(index as usize).unwrap(), nodes); // largest node in the left sub-tree (assumed to exist)
+//    let mut left_largest_node = nodes.nodes_map.remove(&left_largest_node_id).unwrap();
+//    let left_largest_content_index = left_largest_node.content.len() - 1;
+//
+//    node.content.remove(index as usize);
+//    let delete_item = left_largest_node.content.remove(left_largest_content_index);
+//    let delete_item_clone = delete_item.clone();
+//    node.content.insert(index as usize, delete_item);
+//
+//    nodes.nodes_map.insert(node_id, node);
+//    nodes
+//        .nodes_map
+//        .insert(left_largest_node_id, left_largest_node);
+//
+//    clone_rebalance(left_largest_node_id, delete_item_clone, nodes, subnodes);
+//}
+//
+//pub fn clone_rebalance<T>(
+//    node_id: i32,
+//    mut value: T,
+//    nodes: &mut Nodes<T>,
+//    subnodes: &mut Nodes<T>,
+//) -> bool
+//where
+//    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+//{
+//    if (node_id == -1) {
+//        return false;
+//    }
+//
+//    let mut node = nodes.nodes_map.get(&node_id).unwrap();
+//    let parent_id = node.parent_id;
+//    // check if rebalancing is needed
+//    if node.content.len() >= min_contents(nodes) as usize {
+//        recalculate_hash(nodes, node_id);
+//        return false;
+//    }
+//
+//    let (left_sibling_id, left_sibling_index) = left_sibling(node_id, &value, nodes);
+//    if left_sibling_id != -1 {
+//        let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
+//        let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
+//        let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+//        if left_sibling_node.content.len() > min_contents(nodes) as usize {
+//            let sibling_data = left_sibling_node.content.pop().unwrap();
+//            let parent_data = parent_node.content.remove((left_sibling_index) as usize);
+//            delete_node.content.insert(0, parent_data);
+//            parent_node
+//                .content
+//                .insert(left_sibling_index as usize, sibling_data);
+//
+//            nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+//            calculate_hash(left_sibling_id, nodes);
+//
+//            if !is_leaf(left_sibling_id, nodes) {
+//                let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
+//                let left_sibling_left_most_child_id = left_sibling_node.children_id.pop().unwrap();
+//                let mut left_sibling_left_most_child_node = nodes
+//                    .nodes_map
+//                    .remove(&left_sibling_left_most_child_id)
+//                    .unwrap();
+//                left_sibling_left_most_child_node.parent_id = node_id;
+//
+//                delete_node
+//                    .children_id
+//                    .insert(0, left_sibling_left_most_child_id);
+//
+//                nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+//                nodes.nodes_map.insert(
+//                    left_sibling_left_most_child_id,
+//                    left_sibling_left_most_child_node,
+//                );
+//                calculate_hash(left_sibling_id, nodes);
+//            }
+//            nodes.nodes_map.insert(node_id, delete_node);
+//            nodes.nodes_map.insert(parent_id, parent_node);
+//            calculate_hash(node_id, nodes);
+//            recalculate_hash(nodes, parent_id);
+//            return true;
+//        }
+//        nodes.nodes_map.insert(parent_id, parent_node);
+//        nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+//        nodes.nodes_map.insert(node_id, delete_node);
+//    }
+//
+//    let (right_sibling_id, right_sibling_index) = right_sibling(node_id, &value, nodes);
+//    if right_sibling_id != -1 {
+//        let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
+//        let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
+//        let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+//
+//        if right_sibling_node.content.len() > min_contents(nodes) as usize {
+//            let sibling_data = right_sibling_node.content.remove(0);
+//            let parent_data = parent_node
+//                .content
+//                .remove((right_sibling_index - 1) as usize);
+//            delete_node.content.push(parent_data);
+//            parent_node
+//                .content
+//                .insert((right_sibling_index - 1) as usize, sibling_data);
+//
+//            nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+//            calculate_hash(right_sibling_id, nodes);
+//
+//            if !is_leaf(right_sibling_id, nodes) {
+//                let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
+//                let right_sibling_left_most_child_id =
+//                    right_sibling_node.children_id.remove(0 as usize);
+//                let mut right_sibling_left_most_child_node = nodes
+//                    .nodes_map
+//                    .remove(&right_sibling_left_most_child_id)
+//                    .unwrap();
+//                right_sibling_left_most_child_node.parent_id = node_id;
+//                delete_node
+//                    .children_id
+//                    .push(right_sibling_left_most_child_id);
+//                nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+//                nodes.nodes_map.insert(
+//                    right_sibling_left_most_child_id,
+//                    right_sibling_left_most_child_node,
+//                );
+//                calculate_hash(right_sibling_id, nodes);
+//            }
+//            nodes.nodes_map.insert(parent_id, parent_node);
+//            nodes.nodes_map.insert(node_id, delete_node);
+//            calculate_hash(node_id, nodes);
+//            recalculate_hash(nodes, parent_id);
+//            return true;
+//        }
+//        nodes.nodes_map.insert(parent_id, parent_node);
+//        nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+//        nodes.nodes_map.insert(node_id, delete_node);
+//    }
+//
+//    // merge with siblings
+//    if right_sibling_id != -1 {
+//        // merge with right sibling
+//        let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
+//        let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+//        let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
+//
+//        let parent_data = parent_node
+//            .content
+//            .remove((right_sibling_index - 1) as usize);
+//        value = parent_data.clone();
+//        delete_node.content.push(parent_data);
+//        for i in 0..right_sibling_node.content.len() {
+//            let right_sibling_node_data = right_sibling_node.content.remove(0);
+//            delete_node.content.push(right_sibling_node_data);
+//        }
+//
+//        for i in 0..right_sibling_node.children_id.len() {
+//            delete_node
+//                .children_id
+//                .push(right_sibling_node.children_id.remove(0));
+//        }
+//        set_parent(&mut (right_sibling_node.children_id), node_id, nodes);
+//        parent_node.children_id.remove(right_sibling_index as usize);
+//
+//        nodes.nodes_map.insert(parent_id, parent_node);
+//        nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
+//        nodes.nodes_map.insert(node_id, delete_node);
+//
+//        calculate_hash(node_id, nodes);
+//        calculate_hash(right_sibling_id, nodes);
+//        calculate_hash(parent_id, nodes);
+//
+//        nodes.size = nodes.size - 1;
+//    } else if left_sibling_id != -1 {
+//        // merge with left sibling
+//        let mut delete_node = nodes.nodes_map.remove(&node_id).unwrap();
+//        let mut parent_node = nodes.nodes_map.remove(&parent_id).unwrap();
+//        let mut left_sibling_node = nodes.nodes_map.remove(&left_sibling_id).unwrap();
+//
+//        let parent_data = parent_node.content.remove((left_sibling_index) as usize);
+//        value = parent_data.clone();
+//        delete_node.content.insert(0, parent_data);
+//
+//        for i in 0..left_sibling_node.content.len() {
+//            delete_node
+//                .content
+//                .insert(0, left_sibling_node.content.pop().unwrap())
+//        }
+//
+//        for i in 0..left_sibling_node.children_id.len() {
+//            delete_node
+//                .children_id
+//                .insert(0, left_sibling_node.children_id.pop().unwrap() as i32)
+//        }
+//        set_parent(&mut (left_sibling_node.children_id), node_id, nodes);
+//        parent_node.children_id.remove(left_sibling_index as usize);
+//
+//        nodes.nodes_map.insert(parent_id, parent_node);
+//        nodes.nodes_map.insert(left_sibling_id, left_sibling_node);
+//        nodes.nodes_map.insert(node_id, delete_node);
+//
+//        calculate_hash(node_id, nodes);
+//        calculate_hash(left_sibling_id, nodes);
+//        calculate_hash(parent_id, nodes);
+//
+//        nodes.size = nodes.size - 1;
+//    }
+//
+//    if parent_id == -1 {
+//        return false;
+//    }
+//    // make the merged node the root if its parent was the root and the root is empty
+//    let parent_node = nodes.nodes_map.get(&parent_id).unwrap();
+//    if parent_id == nodes.root_id && parent_node.content.len() == 0 {
+//        let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+//        node.parent_id = -1;
+//        node.node_id = 0;
+//        set_parent(&mut node.children_id, node.node_id, nodes);
+//        nodes.nodes_map.remove(&parent_id);
+//        nodes.nodes_map.insert(parent_id, node);
+//        calculate_hash(0, nodes);
+//        return false;
+//    }
+//
+//    return clone_rebalance(parent_id, value, nodes,subnodes);
+//}

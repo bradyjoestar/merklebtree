@@ -600,7 +600,7 @@ where
     (-1, -1)
 }
 
-fn right<T>(mut node_id: i32, nodes: &mut Nodes<T>) -> i32
+pub fn right<T>(mut node_id: i32, nodes: &mut Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
@@ -624,28 +624,28 @@ where
     }
 }
 
-fn min_children<T>(nodes: &Nodes<T>) -> i32
+pub fn min_children<T>(nodes: &Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     return ((nodes.m + 1) / 2) as i32; // ceil(m/2)
 }
 
-fn min_contents<T>(nodes: &Nodes<T>) -> i32
+pub fn min_contents<T>(nodes: &Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     return min_children(nodes) - 1;
 }
 
-fn max_children<T>(nodes: &Nodes<T>) -> i32
+pub fn max_children<T>(nodes: &Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
     return nodes.m as i32;
 }
 
-fn max_contents<T>(nodes: &Nodes<T>) -> i32
+pub fn max_contents<T>(nodes: &Nodes<T>) -> i32
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {

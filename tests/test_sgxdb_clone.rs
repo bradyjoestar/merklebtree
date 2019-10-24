@@ -94,6 +94,52 @@ fn test_clone_search_subnode_from_root() {
 }
 
 #[test]
+fn test_sgxdb_put_clone_from_root() {
+    let mut nodes_map: HashMap<i32, Node<Item4>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        root_id: 0,
+        content_size: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+
+    tree.put(Item4 { key: 1, value: 0 }, &mut nodes);
+    tree.put(Item4 { key: 2, value: 1 }, &mut nodes);
+    tree.put(Item4 { key: 3, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 4, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 5, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 6, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 7, value: 2 }, &mut nodes);
+    assert_valid_tree(&nodes, 7);
+    assert_valid_tree_node_item4(&vec![0], 1, 2, &vec![4], false, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
+
+    println!("-------------------put before------------------------");
+    nodes.iterator();
+    println!("nodes.merkleroot: {:?}", nodes.merkleroot());
+    println!("{:?}", nodes.nodes_map);
+    let mut subnodes = tree.put_clone(Item4 { key: 7, value: 1 }, &mut nodes);
+
+    println!("-------------------put after------------------------");
+    println!("nodes.merkleroot: {:?}", nodes.merkleroot());
+    println!("subnodes.merkleroot:{:?}", subnodes.merkleroot());
+    nodes.iterator();
+
+    println!("-------------------subnodes put------------------------");
+    tree.put(Item4 { key: 7, value: 1 }, &mut subnodes);
+    println!("subnodes.merkleroot:{:?}", subnodes.merkleroot());
+    println!("subnodes.nodemap:{:?}", subnodes.nodes_map);
+}
+
+#[test]
 fn test_sgxdb_insert_clone_from_root() {
     let mut nodes_map: HashMap<i32, Node<Item4>> = HashMap::new();
     let mut nodes = Nodes {
@@ -127,19 +173,48 @@ fn test_sgxdb_insert_clone_from_root() {
     println!("nodes.merkleroot: {:?}", nodes.merkleroot());
     println!("{:?}", nodes.nodes_map);
 
-    let mut subnodes = tree.put_clone(Item4 { key: 7, value: 1 }, &mut nodes);
+    let mut subnodes = tree.put_clone(Item4 { key: 8, value: 3 }, &mut nodes);
 
     println!("-------------------put after------------------------");
     println!("nodes.merkleroot: {:?}", nodes.merkleroot());
-    println!("subnodes.merkleroot:{:?}", subnodes.merkleroot());
-    println!("{:?}", subnodes.nodes_map);
+    println!("subnodes.merkleroot: {:?}", subnodes.merkleroot());
 
     nodes.iterator();
 
     println!("-------------------subnodes put------------------------");
-    tree.put(Item4 { key: 7, value: 1 }, &mut subnodes);
-    println!("subnodes.merkleroot:{:?}", subnodes.merkleroot());
+    tree.put(Item4 { key: 8, value: 3 }, &mut subnodes);
+    println!("subnodes.merkleroot: {:?}", subnodes.merkleroot());
+    println!("subnodes.nodemap: {:?}", subnodes.nodes_map);
+}
 
+#[test]
+pub fn test_sgxdb_remove_clone_from_root() {
+    let mut nodes_map: HashMap<i32, Node<Item4>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        root_id: 0,
+        content_size: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+
+    tree.put(Item4 { key: 1, value: 0 }, &mut nodes);
+    tree.put(Item4 { key: 2, value: 1 }, &mut nodes);
+    tree.put(Item4 { key: 3, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 4, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 5, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 6, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 7, value: 2 }, &mut nodes);
+    assert_valid_tree(&nodes, 7);
+    assert_valid_tree_node_item4(&vec![0], 1, 2, &vec![4], false, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 0], 1, 2, &vec![2], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 1], 1, 2, &vec![6], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 0, 0], 1, 0, &vec![1], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 0, 1], 1, 0, &vec![3], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 1, 0], 1, 0, &vec![5], true, &nodes);
+    assert_valid_tree_node_item4(&vec![0, 1, 1], 1, 0, &vec![7], true, &nodes);
 }
 
 pub fn assert_valid_tree_node_item4(

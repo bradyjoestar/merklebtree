@@ -257,6 +257,28 @@ impl MerkleBTree {
             nodes.content_size = nodes.content_size - 1;
         }
     }
+
+    pub fn remove_clone<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> Nodes<T>
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+    {
+        let mut clone_nodes = Nodes {
+            nodes_map: Default::default(),
+            size: nodes.size,
+            root_id: nodes.root_id,
+            content_size: nodes.content_size,
+            next_id: nodes.next_id,
+            m: nodes.m,
+        };
+        let (search_node_id, index, found) = self.search_recursively(nodes.root_id, &value, nodes);
+
+        if found {
+            clone_delete(search_node_id, index, nodes, &mut clone_nodes);
+            nodes.content_size = nodes.content_size - 1;
+        }
+        clone_nodes
+    }
+
     pub fn height<T>(&self, nodes: &Nodes<T>) -> i32
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
