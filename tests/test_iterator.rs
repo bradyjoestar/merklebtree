@@ -5,7 +5,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-mod utils;
+pub mod utils;
 use utils::*;
 
 #[test]

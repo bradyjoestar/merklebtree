@@ -67,7 +67,7 @@ where
     let node = nodes.nodes_map.get_mut(&insert_id).unwrap();
 
     let subnode_clone = node.clone();
-    if subnodes.nodes_map.contains_key(&insert_id) {
+    if !subnodes.nodes_map.contains_key(&insert_id) {
         subnodes.nodes_map.insert(insert_id, subnode_clone);
     }
 
@@ -237,7 +237,7 @@ pub fn clone_split_not_root<T>(
 
             nodes.next_id = nodes.next_id + 2;
             nodes.size = nodes.size + 1;
-            split_node(parent_id, order, nodes);
+            clone_split_node(parent_id, order, nodes, subnodes);
         }
         _ => {}
     }
@@ -247,6 +247,7 @@ pub fn clone_calculate_hash<T>(node_id: i32, nodes: &mut Nodes<T>, subnodes: &mu
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
+    println!("-------------clone_calculate_hash---------------------");
     let mut hash = String::new();
     let mut node = nodes.nodes_map.remove(&node_id).unwrap();
 
@@ -259,6 +260,7 @@ where
     }
     for i in node.children_id.iter() {
         let child_node = nodes.nodes_map.get(i).unwrap();
+        println!("child_node:{}", child_node.node_id);
         if !subnodes.nodes_map.contains_key(&child_node.node_id) {
             subnodes
                 .nodes_map
@@ -269,6 +271,7 @@ where
     }
     node.hash = hex::encode(digest::digest(&digest::SHA256, hash.as_ref()));
     nodes.nodes_map.insert(node_id, node);
+    println!("-------------clone_calculate_hash---------------------");
 }
 
 /// ReCalculateMerkleRoot update Merkleroot from node to root node.
@@ -276,12 +279,14 @@ pub fn clone_recalculate_hash<T>(nodes: &mut Nodes<T>, node_id: i32, subnodes: &
 where
     T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
 {
+    println!("-------------clone_recalculate_hash---------------------");
     let mut node = nodes.nodes_map.remove(&node_id).unwrap();
     if !subnodes.nodes_map.contains_key(&node.node_id) {
         subnodes.nodes_map.insert(node.node_id, node.clone());
     }
 
     if node.node_id == nodes.root_id {
+        println!("recalculate_node_hash");
         nodes.nodes_map.insert(node.node_id, node);
         return clone_calculate_hash(node_id, nodes, subnodes);
     } else {
@@ -290,6 +295,7 @@ where
         clone_calculate_hash(node_id, nodes, subnodes);
         return clone_recalculate_hash(nodes, parent_id, subnodes);
     }
+    println!("-------------clone_recalculate_hash---------------------");
 }
 
 pub fn clone_delete<T>(
@@ -359,7 +365,7 @@ where
     let parent_id = node.parent_id;
     // check if rebalancing is needed
     if node.content.len() >= min_contents(nodes) as usize {
-        recalculate_hash(nodes, node_id);
+        clone_recalculate_hash(nodes, node_id, subnodes);
         return false;
     }
 
@@ -483,7 +489,7 @@ where
                 .insert((right_sibling_index - 1) as usize, sibling_data);
 
             nodes.nodes_map.insert(right_sibling_id, right_sibling_node);
-            calculate_hash(right_sibling_id, nodes);
+            clone_calculate_hash(right_sibling_id, nodes, subnodes);
 
             if !is_leaf(right_sibling_id, nodes) {
                 let mut right_sibling_node = nodes.nodes_map.remove(&right_sibling_id).unwrap();
@@ -520,7 +526,7 @@ where
                     right_sibling_left_most_child_id,
                     right_sibling_left_most_child_node,
                 );
-                calculate_hash(right_sibling_id, nodes);
+                clone_calculate_hash(right_sibling_id, nodes, subnodes);
             }
             nodes.nodes_map.insert(parent_id, parent_node);
             nodes.nodes_map.insert(node_id, delete_node);
