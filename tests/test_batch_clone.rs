@@ -12,39 +12,39 @@ use utils::*;
 
 #[test]
 fn test_batch_remove_clone_subnode_from_root() {
-//    let mut nodes_map: HashMap<i32, Node<Item4>> = HashMap::new();
-//    let mut nodes = Nodes {
-//        nodes_map,
-//        size: 0,
-//        root_id: 0,
-//        content_size: 0,
-//        next_id: 0,
-//        m: 0,
-//    };
-//    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
-//    tree.put(Item4 { key: 0, value: 2 }, &mut nodes);
-//    tree.put(Item4 { key: 1, value: 2 }, &mut nodes);
-//
-//    for i in 2..11 {
-//        let item = Item4 { key: i, value: 2 };
-//        tree.put(item, &mut nodes);
-//    }
-//
-//    for j in 2..11 {
-//        println!("remove loop:\n\n");
-//        println!("{}", j);
-//        nodes.iterator();
-//        tree.remove(Item4 { key: j, value: 2 }, &mut nodes);
-//
-////        print_subnodes_nodemap(&mut subnodes);
-//        let node_hash = nodes.merkleroot();
-////        tree.remove_clone(Item4 { key: j, value: 2 }, &mut subnodes);
-////        let subnode_hash = subnodes.merkleroot();
-//        println!("node_hash:{}", node_hash);
-////        println!("subnode_hash:{}", subnode_hash);
-//    }
-//
-//    assert_eq!(1, 2);
+    let mut nodes_map: HashMap<i32, Node<Item4>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        root_id: 0,
+        content_size: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+    tree.put(Item4 { key: 0, value: 2 }, &mut nodes);
+    tree.put(Item4 { key: 1, value: 2 }, &mut nodes);
+
+    for i in 2..200 {
+        let item = Item4 { key: i, value: 2 };
+        tree.put(item, &mut nodes);
+    }
+    let mut subnodes;
+
+    nodes.iterator();
+
+    for j in 2..200 {
+        println!("remove loop:\n\n");
+        println!("{}", j);
+        subnodes = tree.remove_clone(Item4 { key: j, value: 2 }, &mut nodes);
+
+        let node_hash = nodes.merkleroot();
+        tree.remove(Item4 { key: j, value: 2 }, &mut subnodes);
+        let subnode_hash = subnodes.merkleroot();
+        println!("node_hash:{}", node_hash);
+        println!("subnode_hash:{}", subnode_hash);
+        assert_eq!(node_hash, subnode_hash);
+    }
 }
 
 #[test]
@@ -65,7 +65,7 @@ fn test_batch_insert_clone_subnode_from_root() {
     nodes.iterator();
     let mut subnodes;
 
-    for i in 3..200 {
+    for i in 3..500 {
         println!("loop time:{}", i);
         let item = Item4 { key: i, value: 2 };
         nodes.iterator();

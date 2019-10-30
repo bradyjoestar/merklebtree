@@ -54,28 +54,31 @@ fn main() {
         m: 0,
     };
     let mut tree = MerkleBTree::new_empty(3, &mut nodes);
-
     tree.put(Item4 { key: 0, value: 2 }, &mut nodes);
     tree.put(Item4 { key: 1, value: 2 }, &mut nodes);
-    nodes.iterator();
-    let mut subnodes;
 
-    for i in 3..20 {
-        println!("loop time:{}", i);
+    for i in 2..11 {
         let item = Item4 { key: i, value: 2 };
-        nodes.iterator();
-        subnodes = tree.put_clone(item.clone(), &mut nodes);
-        print_subnodes_nodemap(&mut subnodes);
-        tree.put(item, &mut subnodes);
-
-        let node_hash = nodes.merkleroot();
-        let subnodes_hash = subnodes.merkleroot();
-        println!("node_hash:{}", node_hash);
-        println!("subnodes_hash:{}", subnodes_hash);
-        assert_eq!(node_hash, subnodes_hash);
+        tree.put(item, &mut nodes);
     }
 
-    assert_eq!(1, 2);
+    nodes.iterator();
+
+    for j in 2..5 {
+        println!("remove loop:\n\n");
+        println!("{}", j);
+        nodes.iterator();
+        tree.remove(Item4 { key: j, value: 2 }, &mut nodes);
+
+        //        print_subnodes_nodemap(&mut subnodes);
+        let node_hash = nodes.merkleroot();
+        //        tree.remove_clone(Item4 { key: j, value: 2 }, &mut subnodes);
+        //        let subnode_hash = subnodes.merkleroot();
+        println!("node_hash:{}", node_hash);
+        //        println!("subnode_hash:{}", subnode_hash);
+    }
+    println!("remove end:\n\n");
+    nodes.iterator();
 }
 
 fn print_subnodes_nodemap<T>(subnodes: &mut Nodes<T>)

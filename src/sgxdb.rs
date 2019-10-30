@@ -567,17 +567,17 @@ where
             delete_node.content.push(right_sibling_node_data);
         }
 
-        for i in 0..right_sibling_node.children_id.len() {
-            delete_node
-                .children_id
-                .push(right_sibling_node.children_id.remove(0));
-        }
         clone_set_parent(
             &mut (right_sibling_node.children_id),
             node_id,
             nodes,
             subnodes,
         );
+        for i in 0..right_sibling_node.children_id.len() {
+            delete_node
+                .children_id
+                .push(right_sibling_node.children_id.remove(0));
+        }
         parent_node.children_id.remove(right_sibling_index as usize);
 
         nodes.nodes_map.insert(parent_id, parent_node);
@@ -622,17 +622,17 @@ where
                 .insert(0, left_sibling_node.content.pop().unwrap())
         }
 
-        for i in 0..left_sibling_node.children_id.len() {
-            delete_node
-                .children_id
-                .insert(0, left_sibling_node.children_id.pop().unwrap() as i32)
-        }
         clone_set_parent(
             &mut (left_sibling_node.children_id),
             node_id,
             nodes,
             subnodes,
         );
+        for i in 0..left_sibling_node.children_id.len() {
+            delete_node
+                .children_id
+                .insert(0, left_sibling_node.children_id.pop().unwrap() as i32)
+        }
         parent_node.children_id.remove(left_sibling_index as usize);
 
         nodes.nodes_map.insert(parent_id, parent_node);
