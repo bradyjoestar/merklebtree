@@ -6,9 +6,38 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-mod utils;
+pub mod utils;
 use ring::digest;
 use utils::*;
+
+#[test]
+fn test_batch_get_clone_subnode_from_root() {
+    println!("test_batch_get_clone_subnode_from_root");
+
+    let mut nodes_map: HashMap<i32, Node<Item4>> = HashMap::new();
+    let mut nodes = Nodes {
+        nodes_map,
+        size: 0,
+        root_id: 0,
+        content_size: 0,
+        next_id: 0,
+        m: 0,
+    };
+    let mut tree = MerkleBTree::new_empty(3, &mut nodes);
+    for i in 1..500 {
+        let item = Item4 { key: i, value: 2 };
+        tree.put(item, &mut nodes);
+    }
+    let mut subnodes;
+
+    for j in 1..500 {
+        let item = Item4 { key: j, value: 2 };
+        subnodes = tree.clone_search_subnode_from_root(0, &item, &mut nodes);
+
+        let (node_id, index, found) = tree.search_recursively(0, &item, &mut subnodes);
+        assert_eq!(true, found)
+    }
+}
 
 #[test]
 fn test_batch_remove_clone_subnode_from_root() {
