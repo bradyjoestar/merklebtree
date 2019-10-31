@@ -257,6 +257,8 @@ where
     for i in node.content.iter() {
         hash.push_str(i.calculate().as_str());
     }
+
+    node.children_hash.clear();
     for i in node.children_id.iter() {
         let child_node = nodes.nodes_map.get(i).unwrap();
         if !subnodes.nodes_map.contains_key(&child_node.node_id) {
@@ -266,6 +268,7 @@ where
         }
 
         hash.push_str(child_node.hash.as_str());
+        node.children_hash.push(child_node.hash.clone());
     }
     node.hash = hex::encode(digest::digest(&digest::SHA256, hash.as_ref()));
     nodes.nodes_map.insert(node_id, node);

@@ -79,6 +79,7 @@ where
                 let node = *sub_vec.get(j).unwrap();
                 println!("node.node_id: {}", node.node_id);
                 println!("node.children_id: {:?}", node.children_id);
+                println!("node.children_hash:{:?}", node.children_hash);
                 println!("node.content: {:?}", node.content);
                 println!("node.parent_id: {:?}", node.parent_id);
                 println!("node.hash:{}", node.hash);
