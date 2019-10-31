@@ -129,9 +129,7 @@ where
                             .get(&btree_iterator.node_id)
                             .unwrap();
 
-                        println!("wenbin test0.1");
                         if e < current_node.content.len() {
-                            println!("wenbin test1");
                             btree_iterator.content = Some(get_content_in_node(
                                 btree_iterator.node_id,
                                 &mut btree_iterator,
@@ -149,11 +147,9 @@ where
                             .get(&btree_iterator.node_id)
                             .unwrap();
 
-                        println!("wenbin test0.2");
                         println!("{}", e);
                         println!("{}", current_node.content.len());
                         if e < current_node.content.len() {
-                            println!("wenbin test1");
                             btree_iterator.content = Some(get_content_in_node(
                                 btree_iterator.node_id,
                                 &mut btree_iterator,
