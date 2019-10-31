@@ -807,3 +807,45 @@ where
     }
     true
 }
+
+pub fn verify_subnodes_hash<T>(subnodes: &Nodes<T>) -> bool
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+{
+    return verify_nodes_hash(0, subnodes);
+}
+
+pub fn verify_nodes_hash<T>(node_id: i32, subnodes: &Nodes<T>) -> bool
+where
+    T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+{
+    let mut verify_result = false;
+
+    let node = subnodes.nodes_map.get(&node_id).unwrap();
+    let mut hash = String::new();
+    let mut compute_hash;
+    for i in node.content.iter() {
+        hash.push_str(i.calculate().as_str());
+    }
+    let mut looptime = 0;
+    for i in node.children_id.iter() {
+        if subnodes.nodes_map.contains_key(i) {
+            let child_node = subnodes.nodes_map.get(i).unwrap();
+            let child_node_hash = verify_nodes_hash(child_node.node_id, subnodes);
+            if !child_node_hash {
+                panic!("verified failed");
+            };
+            hash.push_str(child_node.hash.as_str());
+        } else {
+            hash.push_str(node.children_hash.get(looptime).unwrap())
+        }
+        looptime = looptime + 1;
+    }
+
+    compute_hash = hex::encode(digest::digest(&digest::SHA256, hash.as_ref()));
+    if compute_hash == node.hash {
+        return true;
+    } else {
+        return false;
+    }
+}
