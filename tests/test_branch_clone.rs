@@ -47,7 +47,8 @@ fn test_clone_search_subnode_from_root() {
     assert_valid_tree_node_item3(&vec![0, 2, 0], 1, 0, &vec![4], true, &nodes);
     assert_valid_tree_node_item3(&vec![0, 2, 1], 1, 0, &vec![6], true, &nodes);
 
-    let mut subnodes = tree.clone_search_subnode_from_root(0, &Item3 { key: -4 }, &mut nodes);
+    let (node_id, index, found, mut subnodes) =
+        tree.clone_search_subnode_from_root(0, &Item3 { key: -4 }, &mut nodes);
 
     let mut subtree = MerkleBTree {
         rootid: subnodes.root_id,
@@ -215,10 +216,11 @@ fn test_verify_subnodes_of_get() {
         let item = Item4 { key: i, value: 2 };
         tree.put(item, &mut nodes);
     }
-    let mut subnodes;
+
     for j in 1..7 {
         let item = Item4 { key: j, value: 2 };
-        subnodes = tree.clone_search_subnode_from_root(0, &item, &mut nodes);
+        let (node_id, index, found, mut subnodes) =
+            tree.clone_search_subnode_from_root(0, &item, &mut nodes);
 
         print_subnodes_nodemap_existed(&mut subnodes);
 
@@ -245,11 +247,11 @@ fn test_batch_get_clone_subnode_from_root() {
         let item = Item4 { key: i, value: 2 };
         tree.put(item, &mut nodes);
     }
-    let mut subnodes;
 
     for j in 1..500 {
         let item = Item4 { key: j, value: 2 };
-        subnodes = tree.clone_search_subnode_from_root(0, &item, &mut nodes);
+        let (node_id, index, found, mut subnodes) =
+            tree.clone_search_subnode_from_root(0, &item, &mut nodes);
 
         print_subnodes_nodemap_existed(&mut subnodes);
 

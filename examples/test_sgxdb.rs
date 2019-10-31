@@ -60,11 +60,11 @@ fn main() {
         let item = Item4 { key: i, value: 2 };
         tree.put(item, &mut nodes);
     }
-    let mut subnodes;
 
     for j in 1..500 {
         let item = Item4 { key: j, value: 2 };
-        subnodes = tree.clone_search_subnode_from_root(0, &item, &mut nodes);
+        let (node_id, index, found, mut subnodes) =
+            tree.clone_search_subnode_from_root(0, &item, &mut nodes);
 
         print_subnodes_nodemap_existed(&mut subnodes);
 

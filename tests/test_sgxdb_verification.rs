@@ -74,7 +74,8 @@ fn test_sgx_verification() {
     //get
     for j in 1..500 {
         let item = Item4 { key: j, value: 3 };
-        subnodes = tree.clone_search_subnode_from_root(0, &item, &mut nodes);
+        let (node_id, index, found, mut subnodes) =
+            tree.clone_search_subnode_from_root(0, &item, &mut nodes);
 
         subnodes.nodes_map.remove(&0).unwrap();
         subnodes.nodes_map.insert(0, root_node.clone());

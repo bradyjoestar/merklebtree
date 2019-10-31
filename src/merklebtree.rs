@@ -317,6 +317,23 @@ impl MerkleBTree {
         (value, false)
     }
 
+    pub fn get_clone<T>(&mut self, value: T, nodes: &mut Nodes<T>) -> (T, bool, Nodes<T>)
+    where
+        T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
+    {
+        let (node_id, content_index, found, subnodes) =
+            self.clone_search_subnode_from_root(0, &value, nodes);
+        if found {
+            let mut node = nodes.nodes_map.remove(&node_id).unwrap();
+            let value = node.content.remove(content_index as usize);
+            let value_copy = value.clone();
+            node.content.insert(content_index as usize, value_copy);
+            nodes.nodes_map.insert(node_id, node);
+            return (value, true, subnodes);
+        }
+        (value, false, subnodes)
+    }
+
     pub fn search_recursively<T>(
         &mut self,
         mut start_node_id: i32,
@@ -351,7 +368,7 @@ impl MerkleBTree {
         mut start_node_id: i32,
         value: &T,
         nodes: &mut Nodes<T>,
-    ) -> Nodes<T>
+    ) -> (i32, i32, bool, Nodes<T>)
     where
         T: PartialEq + PartialOrd + Ord + Clone + Debug + CalculateHash,
     {
@@ -367,7 +384,7 @@ impl MerkleBTree {
         let mut nodes_map: HashMap<i32, Node<T>> = HashMap::new();
         if nodes.size == 0 {
             clone_nodes.nodes_map = nodes_map.clone();
-            return clone_nodes;
+            return (-1, -1, false, clone_nodes);
         }
 
         loop {
@@ -377,13 +394,13 @@ impl MerkleBTree {
             match content_slice.binary_search(&value) {
                 Ok(t) => {
                     clone_nodes.nodes_map = nodes_map.clone();
-                    return clone_nodes;
+                    return (node.node_id, t as i32, true, clone_nodes);
                 }
                 Err(e) => {
                     if node.children_id.len() == 0 {
                         nodes_map.clear();
                         clone_nodes.nodes_map.clear();
-                        return clone_nodes;
+                        return (-1, -1, false, clone_nodes);
                     }
                     start_node_id = *node.children_id.get(e).unwrap();
                 }
