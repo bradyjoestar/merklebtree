@@ -80,6 +80,8 @@ fn test_sgx_verification() {
         subnodes.nodes_map.remove(&0).unwrap();
         subnodes.nodes_map.insert(0, root_node.clone());
 
+        verify_subnodes_hash(&subnodes);
+
         let (node_id, index, found) = tree.search_recursively(0, &item, &mut subnodes);
         assert_eq!(true, found)
     }
